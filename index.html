@@ -343,12 +343,10 @@
 
   <!-- ================= 5. SCRIPT XỬ LÝ KẾT NỐI API ĐĂNG NHẬP ================= -->
   <script>
-    // DÁN ĐƯỜNG DẪN WEB APP API LẤY TỪ GOOGLE APPS SCRIPT VÀO ĐÂY:
     const API_URL = "https://script.google.com/macros/s/AKfycbxw9_IwDZqka0NzwFKX9KihjvTP2-EEBsNGzxVBrPn4vQJMXMfwFQtsQTsliPA0xaRa/exec"; 
 
     let currentSession = null;
 
-    // Xử lý gửi API Đăng Nhập
     function doLogin() {
       const acc = document.getElementById('accInput').value.trim();
       const pass = document.getElementById('passInput').value.trim();
@@ -366,7 +364,6 @@
       btn.innerHTML = '<span class="loader"></span> Đang xác thực thông tin...';
       msg.classList.add('hidden');
 
-      // Gửi Yêu cầu qua Web API
       const requestUrl = `${API_URL}?action=login&account=${encodeURIComponent(acc)}&password=${encodeURIComponent(pass)}`;
 
       fetch(requestUrl)
@@ -378,14 +375,12 @@
           if (res.status === 'success') {
             currentSession = res;
             
-            // Đổ thông tin Tài khoản & Trường học lên giao diện
             document.getElementById('userFullName').innerText = res.user.fullName + " (" + res.user.maNhanSu + ")";
             document.getElementById('userSchoolName').innerText = res.school.tenTruong;
             document.getElementById('userRole').innerText = res.user.vaiTro;
             document.getElementById('userPosition').innerText = res.user.chucVu;
             document.getElementById('taskbarUser').innerText = res.user.fullName;
 
-            // Ẩn Màn hình Đăng nhập
             document.getElementById('loginOverlay').classList.add('hidden');
           } else {
             msg.className = "p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-700 border border-rose-200";
@@ -402,7 +397,6 @@
         });
     }
 
-    // Mở file Sheet CSDL riêng của trường
     function openDbLink() {
       if (currentSession && currentSession.school && currentSession.school.dbUrl) {
         window.open(currentSession.school.dbUrl, '_blank');
@@ -411,22 +405,18 @@
       }
     }
 
-    // Hàm gọi API Tra cứu / Lấy danh sách Học sinh
     function testChucNangHocSinh() {
-      const requestUrl = `${API_URL}?action=getHocSinh&sbd=`;
+      const requestUrl = `${API_URL}?action=getHocSinh`;
 
       fetch(requestUrl)
         .then(response => response.json())
         .then(res => {
           if (res.status === 'success') {
-            console.log("Dữ liệu nhận được từ Sheet:", res.data);
-            
-            if (res.data.length === 0) {
+            if (!res.data || res.data.length === 0) {
               alert("Kết nối thành công nhưng chưa có dữ liệu trong Sheet 'DSHocSinh'!");
               return;
             }
 
-            // Hiển thị kết quả ra màn hình dạng danh sách
             let textResult = "DANH SÁCH HỌC SINH TỪ GOOGLE SHEET:\n----------------------------------------\n";
             res.data.forEach(item => {
               textResult += `- SBD: ${item.sbd} | Họ tên: ${item.hoTen} | Lớp: ${item.lop} | NV: ${item.nguyenVong}\n`;
@@ -434,7 +424,7 @@
             
             alert(textResult);
           } else {
-            alert("Lỗi từ Apps Script: " + res.message);
+            alert("Lỗi phản hồi từ Google Apps Script: " + res.message);
           }
         })
         .catch(err => {
@@ -442,10 +432,13 @@
         });
     }
 
-    // Hàm điều hướng mở Module (duy nhất)
     function openModule(name) {
-      // Đã chuẩn hóa kiểm tra tất cả các tên tương đương
-      if (name === 'Quản lý hồ sơ học sinh' || name === 'Hồ sơ học sinh' || name === 'Tra cứu nguyện vọng' || name === 'Tra cứu NV') {
+      console.log("Đang gọi mở module:", name);
+      
+      // Chuyển tên về dạng chữ thường và xóa khoảng trắng thừa để so sánh chính xác 100%
+      const cleanName = name.trim().toLowerCase();
+
+      if (cleanName.includes('hồ sơ học sinh') || cleanName.includes('nguyện vọng') || cleanName.includes('tuyển sinh')) {
         testChucNangHocSinh();
       } else {
         alert("Đang phát triển phân hệ: " + name);
@@ -455,7 +448,6 @@
       if (menu) menu.classList.add('hidden');
     }
 
-    // Đăng xuất
     function logout() {
       currentSession = null;
       document.getElementById('loginOverlay').classList.remove('hidden');
@@ -476,7 +468,6 @@
       }
     }
 
-    // Đồng hồ thời gian thực
     function updateClock() {
       const now = new Date();
       const clockEl = document.getElementById('clock');
