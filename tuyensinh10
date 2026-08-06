@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cổng Thông Tin Tuyển Sinh Lớp 10 - THPT Nguyễn Duy Trinh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+  <!-- Thư viện tạo Mã QR -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-school { font-family: 'Merriweather', serif; }
+    .loader {
+      border: 2.5px solid #e2e8f0;
+      border-radius: 50%;
+      border-top: 2.5px solid #ffffff;
+      width: 16px;
+      height: 16px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-100 via-blue-50/30 to-slate-200 min-h-screen flex flex-col justify-between">
+
+  <!-- Header Banner -->
+  <header class="bg-gradient-to-r from-blue-950 via-indigo-900 to-blue-900 text-white py-8 px-4 shadow-xl border-b-4 border-amber-400 relative overflow-hidden">
+    <div class="max-w-4xl mx-auto text-center space-y-2 relative z-10">
+      <h3 class="text-xs md:text-sm font-bold tracking-widest uppercase text-blue-200/90">
+        <span class="info-cq-chu-quan">SỞ GIÁO DỤC VÀ ĐÀO TẠO NGHỆ AN</span>
+      </h3>
+      <div class="text-2xl md:text-4xl font-school font-bold tracking-wide uppercase text-amber-300 drop-shadow-md">
+        <span class="info-ten-truong">TRƯỜNG THPT NGUYỄN DUY TRINH</span>
+      </div>
+      <div class="w-20 h-0.5 bg-amber-400/80 mx-auto my-2 rounded-full"></div>
+      <p class="text-xs md:text-base text-blue-100 font-extrabold uppercase tracking-wider">
+        CỔNG THÔNG TIN TUYỂN SINH LỚP 10 (<span class="info-nam-hoc">2026-2027</span>)
+      </p>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-4 md:p-6 space-y-6 w-full my-auto">
+
+    <!-- Nút điều hướng nhanh -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <!-- Nút 1: Đăng ký Nhập học -->
+      <a id="linkNhapHoc" href="./nhaphoc.html"
+         class="bg-white p-5 rounded-2xl shadow-md border border-slate-200 hover:border-blue-600 hover:shadow-lg transition group flex items-center space-x-4">
+        <div class="w-12 h-12 bg-blue-50 text-blue-800 rounded-xl flex items-center justify-center text-2xl font-bold flex-shrink-0 group-hover:scale-110 transition">📝</div>
+        <div>
+          <span class="px-2 py-0.5 bg-blue-100 text-blue-900 text-[10px] font-bold rounded-md">ĐỢT 1</span>
+          <h2 class="text-base font-bold text-slate-800 group-hover:text-blue-900 transition">Xác Nhận Nhập Học Trực Tuyến</h2>
+          <p class="text-xs text-slate-500">Thí sinh trúng tuyển đợt 1 cập nhật thông tin từ 8h00 ngày 30/7/2026 đến 11h00 ngày 03/8/2026).</p>
+        </div>
+      </a>
+
+      <!-- Nút 2: Đăng ký Tổ hợp môn -->
+      <a id="linkToHop" href="./tohop.html"
+         class="bg-white p-5 rounded-2xl shadow-md border border-slate-200 hover:border-amber-500 hover:shadow-lg transition group flex items-center space-x-4">
+        <div class="w-12 h-12 bg-amber-50 text-amber-700 rounded-xl flex items-center justify-center text-2xl font-bold flex-shrink-0 group-hover:scale-110 transition">📚</div>
+        <div>
+          <span class="px-2 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-bold rounded-md">SAU KHI CÓ THÔNG BÁO MỚI</span>
+          <h2 class="text-base font-bold text-slate-800 group-hover:text-amber-800 transition">Đăng Ký Tổ Hợp Môn Học</h2>
+          <p class="text-xs text-slate-500">Đăng ký nguyện vọng lựa chọn tổ hợp môn học sau khi tọa đàm tư vấn trực tiếp tại trường THPT Nguyễn Duy Trinh.</p>
+        </div>
+      </a>
+         <!-- Nút 3: TRA CUU TONG HOP -->
+      <a id="linktracuuTonghop" href="./tracuuTongHop.html"
+         class="bg-white p-5 rounded-2xl shadow-md border border-slate-200 hover:border-amber-500 hover:shadow-lg transition group flex items-center space-x-4">
+        <div class="w-12 h-12 bg-amber-50 text-amber-700 rounded-xl flex items-center justify-center text-2xl font-bold flex-shrink-0 group-hover:scale-110 transition">📚</div>
+        <div>
+          <span class="px-2 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-bold rounded-md">SAU KHI CÓ THÔNG BÁO MỚI</span>
+          <h2 class="text-base font-bold text-slate-800 group-hover:text-amber-800 transition">Tra Cứu xác nhận đăng ký</h2>
+          <p class="text-xs text-slate-500">Tra cứu xác nhận nhập học và xác nhận đăng ký tổ hợp môn học.</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- KHU VỰC TRA CỨU SONG SONG (CỘT TRÁI: SEARCH / CỘT PHẢI: QR CODE) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+      
+      <!-- CỘT 1 & 2: Khối Tra cứu kết quả Trúng tuyển -->
+      <div class="md:col-span-2 bg-white rounded-2xl shadow-xl p-5 md:p-6 border border-slate-600/80 space-y-4">
+        <h2 class="text-base font-bold text-blue-950 flex items-center gap-2 border-b pb-3">
+          <span>🔍</span> Tra Cứu Kết Quả Trúng Tuyển
+        </h2>
+        
+        <div class="flex flex-col sm:flex-row gap-2.5">
+          <input type="text" id="searchInput" onkeypress="if(event.key === 'Enter') handleSearch()" placeholder="Nhập Số báo danh hoặc Họ tên..." 
+                 class="flex-grow px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition bg-slate-50/50 focus:bg-white">
+          <button onclick="handleSearch()" id="btnSearch" 
+                  class="bg-blue-900 text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-blue-800 active:scale-95 transition shadow-md shadow-blue-900/20 flex items-center justify-center min-w-[110px]">
+            <span id="btnSearchText">TRA CỨU</span>
+          </button>
+        </div>
+
+        <div id="searchResults" class="hidden space-y-3 pt-1">
+          <div id="searchMessage" class="text-xs text-slate-600 font-semibold"></div>
+          <div class="overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+                <tr>
+                  <th class="p-2.5">SBD</th>
+                  <th class="p-2.5">Họ và Tên</th>
+                  <th class="p-2.5">Ngày sinh</th>
+                  <th class="p-2.5 text-center">ĐXT</th>
+                  <th class="p-2.5 text-center">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody" class="divide-y divide-slate-100 bg-white"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+     
+      <!-- CỘT 3: KHỐI MÃ QR TÍCH HỢP ĐẸP MẮT -->
+      <div class="md:col-span-1 bg-gradient-to-b from-white to-slate-50/80 rounded-2xl p-5 shadow-xl border border-slate-200 text-center space-y-3 flex flex-col justify-between h-full">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 border border-indigo-100 text-indigo-900 text-[10px] font-bold rounded-full uppercase tracking-wider mb-2">
+            <span>📱</span> Quét Mã Tra Cứu Hồ Sơ
+          </div>
+          <h3 class="text-xs font-extrabold text-slate-800 uppercase tracking-tight">
+            XÁC THỰC XÉT TUYỂN VÀO 10
+          </h3>
+        </div>
+
+        <!-- VÙNG MÃ QR -->
+        <div class="my-auto py-2">
+          <div class="bg-white p-3 rounded-2xl border-2 border-indigo-100 inline-block shadow-md">
+            <div id="indexQrcode" class="flex justify-center"></div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <p class="text-[11px] text-slate-500 font-medium leading-relaxed">
+            Dùng Camera điện thoại hoặc Zalo để quét xem hồ sơ chi tiết
+          </p>
+
+          <!-- NÚT TẢI ẢNH QR -->
+          <button type="button" onclick="downloadIndexQR()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 px-3 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5 active:scale-95">
+            <span>📥</span> Tải ảnh QR về máy
+          </button>
+        </div>
+      </div>
+
+    </div>
+    
+    <!-- KHỐI LƯU Ý KHÓA CỔNG TỰ ĐỘNG -->
+    <div class="bg-amber-50/90 border-l-4 border-amber-500 p-3.5 rounded-r-xl text-xs space-y-1.5">
+      <div class="font-bold text-amber-900 flex items-center gap-1.5 text-sm">
+        <span>⚠️</span> LƯU Ý QUAN TRỌNG VỀ NHẬP HỌC TRỰC TUYẾN:
+      </div>
+      <ul class="list-disc list-inside text-amber-950 space-y-1 leading-relaxed pl-1">
+        <li>Hướng dẫn nhập học trực tuyến sẽ được đăng kèm cùng danh sách trúng tuyển từng đợt.</li>
+        <li>Học sinh trúng tuyển bắt buộc phải thực hiện <strong class="text-red-700 underline">XÁC NHẬN NHẬP HỌC TRỰC TUYẾN</strong> đúng thời hạn quy định.</li>
+        <li><strong>Sau thời gian trên:</strong> Hệ thống sẽ <strong class="text-red-700">TỰ ĐỘNG KHÓA</strong> và chuyển chỉ tiêu cho đợt xét tuyển tiếp theo.</li>
+      </ul>
+    </div>
+
+    <!-- THÔNG BÁO KÊNH THÔNG TIN CHÍNH THỨC -->
+    <div class="text-center bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-600">
+      💡 Mọi thông tin chi tiết và danh sách trúng tuyển từng đợt sẽ được cập nhật liên tục trên <strong>Fanpage chính thức</strong> và <strong>Website của Nhà trường</strong>.
+    </div>
+
+    <div class="text-center">
+      <a href="./admin.html" class="text-xs text-slate-400 hover:text-slate-600 font-medium transition">🔐 Trang Quản Trị Tuyển Sinh</a>
+    </div>
+
+  </main>
+
+  <!-- Thông tin liên hệ nhà trường -->
+  <div class="bg-slate-50 border-t border-slate-200 p-5 text-center text-xs text-slate-600 space-y-1">
+    <p class="font-bold text-blue-950 text-sm uppercase">Trường THPT Nguyễn Duy Trinh</p>
+    <p class="text-slate-500">📍 Xóm Quán Hành 4, Xã Nghi Lộc, Nghệ An</p>
+    <div class="pt-1 flex flex-wrap justify-center gap-3 text-slate-600">
+      <p>📞 Điện thoại liên hệ: <a href="tel:0978929399" class="font-bold text-blue-700 hover:underline">0978 92 93 99</a> - <a href="tel:0915779656" class="font-bold text-blue-700 hover:underline">0915 779 656</a></p>
+      <p>✉️ Email: <a href="mailto:vanbanndt@nghean.edu.vn" class="font-medium text-slate-700">vanbanndt@nghean.edu.vn</a></p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-200 bg-white/50 space-y-1">
+    <p>© Bản quyền thuộc về <span class="info-hieu-truong">Lê Duy Hải</span> - <span class="info-ten-truong">0978 92 93 99</span></p>
+  </footer>
+
+  <script>
+    // DÁN LINK GOOGLE APPS SCRIPT WEB APP CỦA BẠN VÀO ĐÂY:
+    const API_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
+
+    
+    // Link trang hiện tại để tạo mã QR
+    const QR_TRA_CUU_URL = window.location.href;
+
+    document.addEventListener("DOMContentLoaded", function() {
+      initQRCode();
+    });
+
+    function initQRCode() {
+      const qrContainer = document.getElementById("indexQrcode");
+      if (qrContainer) {
+        new QRCode(qrContainer, {
+          text: QR_TRA_CUU_URL,
+          width: 150,
+          height: 150,
+          colorDark : "#0f172a",
+          colorLight : "#ffffff",
+          correctLevel : QRCode.CorrectLevel.H
+        });
+      }
+    }
+
+    function downloadIndexQR() {
+      setTimeout(function() {
+        const img = document.querySelector("#indexQrcode img");
+        if (img && img.src) {
+          const a = document.createElement("a");
+          a.href = img.src;
+          a.download = "Ma_QR_Tra_Cuu_THPT_Nguyen_Duy_Trinh.png";
+          a.click();
+        } else {
+          alert("Mã QR đang được khởi tạo, vui lòng bấm lại!");
+        }
+      }, 200);
+    }
+
+    function formatDateVN(dateStr) {
+      if (!dateStr) return "";
+      var str = String(dateStr).trim();
+      if (str.includes("T")) str = str.split("T")[0];
+      if (str.includes("-")) {
+        var parts = str.split("-");
+        if (parts.length === 3 && parts[0].length === 4) {
+          return parts[2] + "/" + parts[1] + "/" + parts[0];
+        }
+      }
+      return str;
+    }
+
+    // Hàm tra cứu gọi trực tiếp qua API
+    function handleSearch() {
+      const kw = document.getElementById('searchInput').value.trim();
+      const btn = document.getElementById('btnSearch');
+      const btnText = document.getElementById('btnSearchText');
+      const resultsDiv = document.getElementById('searchResults');
+      const msgDiv = document.getElementById('searchMessage');
+      const tbody = document.getElementById('tableBody');
+
+      if (!kw) { alert('Vui lòng nhập SBD hoặc Họ tên!'); return; }
+
+      btn.disabled = true;
+      btnText.innerHTML = '<span class="loader"></span> Đang tìm...';
+
+      // Gọi Fetch API kết nối Google Sheets
+      fetch(`${API_URL}?action=traCuu&sbd=${encodeURIComponent(kw)}`)
+        .then(response => response.json())
+        .then(res => {
+          btn.disabled = false;
+          btnText.innerText = 'TRA CỨU';
+          resultsDiv.classList.remove('hidden');
+
+          if (res.status === "success" && res.data) {
+            let item = res.data;
+            msgDiv.innerText = `Tìm thấy kết quả:`;
+            var ngaySinhFormatted = formatDateVN(item.NgaySinh || item.ngaySinh);
+            
+            let html = `<tr class="hover:bg-slate-50 transition">
+              <td class="p-2.5 font-mono font-bold text-blue-900">${item.SBD || item.sbd}</td>
+              <td class="p-2.5 font-bold uppercase text-slate-800">${item.HoTen || item.hoTen}</td>
+              <td class="p-2.5 text-slate-600 font-medium">${ngaySinhFormatted}</td>
+              <td class="p-2.5 text-center font-bold text-amber-700">${item.DiemXetTuyen || item.tongDiem || ''}</td>
+              <td class="p-2.5 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full font-bold text-[10px]">${item.TrangThai || item.trangThai || 'Đã trúng tuyển'}</span></td>
+            </tr>`;
+            
+            tbody.innerHTML = html;
+          } else {
+            msgDiv.innerText = 'Không tìm thấy dữ liệu phù hợp!';
+            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Không có kết quả phù hợp với từ khóa "${kw}"</td></tr>`;
+          }
+        })
+        .catch(err => {
+          btn.disabled = false;
+          btnText.innerText = 'TRA CỨU';
+          alert('Lỗi tra cứu: ' + err.message);
+        });
+    }
+  </script>
+</body>
+</html>
