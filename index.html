@@ -444,6 +444,42 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
+    //-------------------------Test chức năng học sinh----------------------------
+    // Gọi thử API chức năng Tra cứu / Lấy danh sách Học sinh
+function testChucNangHocSinh() {
+  const requestUrl = `${API_URL}?action=getHocSinh&sbd=`;
+
+  fetch(requestUrl)
+    .then(response => response.json())
+    .then(res => {
+      if (res.status === 'success') {
+        console.log("Dữ liệu nhận được từ Sheet:", res.data);
+        
+        // Hiển thị kết quả ra màn hình dạng danh sách
+        let textResult = "DANH SÁCH HỌC SINH TỪ SHEET:\n\n";
+        res.data.forEach(item => {
+          textResult += `- SBD: ${item.sbd} | Họ tên: ${item.hoTen} | Lớp: ${item.lop} | NV: ${item.nguyenVong}\n`;
+        });
+        
+        alert(textResult);
+      } else {
+        alert("Lỗi: " + res.message);
+      }
+    })
+    .catch(err => {
+      alert("Lỗi kết nối API: " + err.message);
+    });
+}
+
+// Cập nhật hàm openModule khi bấm vào icon
+function openModule(name) {
+  if (name === 'Quản lý hồ sơ học sinh' || name === 'Tra cứu nguyện vọng') {
+    testChucNangHocSinh(); // Chạy thử test lấy dữ liệu từ Google Sheet
+  } else {
+    alert("Đang phát triển phân hệ: " + name);
+  }
+  document.getElementById('startMenu').classList.add('hidden');
+}
   </script>
 </body>
 </html>
