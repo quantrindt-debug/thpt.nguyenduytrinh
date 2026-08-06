@@ -31,7 +31,7 @@
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
   </style>
 </head>
-<body class="desktop-bg h-screen w-screen overflow-hidden font-sans select-none relative">
+<body class="desktop-bg h-screen w-screen overflow-hidden font-sans select-none relative" onclick="closeStartMenuOnOutside(event)">
 
   <!-- ================= 1. MÀN HÌNH ĐĂNG NHẬP (LOGIN OVERLAY) ================= -->
   <div id="loginOverlay" class="fixed inset-0 bg-slate-950/75 backdrop-blur-md flex items-center justify-center z-[100] p-4 transition-all duration-300">
@@ -102,7 +102,7 @@
   <!-- ================= 2. BÀN LÀM VIỆC (CHỨC NĂNG SẮP XẾP TỪ TRÊN XUỐNG SANG PHẢI) ================= -->
   <div class="p-6 grid grid-flow-col grid-rows-5 auto-cols-max gap-x-8 gap-y-6 max-h-[calc(100vh-48px)] overflow-x-auto overflow-y-hidden">
     
-    <!-- Icon CSDL Trường (Tự mở Sheet riêng khi đăng nhập) -->
+    <!-- Icon CSDL Trường -->
     <div onclick="openDbLink()" class="flex flex-col items-center group cursor-pointer w-20">
       <div class="w-13 h-13 p-3.5 bg-emerald-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
         <i class="fa-solid fa-database"></i>
@@ -142,7 +142,7 @@
       </span>
     </div>
 
-    <!-- Icon Thông báo -->
+    <!-- Icon Gửi thông báo -->
     <div onclick="openModule('Gửi TB chung')" class="flex flex-col items-center group cursor-pointer w-20">
       <div class="w-13 h-13 p-3.5 bg-amber-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
         <i class="fa-solid fa-bell"></i>
@@ -183,73 +183,145 @@
       </span>
     </div>
 
+    <!-- Icon Tra cứu nguyện vọng -->
+    <div onclick="openModule('Tra cứu nguyện vọng')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-cyan-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Tra cứu NV
+      </span>
+    </div>
+
+    <!-- Icon Quản lý Hồ sơ học sinh -->
+    <div onclick="openModule('Quản lý hồ sơ học sinh')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-violet-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-folder-open"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Hồ sơ học sinh
+      </span>
+    </div>
+
   </div>
 
 
-  <!-- ================= 3. START MENU ================= -->
-  <div id="startMenu" class="hidden absolute bottom-12 left-2 w-96 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50">
+  <!-- ================= 3. START MENU ĐẦY ĐỦ PHÂN HỆ ================= -->
+  <div id="startMenu" class="hidden absolute bottom-12 left-2 w-80 md:w-96 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 transition-all duration-200">
     
-    <!-- Thông tin cán bộ sau khi Đăng nhập thành công -->
-    <div class="bg-sky-700 p-4 text-white flex items-center gap-3">
-      <div class="w-12 h-12 bg-white text-sky-700 rounded-full flex items-center justify-center font-bold text-xl shadow">
-        <i class="fa-solid fa-user-check"></i>
+    <!-- Header: Thông tin Cán bộ sau khi Đăng nhập -->
+    <div class="bg-gradient-to-r from-sky-700 to-blue-900 p-4 text-white flex items-center gap-3">
+      <div class="w-12 h-12 bg-white/10 border border-white/20 text-amber-300 rounded-2xl flex items-center justify-center font-bold text-xl shadow-inner backdrop-blur-sm">
+        <i class="fa-solid fa-user-tie"></i>
       </div>
       <div class="overflow-hidden">
         <h4 id="userFullName" class="font-bold text-sm truncate">Chưa đăng nhập</h4>
         <p id="userSchoolName" class="text-xs text-sky-200 truncate">Vui lòng đăng nhập...</p>
         <div class="flex gap-2 mt-1.5">
-          <span id="userRole" class="text-[10px] bg-sky-900/80 text-sky-100 px-2 py-0.5 rounded font-mono">---</span>
+          <span id="userRole" class="text-[10px] bg-sky-950/80 text-sky-200 px-2 py-0.5 rounded font-mono">---</span>
           <span id="userPosition" class="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded font-semibold">---</span>
         </div>
       </div>
     </div>
-     <!-- Thân Menu 2 Cột -->
-    <div class="grid grid-cols-2 text-xs text-slate-700 divide-x divide-slate-200 h-80">
+
+    <!-- Danh sách Menu các chức năng (Full) -->
+    <div class="p-2 max-h-80 overflow-y-auto custom-scrollbar space-y-1">
       
-      <!-- Cột trái: Danh mục hệ thống -->
-      <div class="p-2 space-y-1 overflow-y-auto custom-scrollbar">
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-sky-50 hover:text-sky-600 rounded-lg transition font-medium">
-          <i class="fa-solid fa-users text-sky-500 w-4"></i> Quản lý nhân sự
-        </a>
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-sky-50 hover:text-sky-600 rounded-lg transition font-medium">
-          <i class="fa-solid fa-user-graduate text-emerald-500 w-4"></i> Quản lý học sinh
-        </a>
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-sky-50 hover:text-sky-600 rounded-lg transition font-medium">
-          <i class="fa-solid fa-school text-amber-500 w-4"></i> Quản lý nhà trường
-        </a>
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-sky-50 hover:text-sky-600 rounded-lg transition font-medium">
-          <i class="fa-solid fa-folder-open text-blue-500 w-4"></i> Công văn, văn bản
-        </a>
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-sky-50 hover:text-sky-600 rounded-lg transition font-medium">
-          <i class="fa-solid fa-passport text-indigo-500 w-4"></i> Thi, Tuyển sinh
-        </a>
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-sky-50 hover:text-sky-600 rounded-lg transition font-medium">
-          <i class="fa-solid fa-gear text-slate-500 w-4"></i> Quản trị hệ thống
-        </a>
-      </div>
+      <div class="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Danh mục chức năng</div>
 
-      <!-- Cột phải: Cá nhân & Tiện ích -->
-      <div class="p-2 bg-slate-50 space-y-1 overflow-y-auto custom-scrollbar">
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-slate-200 rounded-lg transition">
-          <i class="fa-solid fa-image text-slate-600 w-4"></i> Đổi ảnh đại diện
-        </a>
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-slate-200 rounded-lg transition">
-          <i class="fa-solid fa-key text-slate-600 w-4"></i> Thay đổi mật khẩu
-        </a>
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-slate-200 rounded-lg transition">
-          <i class="fa-solid fa-clock-rotate-left text-slate-600 w-4"></i> Lịch sử đăng nhập
-        </a>
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-slate-200 rounded-lg transition">
-          <i class="fa-solid fa-sliders text-slate-600 w-4"></i> Bảng điều khiển
-        </a>
-        <hr class="my-1 border-slate-200">
-        <a href="#" class="flex items-center gap-2 p-2 hover:bg-rose-100 text-rose-600 rounded-lg transition font-semibold">
-          <i class="fa-solid fa-right-from-bracket w-4"></i> Đăng xuất
-        </a>
-      </div>
+      <!-- Item: CSDL Trường -->
+      <button onclick="openDbLink()" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-database"></i>
+        </div>
+        <span>Cơ sở dữ liệu trường</span>
+      </button>
 
+      <!-- Item: Quản lý Hồ sơ học sinh -->
+      <button onclick="openModule('Quản lý hồ sơ học sinh')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-violet-100 text-violet-700 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-folder-open"></i>
+        </div>
+        <span>Quản lý hồ sơ học sinh</span>
+      </button>
+
+      <!-- Item: Nhân sự giáo viên -->
+      <button onclick="openModule('Nhân sự giáo viên')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-id-card"></i>
+        </div>
+        <span>Quản lý Nhân sự - Giáo viên</span>
+      </button>
+
+      <!-- Item: Tuyển sinh Lớp 10 -->
+      <button onclick="openModule('Tuyển sinh 10')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-rose-100 text-rose-700 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+        <span>Tuyển sinh Lớp 10 & Nguyện vọng</span>
+      </button>
+
+      <!-- Item: Tra cứu kết quả / Nguyện vọng -->
+      <button onclick="openModule('Tra cứu nguyện vọng')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-cyan-100 text-cyan-700 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <span>Tra cứu nguyện vọng trúng tuyển</span>
+      </button>
+
+      <!-- Item: Kế hoạch dạy học -->
+      <button onclick="openModule('Kế hoạch dạy học')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-purple-100 text-purple-700 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <span>Kế hoạch dạy học / Bài giảng</span>
+      </button>
+
+      <!-- Item: Lịch công tác tuần -->
+      <button onclick="openModule('Lịch công tác')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-teal-100 text-teal-700 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-calendar-days"></i>
+        </div>
+        <span>Lịch công tác tuần</span>
+      </button>
+
+      <!-- Item: Điểm danh & Chuyên cần -->
+      <button onclick="openModule('Điểm danh')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-indigo-100 text-indigo-700 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-clipboard-user"></i>
+        </div>
+        <span>Điểm danh & Chuyên cần</span>
+      </button>
+
+      <!-- Item: Quản lý Lớp học & Chủ nhiệm -->
+      <button onclick="openModule('Quản lý lớp học')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-sky-100 text-sky-700 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <span>Quản lý Lớp học & Chủ nhiệm</span>
+      </button>
+
+      <!-- Item: Báo cáo Thống kê -->
+      <button onclick="openModule('Báo cáo thống kê')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-chart-pie"></i>
+        </div>
+        <span>Báo cáo - Thống kê</span>
+      </button>
+
+      <!-- Item: Gửi thông báo chung -->
+      <button onclick="openModule('Gửi TB chung')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-orange-100 text-orange-700 rounded-lg flex items-center justify-center">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <span>Gửi thông báo chung</span>
+      </button>
+
+    </div>
+
+    <!-- Footer Start Menu: Nút Đăng xuất -->
     <div class="p-2 bg-slate-50 border-t border-slate-200">
-      <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-2 hover:bg-rose-100 text-rose-600 rounded-lg transition font-semibold text-xs">
+      <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-2 hover:bg-rose-100 text-rose-600 rounded-xl transition font-semibold text-xs">
         <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất hệ thống
       </button>
     </div>
@@ -258,7 +330,7 @@
 
   <!-- ================= 4. TASKBAR PHÍA DƯỚI ================= -->
   <div class="absolute bottom-0 left-0 w-full h-11 bg-slate-900/80 backdrop-blur-md border-t border-slate-700/50 flex items-center justify-between px-3 z-50">
-    <button onclick="toggleStartMenu()" class="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition active:scale-95">
+    <button onclick="toggleStartMenu(event)" class="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow transition active:scale-95">
       <i class="fa-solid fa-border-all text-sm"></i>
       <span id="taskbarUser">Hệ thống</span>
     </button>
@@ -272,7 +344,7 @@
   <!-- ================= 5. SCRIPT XỬ LÝ KẾT NỐI API ĐĂNG NHẬP ================= -->
   <script>
     // DÁN ĐƯỜNG DẪN WEB APP API LẤY TỪ GOOGLE APPS SCRIPT VÀO ĐÂY:
-    const API_URL = "https://script.google.com/macros/s/AKfycbxw9_IwDZqka0NzwFKX9KihjvTP2-EEBsNGzxVBrPn4vQJMXMfwFQtsQTsliPA0xaRa/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycb.../exec"; 
 
     let currentSession = null;
 
@@ -335,12 +407,13 @@
       if (currentSession && currentSession.school && currentSession.school.dbUrl) {
         window.open(currentSession.school.dbUrl, '_blank');
       } else {
-        alert("Không tìm thấy đường dẫn CSDL của trường!");
+        alert("Chưa chọn được CSDL của trường hoặc chưa đăng nhập!");
       }
     }
 
     function openModule(name) {
       alert("Đang mở phân hệ: " + name);
+      document.getElementById('startMenu').classList.add('hidden');
     }
 
     // Đăng xuất
@@ -349,11 +422,19 @@
       document.getElementById('loginOverlay').classList.remove('hidden');
       document.getElementById('formLogin').reset();
       document.getElementById('loginMsg').classList.add('hidden');
-      toggleStartMenu();
+      document.getElementById('startMenu').classList.add('hidden');
     }
 
-    function toggleStartMenu() {
+    function toggleStartMenu(event) {
+      if(event) event.stopPropagation();
       document.getElementById('startMenu').classList.toggle('hidden');
+    }
+
+    function closeStartMenuOnOutside(event) {
+      const menu = document.getElementById('startMenu');
+      if (!menu.classList.contains('hidden') && !menu.contains(event.target)) {
+        menu.classList.add('hidden');
+      }
     }
 
     // Đồng hồ thời gian thực
