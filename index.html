@@ -411,7 +411,50 @@
       }
     }
 
-    
+    // Hàm gọi API Tra cứu / Lấy danh sách Học sinh
+    function testChucNangHocSinh() {
+      const requestUrl = `${API_URL}?action=getHocSinh&sbd=`;
+
+      fetch(requestUrl)
+        .then(response => response.json())
+        .then(res => {
+          if (res.status === 'success') {
+            console.log("Dữ liệu nhận được từ Sheet:", res.data);
+            
+            if (res.data.length === 0) {
+              alert("Kết nối thành công nhưng chưa có dữ liệu trong Sheet 'DSHocSinh'!");
+              return;
+            }
+
+            // Hiển thị kết quả ra màn hình dạng danh sách
+            let textResult = "DANH SÁCH HỌC SINH TỪ GOOGLE SHEET:\n----------------------------------------\n";
+            res.data.forEach(item => {
+              textResult += `- SBD: ${item.sbd} | Họ tên: ${item.hoTen} | Lớp: ${item.lop} | NV: ${item.nguyenVong}\n`;
+            });
+            
+            alert(textResult);
+          } else {
+            alert("Lỗi từ Apps Script: " + res.message);
+          }
+        })
+        .catch(err => {
+          alert("Lỗi kết nối API: " + err.message);
+        });
+    }
+
+    // Hàm điều hướng mở Module (duy nhất)
+    function openModule(name) {
+      // Đã chuẩn hóa kiểm tra tất cả các tên tương đương
+      if (name === 'Quản lý hồ sơ học sinh' || name === 'Hồ sơ học sinh' || name === 'Tra cứu nguyện vọng' || name === 'Tra cứu NV') {
+        testChucNangHocSinh();
+      } else {
+        alert("Đang phát triển phân hệ: " + name);
+      }
+      
+      const menu = document.getElementById('startMenu');
+      if (menu) menu.classList.add('hidden');
+    }
+
     // Đăng xuất
     function logout() {
       currentSession = null;
@@ -428,7 +471,7 @@
 
     function closeStartMenuOnOutside(event) {
       const menu = document.getElementById('startMenu');
-      if (!menu.classList.contains('hidden') && !menu.contains(event.target)) {
+      if (menu && !menu.classList.contains('hidden') && !menu.contains(event.target)) {
         menu.classList.add('hidden');
       }
     }
@@ -436,46 +479,11 @@
     // Đồng hồ thời gian thực
     function updateClock() {
       const now = new Date();
-      document.getElementById('clock').innerText = now.toLocaleTimeString('vi-VN');
+      const clockEl = document.getElementById('clock');
+      if (clockEl) clockEl.innerText = now.toLocaleTimeString('vi-VN');
     }
     setInterval(updateClock, 1000);
     updateClock();
-    //-------------------------Test chức năng học sinh----------------------------
-    // Gọi thử API chức năng Tra cứu / Lấy danh sách Học sinh
-function testChucNangHocSinh() {
-  const requestUrl = `${API_URL}?action=getHocSinh&sbd=`;
-
-  fetch(requestUrl)
-    .then(response => response.json())
-    .then(res => {
-      if (res.status === 'success') {
-        console.log("Dữ liệu nhận được từ Sheet:", res.data);
-        
-        // Hiển thị kết quả ra màn hình dạng danh sách
-        let textResult = "DANH SÁCH HỌC SINH TỪ SHEET:\n\n";
-        res.data.forEach(item => {
-          textResult += `- SBD: ${item.sbd} | Họ tên: ${item.hoTen} | Lớp: ${item.lop} | NV: ${item.nguyenVong}\n`;
-        });
-        
-        alert(textResult);
-      } else {
-        alert("Lỗi: " + res.message);
-      }
-    })
-    .catch(err => {
-      alert("Lỗi kết nối API: " + err.message);
-    });
-}
-
-// Cập nhật hàm openModule khi bấm vào icon
-function openModule(name) {
-  if (name === 'Quản lý hồ sơ học sinh' || name === 'Tra cứu nguyện vọng') {
-    testChucNangHocSinh(); // Chạy thử test lấy dữ liệu từ Google Sheet
-  } else {
-    alert("Đang phát triển phân hệ: " + name);
-  }
-  document.getElementById('startMenu').classList.add('hidden');
-}
   </script>
 </body>
 </html>
