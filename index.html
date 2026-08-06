@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Quản Lý Giáo Dục</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .desktop-bg {
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920') no-repeat center center fixed;
+      background-size: cover;
+    }
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 3px solid #0284c7;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="desktop-bg h-screen w-screen overflow-hidden font-sans select-none relative">
+
+  <!-- ================= 1. CỬA SỔ ĐĂNG NHẬP CHUYÊN NGHIỆP (LOGIN OVERLAY) ================= -->
+  <div id="loginOverlay" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center z-[100] p-4 transition-all duration-300">
+    
+    <div class="bg-white/90 backdrop-blur-xl border border-white/40 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative">
+      
+      <!-- Trang trí Header -->
+      <div class="bg-gradient-to-r from-sky-700 via-blue-800 to-indigo-900 p-8 text-center text-white relative">
+        <div class="w-16 h-16 bg-white/10 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-3 backdrop-blur-sm border border-white/20 shadow-inner">
+          <i class="fa-solid fa-graduation-cap text-amber-300"></i>
+        </div>
+        <h3 class="text-xl font-extrabold tracking-wide uppercase">CỔNG QUẢN TRỊ GIÁO DỤC</h3>
+        <p class="text-xs text-sky-200 mt-1 font-light">Đăng nhập tài khoản cán bộ / giáo viên</p>
+      </div>
+
+      <!-- Form nhập liệu -->
+      <form id="formLogin" onsubmit="event.preventDefault(); doLogin();" class="p-6 md:p-8 space-y-5">
+        
+        <!-- Ô nhập Tài khoản -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+            Mã Tài Khoản <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+              <i class="fa-solid fa-user-gear"></i>
+            </span>
+            <input type="text" id="accInput" required placeholder="MãTrường.MãNS (VD: C3NDT.GV001)"
+                   class="w-full pl-10 pr-4 py-3 bg-slate-50/80 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-sky-600 focus:bg-white font-mono font-semibold transition">
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1">Định dạng: <span class="font-mono font-bold text-sky-700">MãTrường.MãNhânSự</span></p>
+        </div>
+
+        <!-- Ô nhập Mật khẩu -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+            Mật Khẩu <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+              <i class="fa-solid fa-lock"></i>
+            </span>
+            <input type="password" id="passInput" required placeholder="••••••••"
+                   class="w-full pl-10 pr-4 py-3 bg-slate-50/80 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-sky-600 focus:bg-white transition">
+          </div>
+        </div>
+
+        <!-- Thông báo lỗi/thành công -->
+        <div id="loginMsg" class="hidden p-3 rounded-xl text-xs font-semibold leading-relaxed"></div>
+
+        <!-- Nút Đăng nhập -->
+        <button type="submit" id="btnLogin"
+                class="w-full bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 active:scale-[0.98] text-white font-bold py-3.5 rounded-xl text-sm transition shadow-lg shadow-sky-600/30 flex items-center justify-center gap-2">
+          <span>ĐĂNG NHẬP HỆ THỐNG</span>
+        </button>
+
+      </form>
+
+      <!-- Footer Modal -->
+      <div class="bg-slate-50 px-6 py-3 border-t border-slate-200/60 text-center text-[11px] text-slate-400">
+        Hệ thống Quản lý Dữ liệu Giáo dục Trực tuyến © 2026
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ================= 2. BÀN LÀM VIỆC (DESKTOP UI) ================= -->
+  <div class="p-6 grid grid-flow-col grid-rows-5 auto-cols-max gap-x-8 gap-y-6 max-h-[calc(100vh-48px)] overflow-x-auto overflow-y-hidden">
+    
+    <div onclick="openDbLink()" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-emerald-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-database"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        CSDL Trường
+      </span>
+    </div>
+
+    <div onclick="alert('Phân hệ Quản lý Học sinh')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-blue-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Quản lý học sinh
+      </span>
+    </div>
+
+  </div>
+
+
+  <!-- ================= 3. START MENU (MENU CỬA SỔ) ================= -->
+  <div id="startMenu" class="hidden absolute bottom-12 left-2 w-96 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50">
+    
+    <!-- Header hiển thị đúng User & Trường sau khi Login -->
+    <div class="bg-sky-700 p-4 text-white flex items-center gap-3">
+      <div class="w-12 h-12 bg-white text-sky-700 rounded-full flex items-center justify-center font-bold text-xl shadow">
+        <i class="fa-solid fa-user-check"></i>
+      </div>
+      <div class="overflow-hidden">
+        <h4 id="userFullName" class="font-bold text-sm truncate">Chưa đăng nhập</h4>
+        <p id="userSchoolName" class="text-xs text-sky-200 truncate">Vui lòng đăng nhập...</p>
+        <div class="flex gap-2 mt-1">
+          <span id="userRole" class="text-[10px] bg-sky-900/60 text-sky-100 px-2 py-0.5 rounded-md font-mono">---</span>
+          <span id="userPosition" class="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded-md font-semibold">---</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-2 bg-slate-50 border-t border-slate-200">
+      <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-2 hover:bg-rose-100 text-rose-600 rounded-lg transition font-semibold text-xs">
+        <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất hệ thống
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ================= 4. TASKBAR PHÍA DƯỚI ================= -->
+  <div class="absolute bottom-0 left-0 w-full h-11 bg-slate-900/80 backdrop-blur-md border-t border-slate-700/50 flex items-center justify-between px-3 z-50">
+    <button onclick="toggleStartMenu()" class="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition active:scale-95">
+      <i class="fa-solid fa-border-all text-sm"></i>
+      <span id="taskbarUser">Hệ thống</span>
+    </button>
+
+    <div id="clock" class="text-white text-xs font-medium tracking-wide bg-slate-800/60 px-3 py-1 rounded-md border border-slate-700">
+      00:00:00
+    </div>
+  </div>
+
+
+  <!-- ================= 5. SCRIPT XỬ LÝ ĐĂNG NHẬP ================= -->
+  <script>
+    let currentSession = null; // Lưu Session sau khi Login thành công
+
+    // Khai báo đường dẫn Web API lấy từ Google Apps Script
+const API_URL = "https://script.google.com/macros/s/AKfycbx.../exec"; // Thay link của anh vào đây
+
+function doLogin() {
+  const acc = document.getElementById('accInput').value.trim();
+  const pass = document.getElementById('passInput').value.trim();
+  const btn = document.getElementById('btnLogin');
+  const msg = document.getElementById('loginMsg');
+
+  btn.disabled = true;
+  btn.innerHTML = 'Đang xác thực...';
+  msg.classList.add('hidden');
+
+  // Gửi request API dạng GET
+  const requestUrl = `${API_URL}?action=login&account=${encodeURIComponent(acc)}&password=${encodeURIComponent(pass)}`;
+
+  fetch(requestUrl)
+    .then(response => response.json())
+    .then(res => {
+      btn.disabled = false;
+      btn.innerHTML = 'ĐĂNG NHẬP HỆ THỐNG';
+
+      if (res.status === 'success') {
+        currentSession = res;
+        
+        // Cập nhật thông tin cán bộ & trường lấy từ Sheet lên giao diện Web
+        document.getElementById('userFullName').innerText = res.user.fullName + " (" + res.user.maNhanSu + ")";
+        document.getElementById('userSchoolName').innerText = res.school.tenTruong;
+        document.getElementById('userRole').innerText = res.user.vaiTro;
+        document.getElementById('userPosition').innerText = res.user.chucVu;
+        document.getElementById('taskbarUser').innerText = res.user.fullName;
+
+        // Ẩn cửa sổ Đăng Nhập
+        document.getElementById('loginOverlay').classList.add('hidden');
+      } else {
+        msg.className = "p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-700 border border-rose-200";
+        msg.innerText = "❌ " + res.message;
+        msg.classList.remove('hidden');
+      }
+    })
+    .catch(err => {
+      btn.disabled = false;
+      btn.innerHTML = 'ĐĂNG NHẬP HỆ THỐNG';
+      msg.className = "p-3 rounded-xl text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200";
+      msg.innerText = "⚠️ Lỗi kết nối API: " + err.message;
+      msg.classList.remove('hidden');
+    });
+}
+
+    // Mở file CSDL Trường của cán bộ đó
+    function openDbLink() {
+      if (currentSession && currentSession.school && currentSession.school.dbUrl) {
+        window.open(currentSession.school.dbUrl, '_blank');
+      } else {
+        alert("Không tìm thấy đường dẫn CSDL!");
+      }
+    }
+
+    // Đăng xuất
+    function logout() {
+      currentSession = null;
+      document.getElementById('loginOverlay').classList.remove('hidden');
+      document.getElementById('formLogin').reset();
+      document.getElementById('loginMsg').classList.add('hidden');
+      toggleStartMenu();
+    }
+
+    function toggleStartMenu() {
+      document.getElementById('startMenu').classList.toggle('hidden');
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').innerText = now.toLocaleTimeString('vi-VN');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
