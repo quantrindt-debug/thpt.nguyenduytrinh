@@ -1,4 +1,6 @@
-// Khai báo đường dẫn Web API lấy từ Google Apps Script
+<body>
+  <script>
+  // Khai báo đường dẫn Web API lấy từ Google Apps Script
 const API_URL = "https://script.google.com/macros/s/AKfycbxw9_IwDZqka0NzwFKX9KihjvTP2-EEBsNGzxVBrPn4vQJMXMfwFQtsQTsliPA0xaRa/exec"; // Thay link của anh vào đây
 
 function doLogin() {
@@ -42,6 +44,9 @@ function doLogin() {
       btn.disabled = false;
       btn.innerHTML = 'ĐĂNG NHẬP HỆ THỐNG';
       msg.className = "p-3 rounded-xl text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200";
+           </script>
+      </body>
+      
       msg.innerText = "⚠️ Lỗi kết nối API: " + err.message;
       msg.classList.remove('hidden');
     });
