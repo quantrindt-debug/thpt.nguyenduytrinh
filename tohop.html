@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký Môn học Lựa chọn & Cụm Chuyên đề</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen py-6 px-3">
+
+  <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+    <!-- Header -->
+    <div class="bg-amber-900 text-white p-5 text-center">
+      <h2 class="text-xl font-bold uppercase tracking-wide">Trường THPT Nguyễn Duy Trinh</h2>
+      <p class="text-sm text-amber-200 mt-1">ĐĂNG KÝ MÔN HỌC LỰA CHỌN VÀ CỤM CHUYÊN ĐỀ LỚP 10</p>
+    </div>
+    
+    <div class="p-4 border-b bg-gray-50">
+      <a href="./index.html" class="font-semibold text-blue-700 hover:text-blue-900 hover:underline inline-flex items-center gap-1 text-sm transition">
+        🏠 Trang chủ
+      </a>
+    </div>
+
+    <!-- BƯỚC 1: XÁC THỰC THÔNG TIN DANG SACH NHAP HOC -->
+    <div id="stepXacThuc" class="p-6 space-y-4">
+      <div class="bg-amber-50 p-4 rounded-lg border border-amber-200 space-y-3">
+        <h3 class="font-bold text-amber-900 flex items-center gap-2 text-base">
+          <i class="fa-solid fa-user-check"></i> XÁC THỰC DỮ LIỆU NHẬP HỌC
+        </h3>
+        <p class="text-xs text-gray-600">Nhập Số CCCD và Ngày sinh đã dùng ở <b>Bước 1 Đăng ký nhập học</b> để mở form Đăng ký tổ hợp.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Số CCCD (*)</label>
+            <input type="text" id="loginCCCD" placeholder="Nhập 12 số CCCD"
+                   class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-amber-800 outline-none text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Ngày sinh (*)</label>
+            <input type="text" id="loginDOB" placeholder="dd/mm/yyyy"
+                   class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-amber-800 outline-none text-sm">
+          </div>
+        </div>
+
+        <button type="button" onclick="xacThucHocSinh()" id="btnXacThuc"
+                class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-2.5 px-4 rounded-lg transition duration-200 flex justify-center items-center gap-2 mt-2 text-sm">
+          <i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC NHẬP HỌC
+        </button>
+      </div>
+
+      <div id="msgXacThuc" class="hidden p-3 rounded-md text-sm font-medium text-center"></div>
+    </div>
+
+
+    <!-- BƯỚC 2: KHUNG ĐĂNG KÝ TỔ HỢP MÔN -->
+    <form id="formDangKy" onsubmit="xuLyDangKy(event)" class="hidden p-6 space-y-5 border-t border-gray-100">
+      
+      <!-- Thẻ thông tin học sinh -->
+      <div class="bg-amber-50 p-4 rounded-lg border border-amber-300 space-y-2 shadow-sm">
+        <div class="flex justify-between items-center border-b border-amber-200 pb-2 mb-2">
+          <span class="text-xs font-bold text-amber-900 uppercase flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-check text-green-600"></i> Đã xác thực nhập học thành công
+          </span>
+          <button type="button" onclick="dangXuat()" class="text-xs text-amber-800 hover:underline flex items-center gap-1 font-semibold">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Đổi tài khoản
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <p><b>🔢 SBD:</b> <span id="txtSBD" class="text-amber-900 font-bold">--</span></p>
+          <p><b>📅 Ngày sinh:</b> <span id="txtDOB" class="font-semibold">--</span></p>
+        </div>
+        <p class="text-xs"><b>👤 Họ và tên:</b> <span id="txtFullName" class="text-amber-900 font-bold text-sm uppercase">--</span></p>
+      </div>
+
+      <!-- Chọn Nguyện vọng tổ hợp môn -->
+      <div class="space-y-4">
+        <h3 class="font-bold text-amber-900 flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-list-check"></i> CHỌN NGUYỆN VỌNG TỔ HỢP MÔN
+        </h3>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-800 mb-1">Nguyện vọng 1 <span class="text-red-500">*</span></label>
+          <select id="nv1" required onchange="capNhatPreview('nv1', 'previewNv1')"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-800 outline-none text-xs md:text-sm font-medium">
+            <option value="">-- Chọn Nhóm tổ hợp môn --</option>
+            <option value="Nhóm 1">Nhóm 1: Lí, Hóa, Sinh, Tin | CĐ: Toán, Lí, Hóa | ĐK Thi: Lí, Hoá (Dự kiến 4 lớp: A-A4)</option>
+            <option value="Nhóm 2">Nhóm 2: Lí, Hóa, Sinh, Tin | CĐ: Toán, Hoá, Sinh | ĐK Thi: Hoá, Sinh (Dự kiến 1 lớp: A5)</option>
+            <option value="Nhóm 3">Nhóm 3: Lí, Hóa, Sinh, Tin | CĐ: Toán, Lí, Hóa | ĐK Thi: Lý, Anh (Dự kiến 2 lớp: A6–A7)</option>
+            <option value="Nhóm 4">Nhóm 4: Địa, KT-PL, Tin, CN Lí | CĐ: Toán, Văn, Tin | ĐK Thi: Tiếng Anh, Sử (Dự kiến 3 lớp: D-D1-D2)</option>
+            <option value="Nhóm 5">Nhóm 5: Địa, KT-PL, Tin, CN Lí | CĐ: Toán, Văn, CN lý | ĐK Thi: Tiếng Anh, Địa (Dự kiến 1 lớp: D3)</option>
+            <option value="Nhóm 6">Nhóm 6: Địa, KT-PL, Tin, CN Lí | CĐ: Toán, Văn, CN lý | ĐK Thi: Sử, Địa (Dự kiến 2 lớp: D4-D5)</option>
+          </select>
+          <div id="previewNv1" class="hidden mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md text-xs space-y-1 text-gray-700"></div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-800 mb-1">Nguyện vọng 2 <span class="text-gray-400 font-normal">(Dự phòng)</span></label>
+          <select id="nv2" onchange="capNhatPreview('nv2', 'previewNv2')"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-800 outline-none text-xs md:text-sm font-medium">
+            <option value="">-- Không chọn --</option>
+            <option value="Nhóm 1">Nhóm 1: Lí, Hóa, Sinh, Tin | CĐ: Toán, Lí, Hóa | ĐK Thi: Lí, Hoá (Dự kiến 4 lớp: A-A4)</option>
+            <option value="Nhóm 2">Nhóm 2: Lí, Hóa, Sinh, Tin | CĐ: Toán, Hoá, Sinh | ĐK Thi: Hoá, Sinh (Dự kiến 1 lớp: A5)</option>
+            <option value="Nhóm 3">Nhóm 3: Lí, Hóa, Sinh, Tin | CĐ: Toán, Lí, Hóa | ĐK Thi: Lý, Anh (Dự kiến 2 lớp: A6–A7)</option>
+            <option value="Nhóm 4">Nhóm 4: Địa, KT-PL, Tin, CN Lí | CĐ: Toán, Văn, Tin | ĐK Thi: Tiếng Anh, Sử (Dự kiến 3 lớp: D-D1-D2)</option>
+            <option value="Nhóm 5">Nhóm 5: Địa, KT-PL, Tin, CN Lí | CĐ: Toán, Văn, CN lý | ĐK Thi: Tiếng Anh, Địa (Dự kiến 1 lớp: D3)</option>
+            <option value="Nhóm 6">Nhóm 6: Địa, KT-PL, Tin, CN Lí | CĐ: Toán, Văn, CN lý | ĐK Thi: Sử, Địa (Dự kiến 2 lớp: D4-D5)</option>
+          </select>
+          <div id="previewNv2" class="hidden mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md text-xs space-y-1 text-gray-700"></div>
+        </div>
+      </div>
+
+      <!-- Đính kèm file -->
+      <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3">
+        <h3 class="font-bold text-amber-900 flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-paperclip"></i> THÀNH TÍCH & PHIẾU ĐẮNG KÝ (NẾU CÓ)
+        </h3>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Ghi nhận giải HSG các cấp</label>
+          <input type="text" id="hsgResult" placeholder="VD: Giải Nhất HSG cấp Huyện môn Toán" 
+                 class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-amber-800 outline-none text-sm">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Tải tệp Minh chứng HSG (Ảnh/PDF)</label>
+            <input type="file" id="fileHSG" accept="image/*,application/pdf"
+                   class="w-full px-2 py-1.5 border rounded-md text-xs text-gray-600 bg-white file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-800 file:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Tải tệp Phiếu đăng ký tổ hợp (Ảnh/PDF)</label>
+            <input type="file" id="filePhieuDK" accept="image/*,application/pdf"
+                   class="w-full px-2 py-1.5 border rounded-md text-xs text-gray-600 bg-white file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-800 file:text-white">
+          </div>
+        </div>
+      </div>
+
+      <div id="msgBox" class="hidden p-3 rounded-md text-sm font-medium text-center"></div>
+
+      <!-- Nút gửi đăng ký -->
+      <div class="space-y-2">
+        <button type="submit" id="btnSubmit" 
+                class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 px-4 rounded-lg transition duration-200 flex justify-center items-center gap-2">
+          <i class="fa-solid fa-paper-plane"></i> XÁC NHẬN ĐĂNG KÝ TỔ HỢP
+        </button>
+
+        <div id="boxFileUploaded" class="hidden grid grid-cols-1 md:grid-cols-2 gap-2 pt-2">
+          <a id="btnXemHSG" target="_blank" class="hidden bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-3 rounded text-center text-xs flex justify-center items-center gap-1.5">
+            <i class="fa-solid fa-award"></i> Xem Minh Chứng HSG
+          </a>
+          <a id="btnXemPhieuDK" target="_blank" class="hidden bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-3 rounded text-center text-xs flex justify-center items-center gap-1.5">
+            <i class="fa-solid fa-file-lines"></i> Xem Phiếu Đăng Ký
+          </a>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <script>
+    // URL Web App Google Apps Script của anh
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwInS6HyktVQJXiPXI3haiPAG-JQpAdG_lZ-upNToRNoLWQ0Xb99fTwvb5Qej27Xw1I/exec";
+
+    const TO_HOP_INFO = {
+      "Nhóm 1": { mon: "Lí, Hóa, Sinh, Tin", cd: "Toán, Lí, Hóa", thi: "Lí, Hoá", lop: "4 lớp (A, A1, A2, A3, A4)" },
+      "Nhóm 2": { mon: "Lí, Hóa, Sinh, Tin", cd: "Toán, Hoá, Sinh", thi: "Hoá, Sinh", lop: "1 lớp (A5)" },
+      "Nhóm 3": { mon: "Lí, Hóa, Sinh, Tin", cd: "Toán, Lí, Hóa", thi: "Lý, Anh", lop: "2 lớp (A6, A7)" },
+      "Nhóm 4": { mon: "Địa, KT-PL, Tin, CN Lí", cd: "Toán, Văn, Tin", thi: "Tiếng Anh, Sử", lop: "3 lớp (D, D1, D2)" },
+      "Nhóm 5": { mon: "Địa, KT-PL, Tin, CN Lí", cd: "Toán, Văn, CN lý", thi: "Tiếng Anh, Địa", lop: "1 lớp (D3)" },
+      "Nhóm 6": { mon: "Địa, KT-PL, Tin, CN Lí", cd: "Toán, Văn, CN lý", thi: "Sử, Địa", lop: "2 lớp (D4, D5)" }
+    };
+
+    let currentHocSinh = null;
+
+    // 1. HÀM XÁC THỰC HỌC SINH (ĐÃ ĐỔI SANG DÙNG POST TÍCH HỢP TEXT/PLAIN TRÁNH LỖI 404 & CORS)
+    function xacThucHocSinh() {
+      const cccd = document.getElementById("loginCCCD").value.trim();
+      const dob = document.getElementById("loginDOB").value.trim();
+      const btn = document.getElementById("btnXacThuc");
+      const msg = document.getElementById("msgXacThuc");
+
+      if (!cccd || !dob) {
+        msg.className = "p-3 rounded-md text-sm font-medium text-center bg-red-100 text-red-700";
+        msg.innerText = "⚠️ Vui lòng nhập đầy đủ Số CCCD và Ngày sinh!";
+        msg.classList.remove("hidden");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang đối chiếu dữ liệu nhập học...';
+      msg.classList.add("hidden");
+
+      const payload = {
+        action: "checkHocSinhToHop",
+        cccd: cccd,
+        dob: dob
+      };
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(res => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC NHẬP HỌC';
+
+        if (res.status === "success") {
+          currentHocSinh = { cccd: cccd, dob: res.dob, fullName: res.fullName, sbd: res.sbd };
+          
+          document.getElementById("txtFullName").innerText = res.fullName;
+          document.getElementById("txtSBD").innerText = res.sbd;
+          document.getElementById("txtDOB").innerText = res.dob;
+
+          document.getElementById("stepXacThuc").classList.add("hidden");
+          document.getElementById("formDangKy").classList.remove("hidden");
+        } else {
+          msg.className = "p-3 rounded-md text-sm font-medium text-center bg-red-100 text-red-700";
+          msg.innerText = "❌ " + res.message;
+          msg.classList.remove("hidden");
+        }
+      })
+      .catch(err => {
+        console.error("Lỗi xác thực:", err);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> XÁC THỰC NHẬP HỌC';
+        msg.className = "p-3 rounded-md text-sm font-medium text-center bg-red-100 text-red-700";
+        msg.innerText = "❌ Lỗi kết nối hệ thống. Vui lòng thử lại!";
+        msg.classList.remove("hidden");
+      });
+    }
+
+    function dangXuat() {
+      currentHocSinh = null;
+      document.getElementById("formDangKy").classList.add("hidden");
+      document.getElementById("stepXacThuc").classList.remove("hidden");
+      document.getElementById("loginCCCD").value = "";
+      document.getElementById("loginDOB").value = "";
+      document.getElementById("msgXacThuc").classList.add("hidden");
+    }
+
+    function capNhatPreview(selectId, previewId) {
+      const val = document.getElementById(selectId).value;
+      const box = document.getElementById(previewId);
+      if (!val || !TO_HOP_INFO[val]) { box.classList.add("hidden"); return; }
+      const info = TO_HOP_INFO[val];
+      box.innerHTML = `<p><b>📌 Môn:</b> ${info.mon}</p><p><b>📚 Chuyên đề:</b> ${info.cd}</p><p><b>🎯 Môn thi TN:</b> ${info.thi}</p><p><b>🏫 Lớp dự kiến:</b> <span class="text-amber-800 font-bold">${info.lop}</span></p>`;
+      box.classList.remove("hidden");
+    }
+
+    function readAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ base64: reader.result, name: file.name, type: file.type });
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // 2. HÀM XỬ LÝ ĐĂNG KÝ TỔ HỢP (ĐÃ THÊM HEADER TEXT/PLAIN CHỐNG LỖI CORS)
+    async function xuLyDangKy(e) {
+      e.preventDefault();
+      if (!currentHocSinh) return;
+
+      const btn = document.getElementById("btnSubmit");
+      const msg = document.getElementById("msgBox");
+      const fHSG = document.getElementById("fileHSG");
+      const fPhieu = document.getElementById("filePhieuDK");
+
+      let fileHSGData = null;
+      if (fHSG.files.length > 0) fileHSGData = await readAsBase64(fHSG.files[0]);
+
+      let filePhieuDKData = null;
+      if (fPhieu.files.length > 0) filePhieuDKData = await readAsBase64(fPhieu.files[0]);
+
+      const payload = {
+        action: "dangKyToHop",
+        cccd: currentHocSinh.cccd,
+        dob: currentHocSinh.dob,
+        nv1: document.getElementById("nv1").value,
+        nv2: document.getElementById("nv2").value,
+        hsgResult: document.getElementById("hsgResult").value,
+        fileHSG: fileHSGData,
+        filePhieuDK: filePhieuDKData
+      };
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải file & lưu dữ liệu...';
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> XÁC NHẬN ĐĂNG KÝ TỔ HỢP';
+        msg.classList.remove("hidden");
+
+        if (data.status === "success") {
+          msg.className = "p-3 rounded-md text-sm font-medium text-center bg-green-100 text-green-700";
+          msg.innerHTML = "🎉 " + data.message;
+
+          const boxFile = document.getElementById("boxFileUploaded");
+          boxFile.classList.remove("hidden");
+
+          if (data.data && data.data.urlHSG) {
+            const btnHSG = document.getElementById("btnXemHSG");
+            btnHSG.href = data.data.urlHSG;
+            btnHSG.classList.remove("hidden");
+          }
+
+          if (data.data && data.data.urlPhieuDK) {
+            const btnPDK = document.getElementById("btnXemPhieuDK");
+            btnPDK.href = data.data.urlPhieuDK;
+            btnPDK.classList.remove("hidden");
+          }
+        } else {
+          msg.className = "p-3 rounded-md text-sm font-medium text-center bg-red-100 text-red-700";
+          msg.innerHTML = "❌ " + data.message;
+        }
+      })
+      .catch(err => {
+        console.error("Lỗi đăng ký:", err);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> XÁC NHẬN ĐĂNG KÝ TỔ HỢP';
+        msg.className = "p-3 rounded-md text-sm font-medium text-center bg-red-100 text-red-700";
+        msg.innerHTML = "❌ Kết nối thất bại. Vui lòng thử lại!";
+        msg.classList.remove("hidden");
+      });
+    }
+  </script>
+</body>
+</html>

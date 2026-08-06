@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tra Cứu Kết Quả Đăng Ký - THPT Nguyễn Duy Trinh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-school { font-family: 'Merriweather', serif; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-100 via-amber-50/30 to-slate-200 min-h-screen p-3 md:p-6 flex flex-col justify-between">
+
+  <div class="max-w-2xl w-full mx-auto bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden my-auto">
+    
+    <!-- BANNER -->
+    <div class="bg-gradient-to-r from-amber-900 via-yellow-900 to-amber-900 p-6 md:p-8 text-white text-center relative overflow-hidden">
+      <div class="relative z-10">
+        <h3 class="text-[11px] md:text-xs font-bold tracking-widest uppercase text-amber-200/90 mb-1">
+          SỞ GIÁO DỤC VÀ ĐÀO TẠO NGHỆ AN
+        </h3>
+        <h2 class="text-xl md:text-2xl font-school font-bold tracking-wide uppercase text-amber-300 drop-shadow-sm mb-3">
+          TRƯỜNG THPT NGUYỄN DUY TRINH
+        </h2>
+        <div class="w-16 h-0.5 bg-amber-400/80 mx-auto mb-3 rounded-full"></div>
+        <h1 class="text-xl md:text-2xl font-extrabold uppercase tracking-wider text-white drop-shadow-md">
+          TRA CỨU THÔNG TIN ĐĂNG KÝ
+        </h1>
+      </div>
+    </div>
+
+    <!-- NAV -->
+    <div class="bg-slate-50 px-6 py-3 border-b border-slate-200 flex justify-between items-center text-xs">
+      <span class="font-semibold text-amber-950 uppercase flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Tra cứu hồ sơ nhập học & tổ hợp
+      </span>
+      <a href="./index.html" class="font-semibold text-blue-700 hover:underline">🏠 Trang chủ</a>
+    </div>
+
+    <div class="p-6 md:p-8 space-y-6 text-sm text-slate-700">
+      
+      <!-- FORM TRA CỨU -->
+      <div class="space-y-4 bg-slate-50/80 p-4 rounded-2xl border border-slate-200">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-semibold text-slate-800 mb-1">Số CCCD (*)</label>
+            <input type="text" id="tCCCD" placeholder="Nhập 12 số CCCD" maxlength="12" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 bg-white">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-800 mb-1">
+              Ngày Sinh (*) <span class="text-[11px] font-normal text-amber-700">(dd/mm/yyyy)</span>
+            </label>
+            <input type="text" id="tDob" placeholder="15/08/2011" maxlength="10" class="w-full p-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-600 bg-white">
+          </div>
+        </div>
+
+        <button onclick="traCuuHoSo()" id="btnTraCuu" class="w-full bg-amber-800 text-white py-3 rounded-xl font-bold hover:bg-amber-900 transition shadow-md text-sm">
+          🔍 TRA CỨU NGAY
+        </button>
+      </div>
+
+      <div id="msgError" class="hidden p-3.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold"></div>
+
+      <!-- KẾT QUẢ TRA CỨU -->
+      <div id="resultBox" class="hidden space-y-5">
+        
+        <!-- THÔNG TIN HỌC SINH -->
+        <div class="p-4 bg-amber-50/60 border border-amber-200 rounded-2xl text-xs space-y-1">
+          <p class="font-bold text-amber-950 uppercase text-sm border-b border-amber-200 pb-1 mb-2">Thông tin tra cứu</p>
+          <p>Họ và tên: <strong id="resName" class="text-blue-900 text-sm uppercase">--</strong></p>
+          <p>Số báo danh: <strong id="resSbd" class="text-slate-900 font-mono">--</strong> | Ngày sinh: <strong id="resDob" class="text-slate-900">--</strong></p>
+        </div>
+
+        <!-- 1. TRẠNG THÁI NHẬP HỌC -->
+        <div class="border rounded-2xl p-4 space-y-2" id="boxNhapHoc">
+          <!-- Hiển thị động bằng JS -->
+        </div>
+
+        <!-- 2. TRẠNG THÁI ĐĂNG KÝ TỔ HỢP -->
+        <div class="border rounded-2xl p-4 space-y-2" id="boxToHop">
+          <!-- Hiển thị động bằng JS -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="bg-slate-50 border-t border-slate-200 p-4 text-center text-xs text-slate-500">
+      <p>© Bản quyền thuộc về <span class="font-semibold">Lê Duy Hải</span> - 0978 92 93 99</p>
+    </div>
+  </div>
+
+  <script>
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwInS6HyktVQJXiPXI3haiPAG-JQpAdG_lZ-upNToRNoLWQ0Xb99fTwvb5Qej27Xw1I/exec";
+
+    // Auto format ngày sinh
+    document.getElementById('tDob').addEventListener('input', function(e) {
+      let v = this.value.replace(/\D/g, '').slice(0, 8);
+      if (v.length > 4) this.value = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
+      else if (v.length > 2) this.value = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
+      else this.value = v;
+    });
+
+    document.getElementById('tCCCD').addEventListener('input', function(e) {
+      this.value = this.value.replace(/\D/g, '').slice(0, 12);
+    });
+
+    async function traCuuHoSo() {
+      const cccd = document.getElementById('tCCCD').value.trim();
+      const dob = document.getElementById('tDob').value.trim();
+      const btn = document.getElementById('btnTraCuu');
+      const msgErr = document.getElementById('msgError');
+      const resultBox = document.getElementById('resultBox');
+
+      if (!cccd || !dob) {
+        msgErr.innerText = "⚠️ Vui lòng nhập đầy đủ Số CCCD và Ngày Sinh!";
+        msgErr.classList.remove('hidden');
+        resultBox.classList.add('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = "⏳ Đang tra cứu dữ liệu...";
+      msgErr.classList.add('hidden');
+      resultBox.classList.add('hidden');
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "tracuuTongHop", cccd: cccd, dob: dob })
+        });
+
+        const res = await response.json();
+        btn.disabled = false;
+        btn.innerText = "🔍 TRA CỨU NGAY";
+
+        if (res.status === "success") {
+          renderResult(res);
+        } else {
+          msgErr.innerText = "❌ " + (res.message || "Không tìm thấy dữ liệu khớp!");
+          msgErr.classList.remove('hidden');
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerText = "🔍 TRA CỨU NGAY";
+        msgErr.innerText = "❌ Lỗi kết nối máy chủ. Vui lòng thử lại!";
+        msgErr.classList.remove('hidden');
+      }
+    }
+function renderResult(data) {
+  
+    const nh = data.nhapHoc;
+    const th = data.toHop;
+  
+    // Lấy thông tin họ tên & SBD ưu tiên từ Nhập học, nếu không có thì lấy từ Tổ hợp
+    const fullName = (nh && nh.fullName) ? nh.fullName : ((th && th.fullName) ? th.fullName : "Học sinh");
+    const sbd = (nh && nh.sbd) ? nh.sbd : ((th && th.sbd) ? th.sbd : "--");
+    const dob = (nh && nh.dob) ? nh.dob : ((th && th.dob) ? th.dob : document.getElementById('tDob').value);
+  
+    // Cập nhật thẻ header
+    document.getElementById('resName').innerText = fullName;
+    document.getElementById('resSbd').innerText = sbd;
+    document.getElementById('resDob').innerText = dob;
+
+  // ... (Giữ nguyên đoạn code render Khung 1 và Khung 2 bên dưới)
+      // 1. Render Khung Nhập Học
+      const boxNH = document.getElementById('boxNhapHoc');
+      if (nh) {
+        boxNH.className = "border border-emerald-300 bg-emerald-50/50 rounded-2xl p-4 text-xs space-y-1.5";
+        boxNH.innerHTML = `
+          <div class="flex justify-between items-center text-emerald-900 border-b border-emerald-200 pb-1 mb-2">
+            <span class="font-bold text-sm uppercase">1. Đăng ký xác nhận nhập học</span>
+            <span class="bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">✅ ĐÃ XÁC NHẬN</span>
+          </div>
+          <p>Thời gian xác nhận: <strong>${nh.time}</strong></p>
+          <p>Số điện thoại liên hệ: <strong>${nh.phone}</strong></p>
+          <p>Trường THCS: <strong>${nh.school || 'Chưa cập nhật'}</strong></p>
+        `;
+      } else {
+        boxNH.className = "border border-slate-200 bg-slate-50 rounded-2xl p-4 text-xs space-y-1.5";
+        boxNH.innerHTML = `
+          <div class="flex justify-between items-center text-slate-700 border-b border-slate-200 pb-1 mb-2">
+            <span class="font-bold text-sm uppercase">1. Đăng ký xác nhận nhập học</span>
+            <span class="bg-slate-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">❌ CHƯA ĐĂNG KÝ</span>
+          </div>
+          <p class="text-slate-500">Học sinh chưa thực hiện xác nhận nhập học trực tuyến.</p>
+        `;
+      }
+
+      // 2. Render Khung Tổ Hợp
+      const boxTH = document.getElementById('boxToHop');
+      if (th) {
+        let fileLink = th.fileUrl ? `<a href="${th.fileUrl}" target="_blank" class="text-blue-700 underline font-semibold">📄 Xem tệp minh chứng</a>` : 'Không có tệp';
+        boxTH.className = "border border-amber-300 bg-amber-50/50 rounded-2xl p-4 text-xs space-y-1.5";
+        boxTH.innerHTML = `
+          <div class="flex justify-between items-center text-amber-950 border-b border-amber-200 pb-1 mb-2">
+            <span class="font-bold text-sm uppercase">2. Đăng ký tổ hợp môn</span>
+            <span class="bg-amber-700 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">✅ ĐÃ ĐĂNG KÝ</span>
+          </div>
+          <p>Thời gian gửi: <strong>${th.time}</strong></p>
+          <p class="text-blue-900 font-semibold mt-1">🥇 NV1: ${th.nv1}</p>
+          <p class="text-slate-800">🥈 NV2: ${th.nv2}</p>
+          <p class="text-slate-800">🥉 NV3: ${th.nv3}</p>
+          <div class="border-t border-amber-200/80 pt-2 mt-2 space-y-1">
+            <p>Giải HSG: <strong>${th.hsgResult}</strong></p>
+            <p>Minh chứng: ${fileLink}</p>
+            <p>Ghi chú: <strong>${th.note || 'Không có'}</strong></p>
+          </div>
+        `;
+      } else {
+        boxTH.className = "border border-slate-200 bg-slate-50 rounded-2xl p-4 text-xs space-y-1.5";
+        boxTH.innerHTML = `
+          <div class="flex justify-between items-center text-slate-700 border-b border-slate-200 pb-1 mb-2">
+            <span class="font-bold text-sm uppercase">2. Đăng ký tổ hợp môn</span>
+            <span class="bg-slate-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">❌ CHƯA ĐĂNG KÝ</span>
+          </div>
+          <p class="text-slate-500">Học sinh chưa thực hiện lựa chọn đăng ký nguyện vọng tổ hợp môn.</p>
+        `;
+      }
+
+      resultBox.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

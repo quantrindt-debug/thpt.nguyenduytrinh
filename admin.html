@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang Quản Trị Nhập Học - THPT Nguyễn Duy Trinh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 3px solid #1e3a8a;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800">
+
+  <!-- Header Admin -->
+  <header class="bg-blue-950 text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div>
+        <h1 class="font-bold text-lg md:text-xl text-amber-300">⚙️ HỆ THỐNG QUẢN TRỊ NHẬP HỌC LỚP 10</h1>
+        <p class="text-xs text-blue-200">Trường THPT Nguyễn Duy Trinh - Năm học 2026-2027</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="loadAdminData()" class="bg-blue-800 hover:bg-blue-700 text-xs text-white font-semibold py-2 px-3 rounded-lg border border-blue-600 transition flex items-center gap-1">
+          🔄 Tải lại dữ liệu
+        </button>
+        <a href="./index.html" class="bg-slate-700 hover:bg-slate-600 text-xs text-white font-semibold py-2 px-3 rounded-lg transition">
+          🏠 Trang chủ
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+
+    <!-- Thẻ Thống kê (Dashboard Cards) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Tổng số -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Tổng Trúng Tuyển</p>
+          <h3 id="statTotal" class="text-2xl font-bold text-slate-800 mt-1">--</h3>
+        </div>
+        <div class="p-3 bg-blue-50 text-blue-600 rounded-xl text-xl">🎓</div>
+      </div>
+
+      <!-- Đã xác nhận -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Đã Xác Nhận</p>
+          <h3 id="statConfirmed" class="text-2xl font-bold text-emerald-600 mt-1">--</h3>
+        </div>
+        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl text-xl">✅</div>
+      </div>
+
+      <!-- Chưa xác nhận -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Chưa Xác Nhận</p>
+          <h3 id="statPending" class="text-2xl font-bold text-amber-600 mt-1">--</h3>
+        </div>
+        <div class="p-3 bg-amber-50 text-amber-600 rounded-xl text-xl">⏳</div>
+      </div>
+
+      <!-- Tỷ lệ -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase">Tỷ Lệ Nhập Học</p>
+          <h3 id="statRate" class="text-2xl font-bold text-indigo-600 mt-1">--%</h3>
+        </div>
+        <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl text-xl">📊</div>
+      </div>
+    </div>
+
+    <!-- Thanh Báo Lọc & Tìm kiếm -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-3 justify-between items-center">
+      <div class="flex flex-1 gap-3 w-full md:w-auto">
+        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 Tìm theo SBD, Họ tên, Trường THCS..."
+               class="w-full md:w-80 px-3.5 py-2 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600">
+        
+        <select id="filterStatus" onchange="filterTable()" class="px-3.5 py-2 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600">
+          <option value="ALL">Tất cả trạng thái</option>
+          <option value="Đã đăng ký">Đã xác nhận</option>
+          <option value="Chưa đăng ký">Chưa xác nhận</option>
+        </select>
+      </div>
+
+      <div class="text-xs text-slate-500 font-medium">
+        Hiển thị <span id="countVisible" class="font-bold text-blue-900">0</span> học sinh
+      </div>
+    </div>
+
+    <!-- Bảng Dữ Liệu Học Sinh -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200">
+              <th class="p-3 text-center">STT</th>
+              <th class="p-3">SBD</th>
+              <th class="p-3">Họ và Tên</th>
+              <th class="p-3">Ngày Sinh</th>
+              <th class="p-3">Trường THCS</th>
+              <th class="p-3 text-center">Tổng Điểm</th>
+              <th class="p-3 text-center">Trạng Thái</th>
+              <th class="p-3 text-center">Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="8" class="p-8 text-center text-slate-400">
+                <div class="flex justify-center items-center gap-2">
+                  <div class="loader"></div> Đang tải dữ liệu học sinh...
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbxAcKb5Ok_eGG9151MoMLmYhMmCxn58eDKYJgokkP22NbaMk5JU0vKamysQGOT63p7l/exec";
+  let rawStudentData = [];
+
+  // Đọc dữ liệu khi mở trang
+  document.addEventListener("DOMContentLoaded", () => {
+    loadAdminData();
+  });
+
+  function loadAdminData() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400"><div class="flex justify-center items-center gap-2"><div class="loader"></div> Đang tải dữ liệu...</div></td></tr>`;
+
+    fetch(API_URL + "?action=getAdminData")
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 'success') {
+          rawStudentData = res.data;
+          
+          // Cập nhật thẻ thống kê
+          document.getElementById('statTotal').innerText = res.summary.total;
+          document.getElementById('statConfirmed').innerText = res.summary.daNhapHoc;
+          document.getElementById('statPending').innerText = res.summary.chuaNhapHoc;
+          document.getElementById('statRate').innerText = res.summary.rate + '%';
+
+          renderTable(rawStudentData);
+        } else {
+          tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-rose-500 font-semibold">⚠️ Lỗi: ${res.message}</td></tr>`;
+        }
+      })
+      .catch(err => {
+        tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-rose-500 font-semibold">❌ Không thể kết nối Server! (${err.message})</td></tr>`;
+      });
+  }
+
+  function renderTable(data) {
+    const tbody = document.getElementById('tableBody');
+    document.getElementById('countVisible').innerText = data.length;
+
+    if (data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Không tìm thấy dữ liệu phù hợp</td></tr>`;
+      return;
+    }
+
+    let html = '';
+    data.forEach((item, index) => {
+      const isConfirmed = item.trangThai === 'Đã đăng ký';
+      const badgeStatus = isConfirmed 
+        ? `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold text-[11px]">✅ Đã nhập học</span>`
+        : `<span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-semibold text-[11px]">⏳ Chưa xác nhận</span>`;
+
+      html += `
+        <tr class="hover:bg-slate-50/80 transition">
+          <td class="p-3 text-center font-bold text-slate-500">${index + 1}</td>
+          <td class="p-3 font-mono font-bold text-blue-900">${item.sbd}</td>
+          <td class="p-3 font-semibold text-slate-800">${item.fullName}</td>
+          <td class="p-3 text-slate-600">${item.dob}</td>
+          <td class="p-3 text-slate-600">${item.schoolTHCS || '--'}</td>
+          <td class="p-3 text-center font-bold text-indigo-700">${item.tongDiem}</td>
+          <td class="p-3 text-center">${badgeStatus}</td>
+          <td class="p-3 text-center">
+            <button onclick="toggleLock(${item.rowIndex}, ${!item.isLocked})" 
+                    class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ${item.isLocked ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'}">
+              ${item.isLocked ? '🔒 Đã Khóa' : '🔓 Đang Mở'}
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+    tbody.innerHTML = html;
+  }
+
+  function filterTable() {
+    const search = document.getElementById('searchInput').value.toLowerCase().trim();
+    const status = document.getElementById('filterStatus').value;
+
+    const filtered = rawStudentData.filter(item => {
+      const matchSearch = item.sbd.toLowerCase().includes(search) ||
+                          item.fullName.toLowerCase().includes(search) ||
+                          (item.schoolTHCS && item.schoolTHCS.toLowerCase().includes(search));
+      
+      const matchStatus = (status === 'ALL') || (item.trangThai === status);
+
+      return matchSearch && matchStatus;
+    });
+
+    renderTable(filtered);
+  }
+
+  function toggleLock(rowIndex, newLockState) {
+    if (!confirm(`Bạn có chắc chắn muốn ${newLockState ? 'KHÓA' : 'MỞ KHÓA'} lượt đăng ký của học sinh này?`)) return;
+
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'toggleLock', rowIndex: rowIndex, lockState: newLockState })
+    })
+    .then(res => res.json())
+    .then(res => {
+      alert(res.message);
+      loadAdminData();
+    });
+  }
+</script>
+</body>
+</html>
