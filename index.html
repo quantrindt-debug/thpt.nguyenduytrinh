@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hệ Thống Quản Lý Giáo Dục</title>
+  <title>Hệ Thống Quản Lý Giáo Dục OS</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Hình nền Desktop phong cách thiên nhiên */
+    /* Hình nền Desktop */
     .desktop-bg {
       background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920') no-repeat center center fixed;
       background-size: cover;
     }
-    /* Effect xoay cho nút đăng nhập khi đang tải */
+    /* Effect xoay cho loader */
     .loader {
       border: 3px solid #f3f3f3;
       border-radius: 50%;
@@ -26,7 +26,6 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     
-    /* Scrollbar đẹp cho Start Menu */
     .custom-scrollbar::-webkit-scrollbar { width: 5px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
   </style>
@@ -35,7 +34,6 @@
 
   <!-- ================= 1. MÀN HÌNH ĐĂNG NHẬP (LOGIN OVERLAY) ================= -->
   <div id="loginOverlay" class="fixed inset-0 bg-slate-950/75 backdrop-blur-md flex items-center justify-center z-[100] p-4 transition-all duration-300">
-    
     <div class="bg-white/90 backdrop-blur-xl border border-white/40 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative">
       
       <!-- Header Màn hình Đăng nhập -->
@@ -49,8 +47,6 @@
 
       <!-- Form nhập liệu -->
       <form id="formLogin" onsubmit="event.preventDefault(); doLogin();" class="p-6 md:p-8 space-y-5">
-        
-        <!-- Ô nhập Mã tài khoản -->
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
             Mã Tài Khoản <span class="text-rose-500">*</span>
@@ -62,10 +58,9 @@
             <input type="text" id="accInput" required placeholder="MãTrường.MãNS (VD: C3NDT.GV001)"
                    class="w-full pl-10 pr-4 py-3 bg-slate-50/80 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-sky-600 focus:bg-white font-mono font-semibold transition">
           </div>
-          <p class="text-[11px] text-slate-400 mt-1">Định dạng chuẩn: <span class="font-mono font-bold text-sky-700">MãTrường.MãNhânSự</span></p>
+          <p class="text-[11px] text-slate-400 mt-1">Định dạng: <span class="font-mono font-bold text-sky-700">MãTrường.MãNhânSự</span></p>
         </div>
 
-        <!-- Ô nhập Mật khẩu -->
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
             Mật Khẩu <span class="text-rose-500">*</span>
@@ -79,27 +74,22 @@
           </div>
         </div>
 
-        <!-- Thông báo Lỗi / Thành công -->
         <div id="loginMsg" class="hidden p-3 rounded-xl text-xs font-semibold leading-relaxed"></div>
 
-        <!-- Nút bấm Đăng nhập -->
         <button type="submit" id="btnLogin"
                 class="w-full bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 active:scale-[0.98] text-white font-bold py-3.5 rounded-xl text-sm transition shadow-lg shadow-sky-600/30 flex items-center justify-center gap-2">
           <span>ĐĂNG NHẬP HỆ THỐNG</span>
         </button>
-
       </form>
 
-      <!-- Footer Modal -->
       <div class="bg-slate-50 px-6 py-3 border-t border-slate-200/60 text-center text-[11px] text-slate-400">
         Hệ thống Quản lý Dữ liệu Giáo dục Trực tuyến © 2026
       </div>
-
     </div>
   </div>
 
 
-  <!-- ================= 2. BÀN LÀM VIỆC (CHỨC NĂNG SẮP XẾP TỪ TRÊN XUỐNG SANG PHẢI) ================= -->
+  <!-- ================= 2. BÀN LÀM VIỆC (DESKTOP ICONS) ================= -->
   <div class="p-6 grid grid-flow-col grid-rows-5 auto-cols-max gap-x-8 gap-y-6 max-h-[calc(100vh-48px)] overflow-x-auto overflow-y-hidden">
     
     <!-- Icon CSDL Trường -->
@@ -109,67 +99,6 @@
       </div>
       <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
         CSDL Trường
-      </span>
-    </div>
-
-    <!-- Icon Nhân sự -->
-    <div onclick="openModule('Nhân sự giáo viên')" class="flex flex-col items-center group cursor-pointer w-20">
-      <div class="w-13 h-13 p-3.5 bg-blue-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
-        <i class="fa-solid fa-id-card"></i>
-      </div>
-      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
-        Nhân sự giáo viên
-      </span>
-    </div>
-
-    <!-- Icon Điểm danh -->
-    <div onclick="openModule('Điểm danh')" class="flex flex-col items-center group cursor-pointer w-20">
-      <div class="w-13 h-13 p-3.5 bg-indigo-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
-        <i class="fa-solid fa-clipboard-user"></i>
-      </div>
-      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
-        Điểm danh
-      </span>
-    </div>
-
-    <!-- Icon Kế hoạch dạy học -->
-    <div onclick="openModule('Kế hoạch dạy học')" class="flex flex-col items-center group cursor-pointer w-20">
-      <div class="w-13 h-13 p-3.5 bg-purple-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
-        <i class="fa-solid fa-calendar-check"></i>
-      </div>
-      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
-        Kế hoạch dạy học
-      </span>
-    </div>
-
-    <!-- Icon Gửi thông báo -->
-    <div onclick="openModule('Gửi TB chung')" class="flex flex-col items-center group cursor-pointer w-20">
-      <div class="w-13 h-13 p-3.5 bg-amber-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
-        <i class="fa-solid fa-bell"></i>
-      </div>
-      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
-        Gửi TB chung
-      </span>
-    </div>
-
-    <!-- CỘT 2 -->
-    <!-- Icon Lịch công tác -->
-    <div onclick="openModule('Lịch công tác')" class="flex flex-col items-center group cursor-pointer w-20">
-      <div class="w-13 h-13 p-3.5 bg-teal-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
-        <i class="fa-solid fa-calendar-days"></i>
-      </div>
-      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
-        Lịch công tác
-      </span>
-    </div>
-
-    <!-- Icon Quản lý lớp học -->
-    <div onclick="openModule('Quản lý lớp học')" class="flex flex-col items-center group cursor-pointer w-20">
-      <div class="w-13 h-13 p-3.5 bg-sky-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
-        <i class="fa-solid fa-users"></i>
-      </div>
-      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
-        Quản lý lớp học
       </span>
     </div>
 
@@ -193,7 +122,7 @@
       </span>
     </div>
 
-    <!-- Icon Quản lý Hồ sơ học sinh -->
+    <!-- Icon Hồ sơ học sinh -->
     <div onclick="openModule('Quản lý hồ sơ học sinh')" class="flex flex-col items-center group cursor-pointer w-20">
       <div class="w-13 h-13 p-3.5 bg-violet-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
         <i class="fa-solid fa-folder-open"></i>
@@ -203,13 +132,21 @@
       </span>
     </div>
 
+    <!-- Icon Nhân sự -->
+    <div onclick="openModule('Nhân sự giáo viên')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-blue-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-id-card"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Nhân sự giáo viên
+      </span>
+    </div>
+
   </div>
 
 
-  <!-- ================= 3. START MENU ĐẦY ĐỦ PHÂN HỆ ================= -->
+  <!-- ================= 3. START MENU ================= -->
   <div id="startMenu" class="hidden absolute bottom-12 left-2 w-80 md:w-96 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 transition-all duration-200">
-    
-    <!-- Header: Thông tin Cán bộ sau khi Đăng nhập -->
     <div class="bg-gradient-to-r from-sky-700 to-blue-900 p-4 text-white flex items-center gap-3">
       <div class="w-12 h-12 bg-white/10 border border-white/20 text-amber-300 rounded-2xl flex items-center justify-center font-bold text-xl shadow-inner backdrop-blur-sm">
         <i class="fa-solid fa-user-tie"></i>
@@ -218,108 +155,31 @@
         <h4 id="userFullName" class="font-bold text-sm truncate">Chưa đăng nhập</h4>
         <p id="userSchoolName" class="text-xs text-sky-200 truncate">Vui lòng đăng nhập...</p>
         <div class="flex gap-2 mt-1.5">
-          <span id="userRole" class="text-[10px] bg-sky-950/80 text-sky-200 px-2 py-0.5 rounded font-mono">---</span>
-          <span id="userPosition" class="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded font-semibold">---</span>
+          <span id="userSchoolCode" class="text-[10px] bg-sky-950/80 text-sky-200 px-2 py-0.5 rounded font-mono font-bold">---</span>
+          <span id="userRole" class="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded font-semibold">---</span>
         </div>
       </div>
     </div>
 
-    <!-- Danh sách Menu các chức năng (Full) -->
     <div class="p-2 max-h-80 overflow-y-auto custom-scrollbar space-y-1">
-      
       <div class="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Danh mục chức năng</div>
 
-      <!-- Item: CSDL Trường -->
       <button onclick="openDbLink()" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
-        <div class="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center">
-          <i class="fa-solid fa-database"></i>
-        </div>
+        <div class="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center"><i class="fa-solid fa-database"></i></div>
         <span>Cơ sở dữ liệu trường</span>
       </button>
 
-      <!-- Item: Quản lý Hồ sơ học sinh -->
-      <button onclick="openModule('Quản lý hồ sơ học sinh')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
-        <div class="w-7 h-7 bg-violet-100 text-violet-700 rounded-lg flex items-center justify-center">
-          <i class="fa-solid fa-folder-open"></i>
-        </div>
-        <span>Quản lý hồ sơ học sinh</span>
-      </button>
-
-      <!-- Item: Nhân sự giáo viên -->
-      <button onclick="openModule('Nhân sự giáo viên')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
-        <div class="w-7 h-7 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center">
-          <i class="fa-solid fa-id-card"></i>
-        </div>
-        <span>Quản lý Nhân sự - Giáo viên</span>
-      </button>
-
-      <!-- Item: Tuyển sinh Lớp 10 -->
       <button onclick="openModule('Tuyển sinh 10')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
-        <div class="w-7 h-7 bg-rose-100 text-rose-700 rounded-lg flex items-center justify-center">
-          <i class="fa-solid fa-user-plus"></i>
-        </div>
+        <div class="w-7 h-7 bg-rose-100 text-rose-700 rounded-lg flex items-center justify-center"><i class="fa-solid fa-user-plus"></i></div>
         <span>Tuyển sinh Lớp 10 & Nguyện vọng</span>
       </button>
 
-      <!-- Item: Tra cứu kết quả / Nguyện vọng -->
       <button onclick="openModule('Tra cứu nguyện vọng')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
-        <div class="w-7 h-7 bg-cyan-100 text-cyan-700 rounded-lg flex items-center justify-center">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </div>
+        <div class="w-7 h-7 bg-cyan-100 text-cyan-700 rounded-lg flex items-center justify-center"><i class="fa-solid fa-magnifying-glass"></i></div>
         <span>Tra cứu nguyện vọng trúng tuyển</span>
       </button>
-
-      <!-- Item: Kế hoạch dạy học -->
-      <button onclick="openModule('Kế hoạch dạy học')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
-        <div class="w-7 h-7 bg-purple-100 text-purple-700 rounded-lg flex items-center justify-center">
-          <i class="fa-solid fa-calendar-check"></i>
-        </div>
-        <span>Kế hoạch dạy học / Bài giảng</span>
-      </button>
-
-      <!-- Item: Lịch công tác tuần -->
-      <button onclick="openModule('Lịch công tác')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
-        <div class="w-7 h-7 bg-teal-100 text-teal-700 rounded-lg flex items-center justify-center">
-          <i class="fa-solid fa-calendar-days"></i>
-        </div>
-        <span>Lịch công tác tuần</span>
-      </button>
-
-      <!-- Item: Điểm danh & Chuyên cần -->
-      <button onclick="openModule('Điểm danh')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
-        <div class="w-7 h-7 bg-indigo-100 text-indigo-700 rounded-lg flex items-center justify-center">
-          <i class="fa-solid fa-clipboard-user"></i>
-        </div>
-        <span>Điểm danh & Chuyên cần</span>
-      </button>
-
-      <!-- Item: Quản lý Lớp học & Chủ nhiệm -->
-      <button onclick="openModule('Quản lý lớp học')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
-        <div class="w-7 h-7 bg-sky-100 text-sky-700 rounded-lg flex items-center justify-center">
-          <i class="fa-solid fa-users"></i>
-        </div>
-        <span>Quản lý Lớp học & Chủ nhiệm</span>
-      </button>
-
-      <!-- Item: Báo cáo Thống kê -->
-      <button onclick="openModule('Báo cáo thống kê')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
-        <div class="w-7 h-7 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center">
-          <i class="fa-solid fa-chart-pie"></i>
-        </div>
-        <span>Báo cáo - Thống kê</span>
-      </button>
-
-      <!-- Item: Gửi thông báo chung -->
-      <button onclick="openModule('Gửi TB chung')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
-        <div class="w-7 h-7 bg-orange-100 text-orange-700 rounded-lg flex items-center justify-center">
-          <i class="fa-solid fa-bell"></i>
-        </div>
-        <span>Gửi thông báo chung</span>
-      </button>
-
     </div>
 
-    <!-- Footer Start Menu: Nút Đăng xuất -->
     <div class="p-2 bg-slate-50 border-t border-slate-200">
       <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-2 hover:bg-rose-100 text-rose-600 rounded-xl transition font-semibold text-xs">
         <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất hệ thống
@@ -341,30 +201,46 @@
   </div>
 
 
-  <!-- ================= 5. SCRIPT XỬ LÝ KẾT NỐI API ĐĂNG NHẬP ================= -->
+  <!-- ================= 5. SCRIPT XỬ LÝ ĐĂNG NHẬP VÀ API ĐỘNG ================= -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxw9_IwDZqka0NzwFKX9KihjvTP2-EEBsNGzxVBrPn4vQJMXMfwFQtsQTsliPA0xaRa/exec"; 
 
-    let currentSession = null;
+    // Biến lưu trữ phiên làm việc hiện tại
+    let currentSession = {
+      maTruong: '',
+      maNhanSu: '',
+      user: null,
+      school: null
+    };
 
+    // --- HÀM XỬ LÝ ĐĂNG NHẬP ---
     function doLogin() {
-      const acc = document.getElementById('accInput').value.trim();
+      const rawAcc = document.getElementById('accInput').value.trim();
       const pass = document.getElementById('passInput').value.trim();
       const btn = document.getElementById('btnLogin');
       const msg = document.getElementById('loginMsg');
 
-      if (!acc || !pass) {
-        msg.className = "p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-700 border border-rose-200";
-        msg.innerText = "❌ Vui lòng nhập đầy đủ Tài khoản và Mật khẩu!";
-        msg.classList.remove('hidden');
+      if (!rawAcc || !pass) {
+        showMsg("❌ Vui lòng nhập đầy đủ Tài khoản và Mật khẩu!", "error");
         return;
       }
+
+      // 1. TÁCH MÃ TRƯỜNG TỪ KÝ TỰ BÊN TRÁI DẤU CHẤM
+      const dotIndex = rawAcc.indexOf('.');
+      if (dotIndex === -1) {
+        showMsg("❌ Định dạng tài khoản chưa đúng! Phải chứa dấu chấm (VD: C3NDT.GV001)", "error");
+        return;
+      }
+
+      const extractedMaTruong = rawAcc.substring(0, dotIndex).toUpperCase();
+      const extractedMaNS = rawAcc.substring(dotIndex + 1);
 
       btn.disabled = true;
       btn.innerHTML = '<span class="loader"></span> Đang xác thực thông tin...';
       msg.classList.add('hidden');
 
-      const requestUrl = `${API_URL}?action=login&account=${encodeURIComponent(acc)}&password=${encodeURIComponent(pass)}`;
+      // Gửi kèm maTruong đã tách lên API Server
+      const requestUrl = `${API_URL}?action=login&account=${encodeURIComponent(rawAcc)}&password=${encodeURIComponent(pass)}&maTruong=${encodeURIComponent(extractedMaTruong)}`;
 
       fetch(requestUrl)
         .then(response => response.json())
@@ -373,58 +249,67 @@
           btn.innerHTML = '<span>ĐĂNG NHẬP HỆ THỐNG</span>';
 
           if (res.status === 'success') {
-            currentSession = res;
-            
-            document.getElementById('userFullName').innerText = res.user.fullName + " (" + res.user.maNhanSu + ")";
-            document.getElementById('userSchoolName').innerText = res.school.tenTruong;
-            document.getElementById('userRole').innerText = res.user.vaiTro;
-            document.getElementById('userPosition').innerText = res.user.chucVu;
-            document.getElementById('taskbarUser').innerText = res.user.fullName;
+            // 2. LƯU THÔNG TIN PHIÊN ĐĂNG NHẬP (LƯU MÃ TRƯỜNG ĐỂ DÙNG CHO CÁC ỨNG DỤNG SAU)
+            currentSession.maTruong = extractedMaTruong;
+            currentSession.maNhanSu = extractedMaNS;
+            currentSession.user = res.user;
+            currentSession.school = res.school;
+
+            // Cập nhật giao diện
+            document.getElementById('userFullName').innerText = (res.user.fullName || 'Cán bộ') + " (" + extractedMaNS + ")";
+            document.getElementById('userSchoolName').innerText = res.school.tenTruong || ('Trường: ' + extractedMaTruong);
+            document.getElementById('userSchoolCode').innerText = "MÃ: " + extractedMaTruong;
+            document.getElementById('userRole').innerText = res.user.vaiTro || 'Giáo viên';
+            document.getElementById('taskbarUser').innerText = res.user.fullName || extractedMaTruong;
 
             document.getElementById('loginOverlay').classList.add('hidden');
           } else {
-            msg.className = "p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-700 border border-rose-200";
-            msg.innerText = "❌ " + res.message;
-            msg.classList.remove('hidden');
+            showMsg("❌ " + res.message, "error");
           }
         })
         .catch(err => {
           btn.disabled = false;
           btn.innerHTML = '<span>ĐĂNG NHẬP HỆ THỐNG</span>';
-          msg.className = "p-3 rounded-xl text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200";
-          msg.innerText = "⚠️ Lỗi kết nối Máy chủ API: " + err.message;
-          msg.classList.remove('hidden');
+          showMsg("⚠️ Lỗi kết nối Máy chủ API: " + err.message, "warning");
         });
     }
 
+    function showMsg(text, type) {
+      const msg = document.getElementById('loginMsg');
+      msg.className = type === 'error' 
+        ? "p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-700 border border-rose-200"
+        : "p-3 rounded-xl text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200";
+      msg.innerText = text;
+      msg.classList.remove('hidden');
+    }
+
+    // --- HÀM MỞ MỞ CSDL TRƯỜNG (Lấy URL từ Sheet DSTruong Cột C) ---
     function openDbLink() {
-      if (currentSession && currentSession.school && currentSession.school.dbUrl) {
+      if (currentSession.school && currentSession.school.dbUrl) {
         window.open(currentSession.school.dbUrl, '_blank');
       } else {
-        alert("Chưa chọn được CSDL của trường hoặc chưa đăng nhập!");
+        alert(`Đang lấy link CSDL cho trường [${currentSession.maTruong}]...`);
       }
     }
 
-    function testChucNangHocSinh() {
-      const requestUrl = `${API_URL}?action=getHocSinh`;
+    // --- HÀM TRUY VẤN DỮ LIỆU ĐỘNG THEO MÃ TRƯỜNG CHO CÁC ỨNG DỤNG ---
+    function loadAppData(moduleName) {
+      if (!currentSession.maTruong) {
+        alert("Chưa xác định được Mã Trường! Vui lòng đăng nhập lại.");
+        return;
+      }
+
+      // Gửi request lấy dữ liệu với mã trường tương ứng làm điều kiện
+      const requestUrl = `${API_URL}?action=getModuleData&module=${encodeURIComponent(moduleName)}&maTruong=${encodeURIComponent(currentSession.maTruong)}`;
 
       fetch(requestUrl)
         .then(response => response.json())
         .then(res => {
           if (res.status === 'success') {
-            if (!res.data || res.data.length === 0) {
-              alert("Kết nối thành công nhưng chưa có dữ liệu trong Sheet 'DSHocSinh'!");
-              return;
-            }
-
-            let textResult = "DANH SÁCH HỌC SINH TỪ GOOGLE SHEET:\n----------------------------------------\n";
-            res.data.forEach(item => {
-              textResult += `- SBD: ${item.sbd} | Họ tên: ${item.hoTen} | Lớp: ${item.lop} | NV: ${item.nguyenVong}\n`;
-            });
-            
-            alert(textResult);
+            console.log("Dữ liệu nhận được từ trường " + currentSession.maTruong + ":", res);
+            alert(`[${currentSession.school.tenTruong || currentSession.maTruong}]\nĐã lấy thành công nguồn API từ cột C sheet DSTruong!\nTổng số bản ghi: ${res.data ? res.data.length : 0}`);
           } else {
-            alert("Lỗi phản hồi từ Google Apps Script: " + res.message);
+            alert("Thông báo từ hệ thống: " + res.message);
           }
         })
         .catch(err => {
@@ -433,15 +318,12 @@
     }
 
     function openModule(name) {
-      console.log("Đang gọi mở module:", name);
-      
-      // Chuyển tên về dạng chữ thường và xóa khoảng trắng thừa để so sánh chính xác 100%
       const cleanName = name.trim().toLowerCase();
 
       if (cleanName.includes('hồ sơ học sinh') || cleanName.includes('nguyện vọng') || cleanName.includes('tuyển sinh')) {
-        testChucNangHocSinh();
+        loadAppData(name);
       } else {
-        alert("Đang phát triển phân hệ: " + name);
+        alert("Đang phát triển ứng dụng: " + name);
       }
       
       const menu = document.getElementById('startMenu');
@@ -449,7 +331,7 @@
     }
 
     function logout() {
-      currentSession = null;
+      currentSession = { maTruong: '', maNhanSu: '', user: null, school: null };
       document.getElementById('loginOverlay').classList.remove('hidden');
       document.getElementById('formLogin').reset();
       document.getElementById('loginMsg').classList.add('hidden');
