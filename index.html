@@ -151,27 +151,40 @@
 
 
   <!-- ================= 3. KHUNG CỬA SỔ ỨNG DỤNG (WINDOW CONTAINER) ================= -->
-  <div id="appWindow" class="hidden fixed inset-4 md:inset-10 bg-white rounded-2xl shadow-2xl border border-slate-300 flex flex-col z-40 overflow-hidden transition-all duration-200">
+ 
+<div id="window-app" class="fixed top-12 left-1/2 -translate-x-1/2 w-[85vw] h-[80vh] bg-slate-900/95 backdrop-blur border border-slate-700/80 rounded-xl shadow-2xl flex flex-col overflow-hidden resize min-w-[320px] min-h-[200px] z-40 transition-all duration-150">
+  
+  <!-- Thanh Tiêu Đề (Header Window) -->
+  <div class="flex items-center justify-between bg-slate-800/90 px-4 py-2 border-b border-slate-700/50 select-none">
+    <div class="flex items-center gap-2 text-slate-200 text-sm font-semibold">
+      <i id="win-icon" class="fa-solid fa-window-maximize text-cyan-400"></i>
+      <span id="win-title">Tên Chức Năng</span>
+    </div>
     
-    <!-- Thanh Tiêu Đề Cửa Sổ (Titlebar) -->
-    <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between select-none">
-      <div class="flex items-center gap-2.5">
-        <i id="windowIcon" class="fa-solid fa-window-maximize text-sky-400 text-sm"></i>
-        <span id="windowTitle" class="font-bold text-sm tracking-wide">Đang khởi tạo...</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <button onclick="closeAppWindow()" title="Đóng cửa sổ" class="w-7 h-7 bg-rose-500/80 hover:bg-rose-600 text-white rounded-lg flex items-center justify-center text-xs transition">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
+    <!-- Bộ nút điều khiển Cửa sổ -->
+    <div class="flex items-center gap-1.5">
+      <!-- Nút Thu Nhỏ (Minimize) -->
+      <button onclick="minimizeApp()" class="w-7 h-7 flex items-center justify-center hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg transition" title="Thu nhỏ">
+        <i class="fa-solid fa-minus text-xs"></i>
+      </button>
+      
+      <!-- Nút Phóng To / Khôi Phục (Maximize) -->
+      <button onclick="toggleMaximizeApp()" class="w-7 h-7 flex items-center justify-center hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg transition" title="Phóng to / Khôi phục">
+        <i id="max-icon" class="fa-regular fa-square text-xs"></i>
+      </button>
+      
+      <!-- Nút Đóng (Close) -->
+      <button onclick="closeApp()" class="w-7 h-7 flex items-center justify-center hover:bg-rose-600 text-slate-400 hover:text-white rounded-lg transition" title="Đóng">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
     </div>
-
-    <!-- Khung chứa giao diện trang con (Iframe) -->
-    <div class="flex-1 w-full h-full bg-slate-100 relative">
-      <iframe id="appIframe" src="about:blank" class="w-full h-full border-none"></iframe>
-    </div>
-
   </div>
+
+  <!-- Vùng chứa Iframe -->
+  <div class="flex-1 w-full h-full overflow-hidden bg-slate-950">
+    <iframe id="app-iframe" class="w-full h-full border-0"></iframe>
+  </div>
+</div>
 
 
   <!-- ================= 4. START MENU ================= -->
