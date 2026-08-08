@@ -154,7 +154,9 @@
 
 
   <!-- ================= 3. KHUNG CỬA SỔ ỨNG DỤNG (WINDOW CONTAINER) ================= -->
-  <div id="window-app" class="hidden fixed top-12 left-1/2 -translate-x-1/2 w-[85vw] h-[80vh] bg-slate-900/95 backdrop-blur border border-slate-700/80 rounded-xl shadow-2xl flex flex-col overflow-hidden resize min-w-[320px] min-h-[200px] z-40 transition-all duration-150">
+  <!-- CŨ: class="fixed top-12..." -->
+<!-- MỚI (thêm chữ hidden ở đầu class): -->
+<div id="window-app" class="hidden fixed top-12 left-1/2 -translate-x-1/2 w-[85vw] h-[80vh] bg-slate-900/95 backdrop-blur border border-slate-700/80 rounded-xl shadow-2xl flex flex-col overflow-hidden resize min-w-[320px] min-h-[200px] z-40 transition-all duration-150">
     
     <!-- Thanh Tiêu Đề (Header Window) -->
     <div class="flex items-center justify-between bg-slate-800/90 px-4 py-2 border-b border-slate-700/50 select-none cursor-move">
