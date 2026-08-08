@@ -341,60 +341,45 @@
     }
 
     // 2. Hàm Điều Hướng Mở App & Quản lý Taskbar
-    function launchApp(appId) {
-      if (!currentSession.maTruong || !currentSession.token) {
-        alert("Vui lòng đăng nhập hệ thống trước!");
-        return;
+// Hàm mở app khi bấm icon trên Desktop
+function launchApp(appId) {
+  if (!currentSession.maTruong || !currentSession.token) {
+    alert("Vui lòng đăng nhập hệ thống trước!");
+    return;
+  }
+
+  const appMeta = APP_REGISTRY[appId] || { title: appId, icon: 'fa-solid fa-window-maximize text-cyan-400' };
+
+  // 1. Đặt tiêu đề & hiển thị cửa sổ (xóa class hidden)
+  document.getElementById('win-title').innerText = `${appMeta.title} - Đang tải...`;
+  document.getElementById('win-icon').className = appMeta.icon + " text-sm";
+  document.getElementById('app-iframe').src = "about:blank";
+  document.getElementById('window-app').classList.remove('hidden');
+
+  // 2. Tắt Start menu nếu đang bật
+  const menu = document.getElementById('startMenu');
+  if (menu) menu.classList.add('hidden');
+
+  // 3. Gọi API lấy URL và nhúng vào iframe
+  const requestUrl = `${API_URL}?action=getAppUrl&account=${encodeURIComponent(currentSession.maTruong + "." + currentSession.maNhanSu)}&sessionToken=${encodeURIComponent(currentSession.token)}&maTruong=${encodeURIComponent(currentSession.maTruong)}&appId=${encodeURIComponent(appId)}`;
+
+  fetch(requestUrl)
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === 'success' && res.data && res.data.url) {
+        document.getElementById('win-title').innerText = `${appMeta.title} - [${currentSession.school ? currentSession.school.tenTruong : currentSession.maTruong}]`;
+        document.getElementById('app-iframe').src = res.data.url;
+      } else {
+        alert("🔒 Không thể truy cập: " + (res.message || "Không tìm thấy đường dẫn!"));
+        closeApp();
       }
+    })
+    .catch(err => {
+      alert("Lỗi kết nối: " + err.message);
+      closeApp();
+    });
+}
 
-      // Nếu nhấn vào icon ứng dụng đang mở -> Toggle Ẩn / Hiện
-      if (currentAppId === appId) {
-        if (isMinimized) {
-          restoreApp();
-        } else {
-          minimizeApp();
-        }
-        return;
-      }
-
-      const appMeta = APP_REGISTRY[appId] || { title: appId, icon: 'fa-solid fa-window-maximize text-cyan-400' };
-
-      // Cập nhật trạng thái
-      currentAppId = appId;
-      isMinimized = false;
-
-      // Hiển thị giao diện cửa sổ
-      document.getElementById('win-title').innerText = `${appMeta.title} - Đang tải dữ liệu...`;
-      document.getElementById('win-icon').className = appMeta.icon + " text-sm";
-      document.getElementById('app-iframe').src = "about:blank";
-      document.getElementById('window-app').classList.remove('hidden');
-
-      // Tắt Start Menu nếu đang mở
-      const menu = document.getElementById('startMenu');
-      if (menu) menu.classList.add('hidden');
-
-      // Cập nhật Taskbar
-      renderTaskbarItem(appId, appMeta);
-
-      // Tra cứu Link nguồn API
-      const requestUrl = `${API_URL}?action=getAppUrl&account=${encodeURIComponent(currentSession.maTruong + "." + currentSession.maNhanSu)}&sessionToken=${encodeURIComponent(currentSession.token)}&maTruong=${encodeURIComponent(currentSession.maTruong)}&appId=${encodeURIComponent(appId)}`;
-
-      fetch(requestUrl)
-        .then(res => res.json())
-        .then(res => {
-          if (res.status === 'success' && res.data && res.data.url) {
-            document.getElementById('win-title').innerText = `${appMeta.title} - [${currentSession.school ? currentSession.school.tenTruong : currentSession.maTruong}]`;
-            document.getElementById('app-iframe').src = res.data.url;
-          } else {
-            alert("🔒 Không thể truy cập: " + (res.message || "Không tìm thấy cấu hình trang web nguồn!"));
-            closeApp();
-          }
-        })
-        .catch(err => {
-          alert("Lỗi truy vấn đường dẫn ứng dụng: " + err.message);
-          closeApp();
-        });
-    }
 
     // 3. Các hàm điều khiển Cửa sổ (Minimize, Maximize, Close, Restore)
     function minimizeApp() {
@@ -426,13 +411,12 @@
       }
     }
 
-    function closeApp() {
-      document.getElementById('window-app').classList.add('hidden');
-      document.getElementById('app-iframe').src = "about:blank";
-      document.getElementById('taskbar-apps').innerHTML = '';
-      currentAppId = null;
-      isMinimized = false;
-    }
+   
+    // Hàm đóng cửa sổ (Nút X)
+function closeApp() {
+  document.getElementById('window-app').classList.add('hidden');
+  document.getElementById('app-iframe').src = "about:blank";
+}
 
     // 4. Quản lý UI Taskbar
     function renderTaskbarItem(appId, appMeta) {
