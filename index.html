@@ -109,24 +109,27 @@
         Tuyển sinh Lớp 10
       </span>
     </div>
+
     <!-- Icon Quản trị đầu cấp -->
     <div onclick="launchApp('quantridaucap')" class="flex flex-col items-center group cursor-pointer w-20">
-      <div class="w-13 h-13 p-3.5 bg-rose-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
-        <i class="fa-solid fa-user-plus"></i>
+      <div class="w-13 h-13 p-3.5 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-sliders"></i>
       </div>
       <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
-        <span>🔍</span>Quản trị đầu cấp
+        Quản trị đầu cấp
       </span>
     </div>
-     <!-- Icon Xếp lớp -->
+
+    <!-- Icon Xếp lớp -->
     <div onclick="launchApp('xeplop')" class="flex flex-col items-center group cursor-pointer w-20">
-      <div class="w-13 h-13 p-3.5 bg-rose-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
-        <i class="fa-solid fa-user-plus"></i>
+      <div class="w-13 h-13 p-3.5 bg-amber-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-sitemap"></i>
       </div>
       <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
-        <span>🔍</span>Xếp lớp vào 10
+        Xếp lớp vào 10
       </span>
     </div>
+
     <!-- Icon Tra cứu nguyện vọng -->
     <div onclick="launchApp('tracuunv')" class="flex flex-col items-center group cursor-pointer w-20">
       <div class="w-13 h-13 p-3.5 bg-cyan-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
@@ -151,40 +154,39 @@
 
 
   <!-- ================= 3. KHUNG CỬA SỔ ỨNG DỤNG (WINDOW CONTAINER) ================= -->
- 
-<div id="window-app" class="fixed top-12 left-1/2 -translate-x-1/2 w-[85vw] h-[80vh] bg-slate-900/95 backdrop-blur border border-slate-700/80 rounded-xl shadow-2xl flex flex-col overflow-hidden resize min-w-[320px] min-h-[200px] z-40 transition-all duration-150">
-  
-  <!-- Thanh Tiêu Đề (Header Window) -->
-  <div class="flex items-center justify-between bg-slate-800/90 px-4 py-2 border-b border-slate-700/50 select-none">
-    <div class="flex items-center gap-2 text-slate-200 text-sm font-semibold">
-      <i id="win-icon" class="fa-solid fa-window-maximize text-cyan-400"></i>
-      <span id="win-title">Tên Chức Năng</span>
-    </div>
+  <div id="window-app" class="hidden fixed top-12 left-1/2 -translate-x-1/2 w-[85vw] h-[80vh] bg-slate-900/95 backdrop-blur border border-slate-700/80 rounded-xl shadow-2xl flex flex-col overflow-hidden resize min-w-[320px] min-h-[200px] z-40 transition-all duration-150">
     
-    <!-- Bộ nút điều khiển Cửa sổ -->
-    <div class="flex items-center gap-1.5">
-      <!-- Nút Thu Nhỏ (Minimize) -->
-      <button onclick="minimizeApp()" class="w-7 h-7 flex items-center justify-center hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg transition" title="Thu nhỏ">
-        <i class="fa-solid fa-minus text-xs"></i>
-      </button>
+    <!-- Thanh Tiêu Đề (Header Window) -->
+    <div class="flex items-center justify-between bg-slate-800/90 px-4 py-2 border-b border-slate-700/50 select-none cursor-move">
+      <div class="flex items-center gap-2 text-slate-200 text-sm font-semibold truncate pr-2">
+        <i id="win-icon" class="fa-solid fa-window-maximize text-cyan-400"></i>
+        <span id="win-title" class="truncate">Tên Chức Năng</span>
+      </div>
       
-      <!-- Nút Phóng To / Khôi Phục (Maximize) -->
-      <button onclick="toggleMaximizeApp()" class="w-7 h-7 flex items-center justify-center hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg transition" title="Phóng to / Khôi phục">
-        <i id="max-icon" class="fa-regular fa-square text-xs"></i>
-      </button>
-      
-      <!-- Nút Đóng (Close) -->
-      <button onclick="closeApp()" class="w-7 h-7 flex items-center justify-center hover:bg-rose-600 text-slate-400 hover:text-white rounded-lg transition" title="Đóng">
-        <i class="fa-solid fa-xmark text-sm"></i>
-      </button>
+      <!-- Bộ nút điều khiển Cửa sổ -->
+      <div class="flex items-center gap-1.5">
+        <!-- Nút Thu Nhỏ (Minimize) -->
+        <button onclick="minimizeApp()" class="w-7 h-7 flex items-center justify-center hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg transition" title="Thu nhỏ">
+          <i class="fa-solid fa-minus text-xs"></i>
+        </button>
+        
+        <!-- Nút Phóng To / Khôi Phục (Maximize) -->
+        <button onclick="toggleMaximizeApp()" class="w-7 h-7 flex items-center justify-center hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg transition" title="Phóng to / Khôi phục">
+          <i id="max-icon" class="fa-regular fa-square text-xs"></i>
+        </button>
+        
+        <!-- Nút Đóng (Close) -->
+        <button onclick="closeApp()" class="w-7 h-7 flex items-center justify-center hover:bg-rose-600 text-slate-400 hover:text-white rounded-lg transition" title="Đóng">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Vùng chứa Iframe -->
+    <div class="flex-1 w-full h-full overflow-hidden bg-slate-950 relative">
+      <iframe id="app-iframe" class="w-full h-full border-0"></iframe>
     </div>
   </div>
-
-  <!-- Vùng chứa Iframe -->
-  <div class="flex-1 w-full h-full overflow-hidden bg-slate-950">
-    <iframe id="app-iframe" class="w-full h-full border-0"></iframe>
-  </div>
-</div>
 
 
   <!-- ================= 4. START MENU ================= -->
@@ -237,10 +239,15 @@
 
   <!-- ================= 5. TASKBAR PHÍA DƯỚI ================= -->
   <div class="absolute bottom-0 left-0 w-full h-11 bg-slate-900/80 backdrop-blur-md border-t border-slate-700/50 flex items-center justify-between px-3 z-50">
-    <button onclick="toggleStartMenu(event)" class="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow transition active:scale-95">
-      <i class="fa-solid fa-border-all text-sm"></i>
-      <span id="taskbarUser">Hệ thống</span>
-    </button>
+    <div class="flex items-center gap-3">
+      <button onclick="toggleStartMenu(event)" class="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow transition active:scale-95">
+        <i class="fa-solid fa-border-all text-sm"></i>
+        <span id="taskbarUser">Hệ thống</span>
+      </button>
+
+      <!-- KHU VỰC CÁC ỨNG DỤNG ĐANG CHẠY TRÊN TASKBAR -->
+      <div id="taskbar-apps" class="flex items-center gap-2 pl-3 border-l border-slate-700/50"></div>
+    </div>
 
     <div id="clock" class="text-white text-xs font-medium tracking-wide bg-slate-800/60 px-3 py-1 rounded-md border border-slate-700">
       00:00:00
@@ -255,30 +262,20 @@
 
     // DANH MỤC CÁC ỨNG DỤNG HỆ THỐNG
     const APP_REGISTRY = {
-      'tuyensinh10': {
-        title: 'Tuyển sinh Lớp 10',
-        icon: 'fa-solid fa-user-plus text-rose-400'
-      },
-      'hosohocsinh': {
-        title: 'Quản lý Hồ sơ học sinh',
-        icon: 'fa-solid fa-folder-open text-violet-400'
-      },
-      'tracuunv': {
-        title: 'Tra cứu Nguyện vọng',
-        icon: 'fa-solid fa-magnifying-glass text-cyan-400'
-      }
+      'tuyensinh10': { title: 'Tuyển sinh Lớp 10', icon: 'fa-solid fa-user-plus text-rose-400' },
+      'quantridaucap': { title: 'Quản trị đầu cấp', icon: 'fa-solid fa-sliders text-indigo-400' },
+      'xeplop': { title: 'Xếp lớp vào 10', icon: 'fa-solid fa-sitemap text-amber-400' },
+      'hosohocsinh': { title: 'Quản lý Hồ sơ học sinh', icon: 'fa-solid fa-folder-open text-violet-400' },
+      'tracuunv': { title: 'Tra cứu Nguyện vọng', icon: 'fa-solid fa-magnifying-glass text-cyan-400' }
     };
 
-    // Bộ lưu Session hiện tại trên trình duyệt
-    let currentSession = {
-      maTruong: '',
-      maNhanSu: '',
-      token: '',
-      user: null,
-      school: null
-    };
+    // Quản lý trạng thái Window & Session
+    let currentSession = { maTruong: '', maNhanSu: '', token: '', user: null, school: null };
+    let currentAppId = null;
+    let isMaximized = false;
+    let isMinimized = false;
 
-    // 1. Hàm Đăng Nhập & Xác Thực 3 Lớp
+    // 1. Hàm Đăng Nhập
     function doLogin() {
       const rawAcc = document.getElementById('accInput').value.trim();
       const pass = document.getElementById('passInput').value.trim();
@@ -343,50 +340,123 @@
       msg.classList.remove('hidden');
     }
 
-    // 2. Hàm Điều Hướng Mở App Động & Bảo Mật (Tra cứu MãTrường.MãTrangWeb)
+    // 2. Hàm Điều Hướng Mở App & Quản lý Taskbar
     function launchApp(appId) {
       if (!currentSession.maTruong || !currentSession.token) {
         alert("Vui lòng đăng nhập hệ thống trước!");
         return;
       }
 
-      const appMeta = APP_REGISTRY[appId] || { title: appId, icon: 'fa-solid fa-window-maximize text-sky-400' };
+      // Nếu nhấn vào icon ứng dụng đang mở -> Toggle Ẩn / Hiện
+      if (currentAppId === appId) {
+        if (isMinimized) {
+          restoreApp();
+        } else {
+          minimizeApp();
+        }
+        return;
+      }
 
-      // Hiển thị giao diện cửa sổ trước khi tải
-      document.getElementById('windowTitle').innerText = `${appMeta.title} - Đang xác thực đường dẫn bảo mật...`;
-      document.getElementById('windowIcon').className = appMeta.icon + " text-sm";
-      document.getElementById('appIframe').src = "about:blank";
-      document.getElementById('appWindow').classList.remove('hidden');
+      const appMeta = APP_REGISTRY[appId] || { title: appId, icon: 'fa-solid fa-window-maximize text-cyan-400' };
 
-      // Tắt Start Menu nếu đang bật
+      // Cập nhật trạng thái
+      currentAppId = appId;
+      isMinimized = false;
+
+      // Hiển thị giao diện cửa sổ
+      document.getElementById('win-title').innerText = `${appMeta.title} - Đang tải dữ liệu...`;
+      document.getElementById('win-icon').className = appMeta.icon + " text-sm";
+      document.getElementById('app-iframe').src = "about:blank";
+      document.getElementById('window-app').classList.remove('hidden');
+
+      // Tắt Start Menu nếu đang mở
       const menu = document.getElementById('startMenu');
       if (menu) menu.classList.add('hidden');
 
-      // Gửi Yêu cầu tra cứu Link nguồn của MãTrường.MãTrangWeb
+      // Cập nhật Taskbar
+      renderTaskbarItem(appId, appMeta);
+
+      // Tra cứu Link nguồn API
       const requestUrl = `${API_URL}?action=getAppUrl&account=${encodeURIComponent(currentSession.maTruong + "." + currentSession.maNhanSu)}&sessionToken=${encodeURIComponent(currentSession.token)}&maTruong=${encodeURIComponent(currentSession.maTruong)}&appId=${encodeURIComponent(appId)}`;
 
       fetch(requestUrl)
         .then(res => res.json())
         .then(res => {
           if (res.status === 'success' && res.data && res.data.url) {
-            document.getElementById('windowTitle').innerText = `${appMeta.title} - [${currentSession.school ? currentSession.school.tenTruong : currentSession.maTruong}]`;
-            document.getElementById('appIframe').src = res.data.url;
+            document.getElementById('win-title').innerText = `${appMeta.title} - [${currentSession.school ? currentSession.school.tenTruong : currentSession.maTruong}]`;
+            document.getElementById('app-iframe').src = res.data.url;
           } else {
             alert("🔒 Không thể truy cập: " + (res.message || "Không tìm thấy cấu hình trang web nguồn!"));
-            closeAppWindow();
+            closeApp();
           }
         })
         .catch(err => {
           alert("Lỗi truy vấn đường dẫn ứng dụng: " + err.message);
-          closeAppWindow();
+          closeApp();
         });
     }
 
-    function closeAppWindow() {
-      document.getElementById('appWindow').classList.add('hidden');
-      document.getElementById('appIframe').src = "about:blank";
+    // 3. Các hàm điều khiển Cửa sổ (Minimize, Maximize, Close, Restore)
+    function minimizeApp() {
+      document.getElementById('window-app').classList.add('hidden');
+      isMinimized = true;
+      updateTaskbarStyle(false);
     }
 
+    function restoreApp() {
+      document.getElementById('window-app').classList.remove('hidden');
+      isMinimized = false;
+      updateTaskbarStyle(true);
+    }
+
+    function toggleMaximizeApp() {
+      const win = document.getElementById('window-app');
+      const maxIcon = document.getElementById('max-icon');
+
+      if (!isMaximized) {
+        win.classList.remove('top-12', 'left-1/2', '-translate-x-1/2', 'w-[85vw]', 'h-[80vh]', 'rounded-xl');
+        win.classList.add('top-0', 'left-0', 'w-full', 'h-[calc(100vh-44px)]', 'rounded-none');
+        maxIcon.className = "fa-regular fa-clone text-xs";
+        isMaximized = true;
+      } else {
+        win.classList.remove('top-0', 'left-0', 'w-full', 'h-[calc(100vh-44px)]', 'rounded-none');
+        win.classList.add('top-12', 'left-1/2', '-translate-x-1/2', 'w-[85vw]', 'h-[80vh]', 'rounded-xl');
+        maxIcon.className = "fa-regular fa-square text-xs";
+        isMaximized = false;
+      }
+    }
+
+    function closeApp() {
+      document.getElementById('window-app').classList.add('hidden');
+      document.getElementById('app-iframe').src = "about:blank";
+      document.getElementById('taskbar-apps').innerHTML = '';
+      currentAppId = null;
+      isMinimized = false;
+    }
+
+    // 4. Quản lý UI Taskbar
+    function renderTaskbarItem(appId, appMeta) {
+      const container = document.getElementById('taskbar-apps');
+      container.innerHTML = `
+        <button id="taskbar-btn" onclick="launchApp('${appId}')" 
+                class="flex items-center gap-2 px-3 py-1 bg-slate-800 border-b-2 border-cyan-400 text-white rounded-t text-xs font-medium transition hover:bg-slate-700">
+          <i class="${appMeta.icon}"></i>
+          <span class="max-w-[120px] truncate">${appMeta.title}</span>
+        </button>
+      `;
+    }
+
+    function updateTaskbarStyle(isActive) {
+      const btn = document.getElementById('taskbar-btn');
+      if (!btn) return;
+      if (isActive) {
+        btn.className = "flex items-center gap-2 px-3 py-1 bg-slate-800 border-b-2 border-cyan-400 text-white rounded-t text-xs font-medium transition hover:bg-slate-700";
+      } else {
+        btn.className = "flex items-center gap-2 px-3 py-1 bg-slate-900/50 border-b-2 border-transparent text-slate-400 rounded-t text-xs font-medium transition hover:bg-slate-800 hover:text-slate-200";
+      }
+    }
+
+    // 5. Tiện ích hệ thống
     function openDbLink() {
       if (currentSession.school && currentSession.school.dbUrl) {
         window.open(currentSession.school.dbUrl, '_blank');
@@ -397,7 +467,7 @@
 
     function logout() {
       currentSession = { maTruong: '', maNhanSu: '', token: '', user: null, school: null };
-      closeAppWindow();
+      closeApp();
       document.getElementById('loginOverlay').classList.remove('hidden');
       document.getElementById('formLogin').reset();
       document.getElementById('loginMsg').classList.add('hidden');
