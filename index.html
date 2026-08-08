@@ -1,90 +1,360 @@
-function doGet(e) {
-  const action = e.parameter.action;
-  const account = e.parameter.account;   // Mã tài khoản đầy đủ (VD: C3NDT.GV001)
-  const password = e.parameter.password; // Mật khẩu nhập vào
-  const maTruong = e.parameter.maTruong; // Mã trường đã tách (VD: C3NDT)
-
-  if (action === 'login') {
-    return handleLogin(account, password, maTruong);
-  }
-
-  if (action === 'getHocSinh') {
-    return handleGetHocSinh(maTruong);
-  }
-}
-
-function handleLogin(account, password, maTruong) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-
-  // BƯỚC 1: KIỂM TRA MÃ TRƯỜNG TRONG SHEET DSTruong
-  const sheetDSTruong = ss.getSheetByName("DSTruong");
-  if (!sheetDSTruong) {
-    return respondJSON('error', 'Không tìm thấy sheet [DSTruong] trên Google Sheet trung tâm!');
-  }
-
-  const dataTruong = sheetDSTruong.getDataRange().getValues();
-  let tenTruong = "", dbUrl = "";
-
-  for (let i = 1; i < dataTruong.length; i++) {
-    if (String(dataTruong[i][0]).trim().toUpperCase() === maTruong.toUpperCase()) {
-      tenTruong = dataTruong[i][1]; // Cột B: Tên trường
-      dbUrl = dataTruong[i][2];     // Cột C: Link API/CSDL
-      break;
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Quản Lý Giáo Dục OS</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .desktop-bg {
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920') no-repeat center center fixed;
+      background-size: cover;
     }
-  }
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 3px solid #0284c7;
+      width: 18px;
+      height: 18px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="desktop-bg h-screen w-screen overflow-hidden font-sans select-none relative" onclick="closeStartMenuOnOutside(event)">
 
-  if (!tenTruong) {
-    return respondJSON('error', 'Mã trường [' + maTruong + '] không tồn tại trong danh mục!');
-  }
+  <!-- ================= 1. MÀN HÌNH ĐĂNG NHẬP (LOGIN OVERLAY) ================= -->
+  <div id="loginOverlay" class="fixed inset-0 bg-slate-950/75 backdrop-blur-md flex items-center justify-center z-[100] p-4 transition-all duration-300">
+    <div class="bg-white/90 backdrop-blur-xl border border-white/40 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative">
+      
+      <!-- Header Màn hình Đăng nhập -->
+      <div class="bg-gradient-to-r from-sky-700 via-blue-800 to-indigo-900 p-8 text-center text-white relative">
+        <div class="w-16 h-16 bg-white/10 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-3 backdrop-blur-sm border border-white/20 shadow-inner">
+          <i class="fa-solid fa-graduation-cap text-amber-300"></i>
+        </div>
+        <h3 class="text-xl font-extrabold tracking-wide uppercase">CỔNG QUẢN TRỊ GIÁO DỤC</h3>
+        <p class="text-xs text-sky-200 mt-1 font-light">Đăng nhập tài khoản cán bộ / giáo viên</p>
+      </div>
 
-  // BƯỚC 2: KIỂM TRA MÃ NHÂN SỰ VÀ MẬT KHẨU TRONG SHEET TaiKhoan
-  const sheetTaiKhoan = ss.getSheetByName("TaiKhoan");
-  if (!sheetTaiKhoan) {
-    return respondJSON('error', 'Không tìm thấy sheet [TaiKhoan] trên Google Sheet trung tâm!');
-  }
+      <!-- Form nhập liệu -->
+      <form id="formLogin" onsubmit="event.preventDefault(); doLogin();" class="p-6 md:p-8 space-y-5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+            Mã Tài Khoản <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+              <i class="fa-solid fa-user-gear"></i>
+            </span>
+            <input type="text" id="accInput" required placeholder="MãTrường.MãNS (VD: C3NDT.GV001)"
+                   class="w-full pl-10 pr-4 py-3 bg-slate-50/80 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-sky-600 focus:bg-white font-mono font-semibold transition">
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1">Định dạng: <span class="font-mono font-bold text-sky-700">MãTrường.MãNhânSự</span></p>
+        </div>
 
-  const dataTK = sheetTaiKhoan.getDataRange().getValues();
-  let foundUser = null;
-  let isAccountExist = false;
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+            Mật Khẩu <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+              <i class="fa-solid fa-lock"></i>
+            </span>
+            <input type="password" id="passInput" required placeholder="••••••••"
+                   class="w-full pl-10 pr-4 py-3 bg-slate-50/80 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-sky-600 focus:bg-white transition">
+          </div>
+        </div>
 
-  for (let i = 1; i < dataTK.length; i++) {
-    let accInSheet = String(dataTK[i][0]).trim();  // Cột A: Tài khoản (VD: C3NDT.GV001)
-    let passInSheet = String(dataTK[i][1]).trim(); // Cột B: Mật khẩu
+        <div id="loginMsg" class="hidden p-3 rounded-xl text-xs font-semibold leading-relaxed"></div>
 
-    if (accInSheet.toUpperCase() === account.toUpperCase()) {
-      isAccountExist = true;
-      if (passInSheet === password) {
-        foundUser = {
-          maNhanSu: account,
-          fullName: dataTK[i][2] || 'Cán bộ', // Cột C: Họ tên
-          vaiTro: dataTK[i][3] || 'Giáo viên'  // Cột D: Vai trò
-        };
-        break;
+        <button type="submit" id="btnLogin"
+                class="w-full bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 active:scale-[0.98] text-white font-bold py-3.5 rounded-xl text-sm transition shadow-lg shadow-sky-600/30 flex items-center justify-center gap-2">
+          <span>ĐĂNG NHẬP HỆ THỐNG</span>
+        </button>
+      </form>
+
+      <div class="bg-slate-50 px-6 py-3 border-t border-slate-200/60 text-center text-[11px] text-slate-400">
+        Hệ thống Quản lý Dữ liệu Giáo dục Trực tuyến © 2026
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= 2. BÀN LÀM VIỆC (DESKTOP ICONS) ================= -->
+  <div class="p-6 grid grid-flow-col grid-rows-5 auto-cols-max gap-x-8 gap-y-6 max-h-[calc(100vh-48px)] overflow-x-auto overflow-y-hidden z-10 relative">
+    
+    <!-- Icon CSDL Trường -->
+    <div onclick="openDbLink()" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-emerald-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-database"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        CSDL Trường
+      </span>
+    </div>
+
+    <!-- Icon Tuyển sinh Lớp 10 -->
+    <div onclick="openAppWindow('Tuyển sinh Lớp 10', 'fa-solid fa-user-plus', 'tuyensinh10.html')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-rose-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-user-plus"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Tuyển sinh Lớp 10
+      </span>
+    </div>
+
+    <!-- Icon Tra cứu nguyện vọng -->
+    <div onclick="openAppWindow('Tra cứu Nguyện vọng', 'fa-solid fa-magnifying-glass', 'tracuunv.html')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-cyan-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Tra cứu NV
+      </span>
+    </div>
+
+    <!-- Icon Hồ sơ học sinh -->
+    <div onclick="openAppWindow('Quản lý Hồ sơ học sinh', 'fa-solid fa-folder-open', 'hosohocsinh.html')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-violet-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-folder-open"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Hồ sơ học sinh
+      </span>
+    </div>
+
+  </div>
+
+
+  <!-- ================= 3. KHUNG CỬA SỔ ỨNG DỤNG (WINDOW CONTAINER) ================= -->
+  <div id="appWindow" class="hidden fixed inset-4 md:inset-10 bg-white rounded-2xl shadow-2xl border border-slate-300 flex flex-col z-40 overflow-hidden transition-all duration-200">
+    
+    <!-- Thanh Tiêu Đề Cửa Sổ (Titlebar) -->
+    <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between select-none">
+      <div class="flex items-center gap-2.5">
+        <i id="windowIcon" class="fa-solid fa-window-maximize text-sky-400 text-sm"></i>
+        <span id="windowTitle" class="font-bold text-sm tracking-wide">Tên Ứng Dụng</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="closeAppWindow()" title="Đóng cửa sổ" class="w-7 h-7 bg-rose-500/80 hover:bg-rose-600 text-white rounded-lg flex items-center justify-center text-xs transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Khung chứa giao diện trang con (Iframe) -->
+    <div class="flex-1 w-full h-full bg-slate-100 relative">
+      <iframe id="appIframe" src="" class="w-full h-full border-none"></iframe>
+    </div>
+
+  </div>
+
+
+  <!-- ================= 4. START MENU ================= -->
+  <div id="startMenu" class="hidden absolute bottom-12 left-2 w-80 md:w-96 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 transition-all duration-200">
+    <div class="bg-gradient-to-r from-sky-700 to-blue-900 p-4 text-white flex items-center gap-3">
+      <div class="w-12 h-12 bg-white/10 border border-white/20 text-amber-300 rounded-2xl flex items-center justify-center font-bold text-xl shadow-inner backdrop-blur-sm">
+        <i class="fa-solid fa-user-tie"></i>
+      </div>
+      <div class="overflow-hidden">
+        <h4 id="userFullName" class="font-bold text-sm truncate">Chưa đăng nhập</h4>
+        <p id="userSchoolName" class="text-xs text-sky-200 truncate">Vui lòng đăng nhập...</p>
+        <div class="flex gap-2 mt-1.5">
+          <span id="userSchoolCode" class="text-[10px] bg-sky-950/80 text-sky-200 px-2 py-0.5 rounded font-mono font-bold">---</span>
+          <span id="userRole" class="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded font-semibold">---</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-2 max-h-80 overflow-y-auto custom-scrollbar space-y-1">
+      <div class="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Danh mục chức năng</div>
+
+      <button onclick="openDbLink()" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center"><i class="fa-solid fa-database"></i></div>
+        <span>Cơ sở dữ liệu trường</span>
+      </button>
+
+      <button onclick="openAppWindow('Tuyển sinh Lớp 10', 'fa-solid fa-user-plus', 'tuyensinh10.html')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-rose-100 text-rose-700 rounded-lg flex items-center justify-center"><i class="fa-solid fa-user-plus"></i></div>
+        <span>Tuyển sinh Lớp 10 & Nguyện vọng</span>
+      </button>
+
+      <button onclick="openAppWindow('Tra cứu Nguyện vọng', 'fa-solid fa-magnifying-glass', 'tracuunv.html')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-cyan-100 text-cyan-700 rounded-lg flex items-center justify-center"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <span>Tra cứu nguyện vọng trúng tuyển</span>
+      </button>
+
+      <button onclick="openAppWindow('Quản lý Hồ sơ học sinh', 'fa-solid fa-folder-open', 'hosohocsinh.html')" class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100 rounded-xl transition text-left text-xs font-semibold text-slate-700">
+        <div class="w-7 h-7 bg-violet-100 text-violet-700 rounded-lg flex items-center justify-center"><i class="fa-solid fa-folder-open"></i></div>
+        <span>Quản lý Hồ sơ học sinh</span>
+      </button>
+    </div>
+
+    <div class="p-2 bg-slate-50 border-t border-slate-200">
+      <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-2 hover:bg-rose-100 text-rose-600 rounded-xl transition font-semibold text-xs">
+        <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất hệ thống
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ================= 5. TASKBAR PHÍA DƯỚI ================= -->
+  <div class="absolute bottom-0 left-0 w-full h-11 bg-slate-900/80 backdrop-blur-md border-t border-slate-700/50 flex items-center justify-between px-3 z-50">
+    <button onclick="toggleStartMenu(event)" class="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow transition active:scale-95">
+      <i class="fa-solid fa-border-all text-sm"></i>
+      <span id="taskbarUser">Hệ thống</span>
+    </button>
+
+    <div id="clock" class="text-white text-xs font-medium tracking-wide bg-slate-800/60 px-3 py-1 rounded-md border border-slate-700">
+      00:00:00
+    </div>
+  </div>
+
+
+  <!-- ================= 6. SCRIPT XỬ LÝ LOGIC QUẢN LÝ OS ================= -->
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxw9_IwDZqka0NzwFKX9KihjvTP2-EEBsNGzxVBrPn4vQJMXMfwFQtsQTsliPA0xaRa/exec"; 
+
+    // Session lưu trữ toàn bộ ứng dụng
+    let currentSession = {
+      maTruong: '',
+      maNhanSu: '',
+      user: null,
+      school: null
+    };
+
+    // 1. Hàm Đăng nhập & Tách Mã Trường
+    function doLogin() {
+      const rawAcc = document.getElementById('accInput').value.trim();
+      const pass = document.getElementById('passInput').value.trim();
+      const btn = document.getElementById('btnLogin');
+
+      if (!rawAcc || !pass) {
+        showMsg("❌ Vui lòng nhập đầy đủ Tài khoản và Mật khẩu!", "error");
+        return;
+      }
+
+      const dotIndex = rawAcc.indexOf('.');
+      if (dotIndex === -1) {
+        showMsg("❌ Định dạng tài khoản chưa đúng! Phải chứa dấu chấm (VD: C3NDT.GV001)", "error");
+        return;
+      }
+
+      const extractedMaTruong = rawAcc.substring(0, dotIndex).toUpperCase();
+      const extractedMaNS = rawAcc.substring(dotIndex + 1);
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loader"></span> Đang xác thực thông tin...';
+
+      const requestUrl = `${API_URL}?action=login&account=${encodeURIComponent(rawAcc)}&password=${encodeURIComponent(pass)}&maTruong=${encodeURIComponent(extractedMaTruong)}`;
+
+      fetch(requestUrl)
+        .then(response => response.json())
+        .then(res => {
+          btn.disabled = false;
+          btn.innerHTML = '<span>ĐĂNG NHẬP HỆ THỐNG</span>';
+
+          if (res.status === 'success') {
+            currentSession.maTruong = extractedMaTruong;
+            currentSession.maNhanSu = extractedMaNS;
+            currentSession.user = res.user;
+            currentSession.school = res.school;
+
+            document.getElementById('userFullName').innerText = (res.user.fullName || 'Cán bộ') + " (" + extractedMaNS + ")";
+            document.getElementById('userSchoolName').innerText = res.school.tenTruong || ('Trường: ' + extractedMaTruong);
+            document.getElementById('userSchoolCode').innerText = "MÃ: " + extractedMaTruong;
+            document.getElementById('userRole').innerText = res.user.vaiTro || 'Giáo viên';
+            document.getElementById('taskbarUser').innerText = res.user.fullName || extractedMaTruong;
+
+            document.getElementById('loginOverlay').classList.add('hidden');
+          } else {
+            showMsg("❌ " + res.message, "error");
+          }
+        })
+        .catch(err => {
+          btn.disabled = false;
+          btn.innerHTML = '<span>ĐĂNG NHẬP HỆ THỐNG</span>';
+          showMsg("⚠️ Lỗi kết nối Máy chủ API: " + err.message, "warning");
+        });
+    }
+
+    function showMsg(text, type) {
+      const msg = document.getElementById('loginMsg');
+      msg.className = type === 'error' 
+        ? "p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-700 border border-rose-200"
+        : "p-3 rounded-xl text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200";
+      msg.innerText = text;
+      msg.classList.remove('hidden');
+    }
+
+    // 2. Mở Cửa Sổ Ứng Dụng (Window)
+    function openAppWindow(title, iconClass, pageUrl) {
+      if (!currentSession.maTruong) {
+        alert("Vui lòng đăng nhập trước!");
+        return;
+      }
+
+      // Truyền Mã Trường qua URL tham số cho trang con nhận
+      const fullUrl = `${pageUrl}?maTruong=${encodeURIComponent(currentSession.maTruong)}&maNS=${encodeURIComponent(currentSession.maNhanSu)}`;
+
+      document.getElementById('windowTitle').innerText = title + " - [" + (currentSession.school.tenTruong || currentSession.maTruong) + "]";
+      document.getElementById('windowIcon').className = iconClass + " text-sky-400 text-sm";
+      document.getElementById('appIframe').src = fullUrl;
+      
+      document.getElementById('appWindow').classList.remove('hidden');
+      
+      const menu = document.getElementById('startMenu');
+      if (menu) menu.classList.add('hidden');
+    }
+
+    function closeAppWindow() {
+      document.getElementById('appWindow').classList.add('hidden');
+      document.getElementById('appIframe').src = "";
+    }
+
+    function openDbLink() {
+      if (currentSession.school && currentSession.school.dbUrl) {
+        window.open(currentSession.school.dbUrl, '_blank');
+      } else {
+        alert("Đang tải dữ liệu trường...");
       }
     }
-  }
 
-  // BƯỚC 3: TRẢ VỀ KẾT QUẢ CHO GIAO DIỆN OS
-  if (!isAccountExist) {
-    return respondJSON('error', 'Tài khoản [' + account + '] không tồn tại!');
-  }
+    function logout() {
+      currentSession = { maTruong: '', maNhanSu: '', user: null, school: null };
+      closeAppWindow();
+      document.getElementById('loginOverlay').classList.remove('hidden');
+      document.getElementById('formLogin').reset();
+      document.getElementById('loginMsg').classList.add('hidden');
+      document.getElementById('startMenu').classList.add('hidden');
+    }
 
-  if (!foundUser) {
-    return respondJSON('error', 'Mật khẩu không chính xác! Vui lòng thử lại.');
-  }
+    function toggleStartMenu(event) {
+      if(event) event.stopPropagation();
+      document.getElementById('startMenu').classList.toggle('hidden');
+    }
 
-  // Đăng nhập thành công
-  return ContentService.createTextOutput(JSON.stringify({
-    status: 'success',
-    message: 'Đăng nhập thành công!',
-    user: foundUser,
-    school: { maTruong: maTruong, tenTruong: tenTruong, dbUrl: dbUrl }
-  })).setMimeType(ContentService.MimeType.JSON);
-}
+    function closeStartMenuOnOutside(event) {
+      const menu = document.getElementById('startMenu');
+      if (menu && !menu.classList.contains('hidden') && !menu.contains(event.target)) {
+        menu.classList.add('hidden');
+      }
+    }
 
-function respondJSON(status, message) {
-  return ContentService.createTextOutput(JSON.stringify({
-    status: status,
-    message: message
-  })).setMimeType(ContentService.MimeType.JSON);
-}
+    function updateClock() {
+      const now = new Date();
+      const clockEl = document.getElementById('clock');
+      if (clockEl) clockEl.innerText = now.toLocaleTimeString('vi-VN');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
