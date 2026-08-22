@@ -329,13 +329,14 @@
     }
 
     // 2. MỞ CỬA SỔ ĐỘNG (ĐA NHIỆM)
+    // 2. MỞ CỬA SỔ ĐỘNG (ĐA NHIỆM) - ĐÃ CHUYỂN NỀN TRẮNG
     function launchApp(appId) {
       if (!currentSession.maTruong || !currentSession.token) {
         alert("Vui lòng đăng nhập hệ thống trước!");
         return;
       }
 
-      const appMeta = APP_REGISTRY[appId] || { title: appId, icon: 'fa-solid fa-window-maximize text-cyan-400' };
+      const appMeta = APP_REGISTRY[appId] || { title: appId, icon: 'fa-solid fa-window-maximize text-cyan-600' };
 
       // Nếu ứng dụng đã mở rồi -> Đưa lên trên cùng hoặc khôi phục nếu đang thu nhỏ
       let existingWin = document.getElementById(`win-${appId}`);
@@ -356,7 +357,7 @@
       const offset = (openWindowsCount % 5) * 25;
       activeZIndex++;
 
-      // Tạo HTML Khung Cửa sổ mới
+      // Tạo HTML Khung Cửa sổ mới (Nền trắng, viền xám sáng, shadow tinh tế)
       const container = document.getElementById('desktop-windows-container');
       const winDiv = document.createElement('div');
       winDiv.id = `win-${appId}`;
@@ -364,29 +365,29 @@
       winDiv.style.zIndex = activeZIndex;
       winDiv.style.top = `${48 + offset}px`;
       winDiv.style.left = `${Math.max(20, offset)}px`;
-      winDiv.className = "fixed w-[80vw] md:w-[75vw] h-[75vh] bg-slate-900/95 backdrop-blur border border-slate-700/80 rounded-xl shadow-2xl flex flex-col overflow-hidden resize min-w-[320px] min-h-[200px] transition-all duration-100";
+      winDiv.className = "fixed w-[80vw] md:w-[75vw] h-[75vh] bg-white backdrop-blur border border-slate-300 rounded-xl shadow-2xl flex flex-col overflow-hidden resize min-w-[320px] min-h-[200px] transition-all duration-100";
 
       winDiv.innerHTML = `
-        <div class="flex items-center justify-between bg-slate-800/90 px-4 py-2 border-b border-slate-700/50 select-none cursor-move">
-          <div class="flex items-center gap-2 text-slate-200 text-sm font-semibold truncate pr-2">
+        <div class="flex items-center justify-between bg-slate-100 px-4 py-2 border-b border-slate-200 select-none cursor-move">
+          <div class="flex items-center gap-2 text-slate-700 text-sm font-semibold truncate pr-2">
             <i class="${appMeta.icon}"></i>
             <span id="title-${appId}" class="truncate">${appMeta.title} - Đang tải...</span>
           </div>
           
           <div class="flex items-center gap-1.5">
-            <button onclick="event.stopPropagation(); minimizeApp('${appId}')" class="w-7 h-7 flex items-center justify-center hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg transition" title="Thu nhỏ">
+            <button onclick="event.stopPropagation(); minimizeApp('${appId}')" class="w-7 h-7 flex items-center justify-center hover:bg-slate-200 text-slate-500 hover:text-slate-800 rounded-lg transition" title="Thu nhỏ">
               <i class="fa-solid fa-minus text-xs"></i>
             </button>
-            <button onclick="event.stopPropagation(); toggleMaximizeApp('${appId}')" class="w-7 h-7 flex items-center justify-center hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg transition" title="Phóng to / Khôi phục">
+            <button onclick="event.stopPropagation(); toggleMaximizeApp('${appId}')" class="w-7 h-7 flex items-center justify-center hover:bg-slate-200 text-slate-500 hover:text-slate-800 rounded-lg transition" title="Phóng to / Khôi phục">
               <i id="max-icon-${appId}" class="fa-regular fa-square text-xs"></i>
             </button>
-            <button onclick="event.stopPropagation(); closeApp('${appId}')" class="w-7 h-7 flex items-center justify-center hover:bg-rose-600 text-slate-400 hover:text-white rounded-lg transition" title="Đóng">
+            <button onclick="event.stopPropagation(); closeApp('${appId}')" class="w-7 h-7 flex items-center justify-center hover:bg-rose-600 text-slate-500 hover:text-white rounded-lg transition" title="Đóng">
               <i class="fa-solid fa-xmark text-sm"></i>
             </button>
           </div>
         </div>
 
-        <div class="flex-1 w-full h-full overflow-hidden bg-slate-950 relative">
+        <div class="flex-1 w-full h-full overflow-hidden bg-white relative">
           <iframe id="iframe-${appId}" class="w-full h-full border-0"></iframe>
         </div>
       `;
