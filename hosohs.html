@@ -10,29 +10,48 @@
 <body class="bg-slate-100 min-h-screen py-8 px-4 font-sans">
 
   <!-- MÀN HÌNH ĐĂNG NHẬP -->
-  <div id="hsLoginBox" class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full border border-slate-200 mx-auto mt-20">
-    <div class="text-center mb-6">
-      <div class="w-14 h-14 bg-sky-100 text-sky-600 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 shadow-inner">
-        <i class="fa-solid fa-user-graduate"></i>
-      </div>
-      <h2 class="text-xl font-bold text-slate-800">CỔNG THÔNG TIN HỌC SINH</h2>
-      <p class="text-xs text-slate-500 mt-1">Nhập mã học sinh và ngày sinh để cập nhật hồ sơ</p>
+ <div id="hsLoginBox" class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
+  <div class="text-center mb-6">
+    <div class="w-14 h-14 bg-sky-100 text-sky-600 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 shadow-inner">
+      <i class="fa-solid fa-shield-halved"></i>
     </div>
-    <form onsubmit="event.preventDefault(); verifyStudent();" class="space-y-4">
-      <div>
-        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Số báo danh</label>
-        <input type="text" id="hsMa" required placeholder="VD: HS01234" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm uppercase font-mono">
-      </div>
-      <div>
-        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ngày Sinh (Xác thực)</label>
-        <input type="text" id="hsNgaySinh" required placeholder="DD/MM/YYYY" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm">
-      </div>
-      <button type="submit" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-sky-600/30">
-        XÁC THỰC & MỞ HỒ SƠ
-      </button>
-    </form>
+    <h2 class="text-xl font-bold text-slate-800">CỔNG ĐĂNG NHẬP HỌC SINH</h2>
+    <p class="text-xs text-slate-500 mt-1">Nhập Số Căn cước và Mật khẩu của bạn</p>
   </div>
+  <form onsubmit="event.preventDefault(); loginStudent();" class="space-y-4">
+    <div>
+      <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Số Căn cước (CCCD)</label>
+      <input type="text" id="loginCCCD" required placeholder="Nhập số CCCD" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-mono">
+    </div>
+    <div>
+      <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mật khẩu</label>
+      <input type="password" id="loginPass" required placeholder="Nhập mật khẩu" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm">
+    </div>
+    <button type="submit" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-sky-600/30">
+      ĐĂNG NHẬP HỆ THỐNG
+    </button>
+  </form>
+</div>
 
+<!-- MÀN HÌNH ĐỔI MẬT KHẨU LẦN ĐẦU (Ẩn mặc định) -->
+<div id="hsChangePassBox" class="hidden bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
+  <div class="text-center mb-6">
+    <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 shadow-inner">
+      <i class="fa-solid fa-key"></i>
+    </div>
+    <h2 class="text-xl font-bold text-slate-800">ĐỔI MẬT KHẨU LẦN ĐẦU</h2>
+    <p class="text-xs text-amber-600 mt-1 font-medium">Vì là đăng nhập lần đầu, bạn bắt buộc phải đổi mật khẩu mới để bảo mật!</p>
+  </div>
+  <form onsubmit="event.preventDefault(); changePasswordFirstTime();" class="space-y-4">
+    <div>
+      <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mật khẩu mới</label>
+      <input type="password" id="newPass" required placeholder="Nhập mật khẩu mới của bạn" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm">
+    </div>
+    <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-amber-600/30">
+      XÁC NHẬN & VÀO HỒ SƠ
+    </button>
+  </form>
+</div>
   <!-- GIAO DIỆN FORM CẬP NHẬT CHI TIẾT (Ẩn ban đầu) -->
   <div id="hsProfileBox" class="hidden bg-white rounded-2xl shadow-xl p-6 md:p-10 max-w-4xl w-full border border-slate-200 mx-auto">
     <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-6">
@@ -205,62 +224,88 @@
   const ns = document.getElementById('hsNgaySinh').value.trim();
 
   fetch(`${API_URL}?action=getStudentProfile&soBD=${encodeURIComponent(ma)}&ngaySinh=${encodeURIComponent(ns)}`)
+    .let currentStudentMaHS = "";
+  let temporaryCCCD = ""; // Lưu tạm CCCD khi đổi mật khẩu lần đầu
+
+  function loginStudent() {
+    const cccd = document.getElementById('loginCCCD').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+
+    fetch(`${API_URL}?action=loginStudent&cccd=${encodeURIComponent(cccd)}&password=${encodeURIComponent(pass)}`)
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 'success') {
+          loadStudentDataToUI(res.data, res.maHS);
+        } else if (res.status === 'first_time') {
+          temporaryCCCD = res.cccd;
+          alert(res.message);
+          document.getElementById('hsLoginBox').classList.add('hidden');
+          document.getElementById('hsChangePassBox').classList.remove('hidden');
+        } else {
+          alert("❌ " + res.message);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Lỗi kết nối máy chủ!");
+      });
+  }
+
+  function changePasswordFirstTime() {
+    const newPassword = document.getElementById('newPass').value.trim();
+    if (!newPassword || newPassword.length < 6) {
+      alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
+      return;
+    }
+
+    fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: "changePasswordFirstTime",
+        cccd: temporaryCCCD,
+        newPassword: newPassword
+      })
+    })
     .then(res => res.json())
     .then(res => {
       if (res.status === 'success') {
-        currentStudentCode = ma;
-        // Đổ dữ liệu lên form
-        document.getElementById('txtHoTen').value = res.data.hoTen || '';
-        document.getElementById('txtGioiTinh').value = res.data.gioiTinh || 'Nam';
-        document.getElementById('txtNgaySinh').value = res.data.ngaySinh || '';
-        document.getElementById('txtDanToc').value = res.data.danToc || '';
-        document.getElementById('txtTonGiao').value = res.data.tonGiao || '';
-        document.getElementById('txtCanCuoc').value = res.data.canCuoc || '';
-        document.getElementById('txtChoO').value = res.data.choO || '';
-        document.getElementById('txtHoKhau').value = res.data.hoKhau || '';
-        document.getElementById('txtDtsHS').value = res.data.sdtHS || '';
-        
-        // Đổ dữ liệu sức khỏe
-        document.getElementById('txtNhomMau').value = res.data.nhomMau || '';
-        document.getElementById('txtChieuCao').value = res.data.chieuCao || '';
-        document.getElementById('txtCanNang').value = res.data.canNang || '';
-        document.getElementById('txtSoBHYT').value = res.data.soBHYT || '';
-
-        document.getElementById('hsLopHienThi').innerText = `Lớp: ${res.data.lop || '---'}`;
-
-        document.getElementById('hsLoginBox').classList.add('hidden');
-        document.getElementById('hsProfileBox').classList.remove('hidden');
+        alert("🔔 " + res.message + "\nVui lòng ghi nhớ mật khẩu này để đăng nhập cho các lần sau!");
+        document.getElementById('hsChangePassBox').classList.add('hidden');
+        loadStudentDataToUI(res.data, res.maHS);
       } else {
-        alert("❌ Không tìm thấy thông tin hoặc ngày sinh không đúng!");
+        alert("❌ " + res.message);
       }
     })
     .catch(err => {
       console.error(err);
-      alert("Lỗi kết nối máy chủ khi xác thực!");
+      alert("Lỗi kết nối máy chủ khi đổi mật khẩu!");
     });
-}
+  }
 
-    // Hàm chuyển đổi file sang Base64
-    function getFileAsBase64(fileInputId) {
-      return new Promise((resolve, reject) => {
-        const fileInput = document.getElementById(fileInputId);
-        if (!fileInput || fileInput.files.length === 0) {
-          resolve(null);
-          return;
-        }
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          resolve({
-            base64: e.target.result,
-            name: file.name,
-            mimeType: file.type
-          });
-        };
-        reader.onerror = function(error) { reject(error); };
-        reader.readAsDataURL(file);
-      });
-    }
+  function loadStudentDataToUI(data, maHS) {
+    currentStudentMaHS = maHS;
+    // Đổ dữ liệu lên form hồ sơ
+    document.getElementById('txtHoTen').value = data.hoTen || '';
+    document.getElementById('txtGioiTinh').value = data.gioiTinh || 'Nam';
+    document.getElementById('txtNgaySinh').value = data.ngaySinh || '';
+    document.getElementById('txtDanToc').value = data.danToc || '';
+    document.getElementById('txtTonGiao').value = data.tonGiao || '';
+    document.getElementById('txtCanCuoc').value = data.canCuoc || '';
+    document.getElementById('txtChoO').value = data.choO || '';
+    document.getElementById('txtHoKhau').value = data.hoKhau || '';
+    document.getElementById('txtDtsHS').value = data.sdtHS || '';
+    
+    document.getElementById('txtNhomMau').value = data.nhomMau || '';
+    document.getElementById('txtChieuCao').value = data.chieuCao || '';
+    document.getElementById('txtCanNang').value = data.canNang || '';
+    document.getElementById('txtSoBHYT').value = data.soBHYT || '';
+
+    document.getElementById('hsLopHienThi').innerText = `Lớp: ${data.lop || '---'}`;
+
+    document.getElementById('hsLoginBox').classList.add('hidden');
+    document.getElementById('hsChangePassBox').classList.add('hidden');
+    document.getElementById('hsProfileBox').classList.remove('hidden'); // Mở form hồ sơ chính
+  }
 
     async function saveStudentProfile() {
       const btn = document.getElementById('btnSave');
