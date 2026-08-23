@@ -195,15 +195,17 @@
   </div>
 
   <script>
-    // ⚠️ HÃY THAY LINK WEB APP GOOGLE APPS SCRIPT CỦA BẠN VÀO ĐÂY:
+  
+    // Link Web App Google Apps Script của bạn
     const API_URL = "https://script.google.com/macros/s/AKfycbzdwituas3YJjOOJsag-gotQomgyKvSw2--L0tiPFMHHkAGduMfIB7ayW9b3s9fiaM8/exec";
     let currentStudentCode = "";
 
     function verifyStudent() {
-      const ma = document.getElementById('soBD').value.trim();
+      // ⚠️ Đã sửa từ 'soBD' thành 'hsMa' cho khớp với id của ô input ở trên
+      const ma = document.getElementById('hsMa').value.trim();
       const ns = document.getElementById('hsNgaySinh').value.trim();
 
-      fetch(`${API_URL}?action=getStudentProfile&maHS=${encodeURIComponent(ma)}&ngaySinh=${encodeURIComponent(ns)}`)
+      fetch(`${API_URL}?action=getStudentProfile&soBD=${encodeURIComponent(ma)}&ngaySinh=${encodeURIComponent(ns)}`)
         .then(res => res.json())
         .then(res => {
           if (res.status === 'success') {
@@ -219,7 +221,7 @@
             document.getElementById('txtHoKhau').value = res.data.hoKhau || '';
             document.getElementById('txtDtsHS').value = res.data.sdtHS || '';
             
-            // Đổ dữ liệu sức khỏe (nếu có từ Google Sheets trả về)
+            // Đổ dữ liệu sức khỏe
             document.getElementById('txtNhomMau').value = res.data.nhomMau || '';
             document.getElementById('txtChieuCao').value = res.data.chieuCao || '';
             document.getElementById('txtCanNang').value = res.data.canNang || '';
@@ -275,7 +277,7 @@
 
         const payload = {
           action: "updateStudentProfile",
-          maHS: currentStudentCode,
+          soBD: currentStudentCode, // Gửi số báo danh lên để doPost nhận diện
           data: {
             sdtHS: document.getElementById('txtDtsHS').value,
             choO: document.getElementById('txtChoO').value,
