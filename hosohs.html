@@ -205,7 +205,28 @@
           </div>
         </div>
       </div>
-
+      <!-- PHẦN 6: TỆP MINH CHỨNG & HỒ SƠ ĐÍNH KÈM -->
+      <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
+        <h3 class="text-sm font-bold text-rose-800 mb-3 uppercase"><i class="fa-solid fa-file-arrow-up"></i> 6. Tệp minh chứng & Hồ sơ đính kèm</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div>
+            <label class="font-bold mb-1 block text-slate-700">Ảnh CCCD Mặt trước <span class="text-rose-600">*</span></label>
+            <input type="file" id="fileCCCDMocTruoc" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
+          </div>
+          <div>
+            <label class="font-bold mb-1 block text-slate-700">Ảnh CCCD Mặt sau <span class="text-rose-600">*</span></label>
+            <input type="file" id="fileCCCDMocSau" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
+          </div>
+          <div>
+            <label class="font-bold mb-1 block text-slate-700">Giấy khai sinh <span class="text-rose-600">*</span></label>
+            <input type="file" id="fileGiayKhaiSinh" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
+          </div>
+          <div>
+            <label class="font-bold mb-1 block text-slate-700">Hồ sơ bổ sung (nếu có)</label>
+            <input type="file" id="fileHoSoBoSung" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
+          </div>
+        </div>
+      </div>
       <div id="updateMsg" class="hidden p-3 rounded-lg text-xs font-semibold"></div>
 
       <button type="submit" id="btnSave" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-emerald-600/20 transition">
@@ -384,80 +405,101 @@
       // ===========================================================================
     }
 
-    async function saveStudentProfile() {
-      const btn = document.getElementById('btnSave');
-      btn.disabled = true;
-      btn.innerHTML = "Đang lưu dữ liệu lên hệ thống...";
+async function saveStudentProfile() {
+    const btn = document.getElementById('btnSave');
+    btn.disabled = true;
+    btn.innerHTML = "Đang tải minh chứng lên hệ thống...";
 
-      try {
+    try {
+        // Hàm chuyển đổi file sang Base64
+        const getFileBase64 = (fileInputId) => {
+            return new Promise((resolve) => {
+                const fileInput = document.getElementById(fileInputId);
+                if (!fileInput || fileInput.files.length === 0) {
+                    resolve(null);
+                    return;
+                }
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => resolve({ name: file.name, data: e.target.result });
+                reader.onerror = () => resolve(null);
+                reader.readAsDataURL(file);
+            });
+        };
+
+        const fileCCCDMT = await getFileBase64('fileCCCDMocTruoc');
+        const fileCCCDMS = await getFileBase64('fileCCCDMocSau');
+        const fileGKS    = await getFileBase64('fileGiayKhaiSinh');
+        const fileExtra  = await getFileBase64('fileHoSoBoSung');
+
         const payload = {
-          action: "updateStudentProfile",
-          cccd: currentStudentCCCD, 
-          data: {
-            
-                     
-            choO_SnXom: document.getElementById('txtChoOSnXom').value,
-            choO_KhuDanCu: document.getElementById('txtChoOKhuDanCu').value,
-            choO_Xa: document.getElementById('txtChoOXa').value,
-            choO_Tinh: document.getElementById('txtChoOTinh').value,
-            
-            hk_SnXom: document.getElementById('txtHkSnXom').value,
-            hk_KhuDanCu: document.getElementById('txtHkKhuDanCu').value,
-            hk_Xa: document.getElementById('txtHkXa').value,
-            hk_Tinh: document.getElementById('txtHkTinh').value,
-            
-            ns_ThongTin: document.getElementById('txtNsThongTin').value,
-            ns_Xa: document.getElementById('txtNsXa').value,
-            ns_Tinh: document.getElementById('txtNsTinh').value,
-            
-            qq_ThongTin: document.getElementById('txtQqThongTin').value,
-            qq_Xa: document.getElementById('txtQqXa').value,
-            qq_Tinh: document.getElementById('txtQqTinh').value,
-            
-            nks_Xa: document.getElementById('txtNksXa').value,
-            nks_Tinh: document.getElementById('txtNksTinh').value,
-            canCuoc: document.getElementById('txtCanCuoc').value.trim(), 
-            ngayCapCCCD: document.getElementById('txtNgayCapCCCD').value,
-            noiCapCCCD: document.getElementById('txtNoiCapCCCD').value,
-            danToc: document.getElementById('txtDanToc').value,
-            tonGiao: document.getElementById('txtTonGiao').value,
-            chinhSach: document.getElementById('txtChinhSach').value,
-            canGheo: document.getElementById('txtCanGheo').value,
-            doanVien: document.getElementById('txtDoanVien').value,
-            doiVien: document.getElementById('txtDoiVien').value,
-            tenCha: document.getElementById('txtTenCha').value,
-            ngheCha: document.getElementById('txtNgheCha').value,
-            namSinhCha: document.getElementById('txtNamSinhCha').value,
-            cccdCha: document.getElementById('txtCccdCha').value,
-            coQuanCha: document.getElementById('txtCoQuanCha').value,
-            tenMe: document.getElementById('txtTenMe').value,
-            ngheMe: document.getElementById('txtNgheMe').value,
-            namSinhMe: document.getElementById('txtNamSinhMe').value,
-            cccdMe: document.getElementById('txtCccdMe').value,
-            coQuanMe: document.getElementById('txtCoQuanMe').value,
-            sdtSLL: document.getElementById('txtSdtSLL').value,
-            emailSLL: document.getElementById('txtEmailSLL').value,
-            sdtBo: document.getElementById('txtSdtBo').value,
-            sdtMe: document.getElementById('txtSdtMe').value,
-            sdtHS: document.getElementById('txtSdtHS').value,
-            khuyetTat: document.getElementById('txtKhuyetTat').value,
-            noiTruBTru: document.getElementById('txtNoiTruBTru').value,
-            chucVu: document.getElementById('txtChucVu').value,
-            nhiemVuPhuTrach: document.getElementById('txtNhiemVuPhuTrach').value,
-            oXaTren5km: document.getElementById('txtOXaTren5km').value,
-            choNgoi: document.getElementById('txtChoNgoi').value,
-            canNang: document.getElementById('txtCanNang').value,
-            chieuCao: document.getElementById('txtChieuCao').value,
-            bietBoi: document.getElementById('txtBietBoi').value,
-            benhVeMat: document.getElementById('txtBenhVeMat').value,
-            sucKhoeHocKy: document.getElementById('txtSucKhoeHocKy').value,
-            ghiChuBM: document.getElementById('txtGhiChuBM').value
-          }
+            action: "updateStudentProfile",
+            cccd: currentStudentCCCD, // Biến lưu CCCD lúc đăng nhập thành công
+            data: {
+                choO_SnXom: document.getElementById('txtChoOSnXom').value,
+                choO_KhuDanCu: document.getElementById('txtChoOKhuDanCu').value,
+                choO_Xa: document.getElementById('txtChoOXa').value,
+                choO_Tinh: document.getElementById('txtChoOTinh').value,
+                hk_SnXom: document.getElementById('txtHkSnXom').value,
+                hk_KhuDanCu: document.getElementById('txtHkKhuDanCu').value,
+                hk_Xa: document.getElementById('txtHkXa').value,
+                hk_Tinh: document.getElementById('txtHkTinh').value,
+                ns_ThongTin: document.getElementById('txtNsThongTin').value,
+                ns_Xa: document.getElementById('txtNsXa').value,
+                ns_Tinh: document.getElementById('txtNsTinh').value,
+                qq_ThongTin: document.getElementById('txtQqThongTin').value,
+                qq_Xa: document.getElementById('txtQqXa').value,
+                qq_Tinh: document.getElementById('txtQqTinh').value,
+                nks_Xa: document.getElementById('txtNksXa').value,
+                nks_Tinh: document.getElementById('txtNksTinh').value,
+                canCuoc: document.getElementById('txtCanCuoc').value.trim(),
+                ngayCapCCCD: document.getElementById('txtNgayCapCCCD').value,
+                noiCapCCCD: document.getElementById('txtNoiCapCCCD').value,
+                danToc: document.getElementById('txtDanToc').value,
+                tonGiao: document.getElementById('txtTonGiao').value,
+                chinhSach: document.getElementById('txtChinhSach').value,
+                canGheo: document.getElementById('txtCanGheo').value,
+                doanVien: document.getElementById('txtDoanVien').value,
+                doiVien: document.getElementById('txtDoiVien').value,
+                tenCha: document.getElementById('txtTenCha').value,
+                ngheCha: document.getElementById('txtNgheCha').value,
+                namSinhCha: document.getElementById('txtNamSinhCha').value,
+                cccdCha: document.getElementById('txtCccdCha').value,
+                coQuanCha: document.getElementById('txtCoQuanCha').value,
+                tenMe: document.getElementById('txtTenMe').value,
+                ngheMe: document.getElementById('txtNgheMe').value,
+                namSinhMe: document.getElementById('txtNamSinhMe').value,
+                cccdMe: document.getElementById('txtCccdMe').value,
+                coQuanMe: document.getElementById('txtCoQuanMe').value,
+                sdtSLL: document.getElementById('txtSdtSLL').value,
+                emailSLL: document.getElementById('txtEmailSLL').value,
+                sdtBo: document.getElementById('txtSdtBo').value,
+                sdtMe: document.getElementById('txtSdtMe').value,
+                sdtHS: document.getElementById('txtSdtHS').value,
+                khuyetTat: document.getElementById('txtKhuyetTat').value,
+                noiTruBTru: document.getElementById('txtNoiTruBTru').value,
+                chucVu: document.getElementById('txtChucVu').value,
+                nhiemVuPhuTrach: document.getElementById('txtNhiemVuPhuTrach').value,
+                oXaTren5km: document.getElementById('txtOXaTren5km').value,
+                choNgoi: document.getElementById('txtChoNgoi').value,
+                canNang: document.getElementById('txtCanNang').value,
+                chieuCao: document.getElementById('txtChieuCao').value,
+                bietBoi: document.getElementById('txtBietBoi').value,
+                benhVeMat: document.getElementById('txtBenhVeMat').value,
+                suckhoeHocKy: document.getElementById('txtSucKhoeHocKy').value,
+                ghiChuBM: document.getElementById('txtGhiChuBM').value,
+                
+                // Gắn các tệp minh chứng
+                fileCCCDMT: fileCCCDMT,
+                fileCCCDMS: fileCCCDMS,
+                fileGKS: fileGKS,
+                fileExtra: fileExtra
+            }
         };
 
         const response = await fetch(API_URL, {
-          method: 'POST',
-          body: JSON.stringify(payload)
+            method: 'POST',
+            body: JSON.stringify(payload)
         });
         const result = await response.json();
 
@@ -467,18 +509,18 @@
         const msg = document.getElementById('updateMsg');
         msg.classList.remove('hidden');
         if (result.status === 'success') {
-          msg.className = "p-3 rounded-lg text-xs font-semibold bg-emerald-100 text-emerald-700";
-          msg.innerText = "✅ " + result.message;
+            msg.className = "p-3 rounded-lg text-xs font-semibold bg-emerald-100 text-emerald-700";
+            msg.innerText = "✅ " + result.message;
         } else {
-          msg.className = "p-3 rounded-lg text-xs font-semibold bg-rose-100 text-rose-700";
-          msg.innerText = "❌ Lỗi: " + result.message;
+            msg.className = "p-3 rounded-lg text-xs font-semibold bg-rose-100 text-rose-700";
+            msg.innerText = "❌ Lỗi: " + result.message;
         }
-      } catch (err) {
+    } catch (err) {
         btn.disabled = false;
         btn.innerHTML = "💾 GỬI VÀ CẬP NHẬT HỒ SƠ";
         alert("Lỗi kết nối máy chủ khi gửi dữ liệu!");
-      }
     }
+}
   </script>
 </body>
 </html>
