@@ -205,28 +205,32 @@
           </div>
         </div>
       </div>
-      <!-- PHẦN 6: TỆP MINH CHỨNG & HỒ SƠ ĐÍNH KÈM -->
-      <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
-        <h3 class="text-sm font-bold text-rose-800 mb-3 uppercase"><i class="fa-solid fa-file-arrow-up"></i> 6. Tệp minh chứng & Hồ sơ đính kèm</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div>
-            <label class="font-bold mb-1 block text-slate-700">Ảnh CCCD Mặt trước <span class="text-rose-600">*</span></label>
-            <input type="file" id="fileCCCDMocTruoc" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
+    <!-- PHẦN 6: TỆP MINH CHỨNG & HỒ SƠ ĐÍNH KÈM -->
+    <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
+      <h3 class="text-sm font-bold text-rose-800 mb-3 uppercase"><i class="fa-solid fa-file-arrow-up"></i> 6. Tệp minh chứng & Hồ sơ đính kèm</h3>
+      <div class="mb-4 p-3 border rounded-lg bg-slate-50">
+          <label class="block font-medium text-sm text-slate-700 mb-1">CCCD Mặt Trước:</label>
+          
+          <!-- Phần 1: Nơi hiển thị tệp đã lưu trước đó -->
+          <div id="view_fileCCCDMocTruoc" class="mb-2">
+              <!-- Script sẽ tự động điền link vào đây (nếu có) -->
+              <span class="text-gray-400 text-sm italic">Đang tải trạng thái tệp...</span>
           </div>
-          <div>
-            <label class="font-bold mb-1 block text-slate-700">Ảnh CCCD Mặt sau <span class="text-rose-600">*</span></label>
-            <input type="file" id="fileCCCDMocSau" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
+  
+          <!-- Phần 2: Ô chọn tệp mới nếu muốn thay đổi -->
+          <div class="flex items-center gap-2">
+              <input type="file" id="fileCCCDMocTruoc" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
           </div>
-          <div>
-            <label class="font-bold mb-1 block text-slate-700">Giấy khai sinh <span class="text-rose-600">*</span></label>
-            <input type="file" id="fileGiayKhaiSinh" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
-          </div>
-          <div>
-            <label class="font-bold mb-1 block text-slate-700">Hồ sơ bổ sung (nếu có)</label>
-            <input type="file" id="fileHoSoBoSung" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
-          </div>
-        </div>
+          <small class="text-slate-500 text-xs mt-1 block">*(Chỉ chọn tệp mới nếu bạn muốn thay thế tệp cũ)*</small>
+          <label class="font-bold mb-1 block text-slate-700">Giấy khai sinh <span class="text-rose-600">*</span></label>
+          <input type="file" id="fileGiayKhaiSinh" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
       </div>
+        <div>
+          <label class="font-bold mb-1 block text-slate-700">Hồ sơ bổ sung (nếu có)</label>
+          <input type="file" id="fileHoSoBoSung" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
+        </div>
+    </div>
+      
       <div id="updateMsg" class="hidden p-3 rounded-lg text-xs font-semibold"></div>
 
       <button type="submit" id="btnSave" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-emerald-600/20 transition">
