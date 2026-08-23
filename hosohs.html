@@ -200,7 +200,7 @@
     let currentStudentCode = "";
 
     function verifyStudent() {
-      const ma = document.getElementById('soBaoDanh').value.trim();
+      const ma = document.getElementById('soBD').value.trim();
       const ns = document.getElementById('hsNgaySinh').value.trim();
 
       fetch(`${API_URL}?action=getStudentProfile&maHS=${encodeURIComponent(ma)}&ngaySinh=${encodeURIComponent(ns)}`)
