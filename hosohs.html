@@ -195,7 +195,7 @@
         .then(res => res.json())
         .then(res => {
           if (res.status === 'success') {
-            loadStudentDataToUI(res.data, res.maHS);
+            loadStudentDataToUI(res.data, res.cccd);
           } else if (res.status === 'first_time') {
             temporaryCCCD = res.cccd;
             alert(res.message);
@@ -231,7 +231,7 @@
         if (res.status === 'success') {
           alert("🔔 " + res.message + "\nVui lòng ghi nhớ mật khẩu này để đăng nhập cho các lần sau!");
           document.getElementById('hsChangePassBox').classList.add('hidden');
-          loadStudentDataToUI(res.data, res.maHS);
+          loadStudentDataToUI(res.data, res.cccd);
         } else {
           alert("❌ " + res.message);
         }
