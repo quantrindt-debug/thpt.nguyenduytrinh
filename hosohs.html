@@ -183,8 +183,9 @@
     // Link Web App Google Apps Script của bạn
     const API_URL = "https://script.google.com/macros/s/AKfycbzdwituas3YJjOOJsag-gotQomgyKvSw2--L0tiPFMHHkAGduMfIB7ayW9b3s9fiaM8/exec";
     
-    let currentStudentMaHS = "";
+
     let temporaryCCCD = ""; 
+    let currentStudentCCCD = ""; // Thay vì dùng maHS thì dùng CCCD
 
     function loginStudent() {
       const cccd = document.getElementById('loginCCCD').value.trim();
@@ -242,7 +243,7 @@
     }
 
     function loadStudentDataToUI(data, maHS) {
-      currentStudentMaHS = maHS; // Lưu mã học sinh để dùng khi cập nhật
+      currentStudentCCCD = cccd; // Lưu lại CCCD của học sinh đang đăng nhập
       
       // Đổ dữ liệu lên form hồ sơ
       document.getElementById('txtHoTen').value = data.hoTen || '';
@@ -300,7 +301,7 @@
 
         const payload = {
           action: "updateStudentProfile",
-          maHS: currentStudentMaHS, // Sử dụng mã học sinh để doPost định vị đúng dòng ở sheet DanhSachHocSinh
+          cccd: currentStudentCCCD, // Gửi CCCD lên để GAS tìm đúng dòng
           data: {
             sdtHS: document.getElementById('txtDtsHS').value,
             choO: document.getElementById('txtChoO').value,
