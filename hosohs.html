@@ -240,8 +240,9 @@
       });
     }
 
-    function loadStudentDataToUI(data, cccd) {
-      currentStudentCCCD = cccd; // Đã sửa biến chính xác ở đây
+    function loadStudentDataToUI(data, cccdParam) {
+      // Ép lấy CCCD dù truyền theo tên biến nào đi nữa
+      currentStudentCCCD = cccdParam || temporaryCCCD || document.getElementById('loginCCCD').value.trim();
       
       document.getElementById('txtHoTen').value = data.hoTen || '';
       document.getElementById('txtGioiTinh').value = data.gioiTinh || 'Nam';
