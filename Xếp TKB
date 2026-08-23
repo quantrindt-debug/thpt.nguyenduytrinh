@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Xếp TKB Giáo Viên - EduTKB</title>
+  <!-- Tailwind CSS qua CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col font-sans text-slate-800">
+
+  <!-- THANH HEADER ĐIỀU HƯỚNG -->
+  <header class="bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-md p-4 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-lg font-bold shadow-inner">
+        <i class="fa-solid fa-calendar-days"></i>
+      </div>
+      <div>
+        <h1 class="text-sm font-extrabold uppercase tracking-wide">EduTKB - Quản Lý Lịch Sáng / Chiều</h1>
+        <p class="text-[11px] text-sky-100">Hệ thống điều phối lịch dạy giáo viên thông minh</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="clearAllData()" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-xl text-xs font-semibold transition">
+        <i class="fa-solid fa-trash-can mr-1"></i> Xóa dữ liệu
+      </button>
+    </div>
+  </header>
+
+  <!-- NỘI DUNG CHÍNH -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+    
+    <!-- CỘT TRÁI: NHẬP THÔNG TIN GIÁO VIÊN & RÀNG BUỘC CỨNG -->
+    <section class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 flex flex-col gap-4 lg:col-span-1">
+      <h2 class="text-xs font-extrabold uppercase text-slate-700 tracking-wider flex items-center gap-2">
+        <i class="fa-solid fa-user-gear text-indigo-600"></i> Khai Báo Giáo Viên
+      </h2>
+      
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">Họ và tên giáo viên:</label>
+          <input type="text" id="teacherName" placeholder="Ví dụ: Thầy Nguyễn Văn A" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">Số tiết định mức / tuần:</label>
+          <input type="number" id="teacherSlots" placeholder="18" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">Buổi/Ca cố định (Khóa cứng):</label>
+          <select id="fixedSession" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="">-- Không cố định --</option>
+            <option value="Mon_Morning">Thứ 2 - Sáng</option>
+            <option value="Mon_Afternoon">Thứ 2 - Chiều</option>
+            <option value="Tue_Morning">Thứ 3 - Sáng</option>
+            <option value="Tue_Afternoon">Thứ 3 - Chiều</option>
+            <option value="Wed_Morning">Thứ 4 - Sáng</option>
+            <option value="Wed_Afternoon">Thứ 4 - Chiều</option>
+            <option value="Thu_Morning">Thứ 5 - Sáng</option>
+            <option value="Thu_Afternoon">Thứ 5 - Chiều</option>
+            <option value="Fri_Morning">Thứ 6 - Sáng</option>
+            <option value="Fri_Afternoon">Thứ 6 - Chiều</option>
+            <option value="Sat_Morning">Thứ 7 - Sáng</option>
+            <option value="Sat_Afternoon">Thứ 7 - Chiều</option>
+          </select>
+        </div>
+
+        <button onclick="addTeacher()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2 mt-2">
+          <i class="fa-solid fa-plus"></i> Thêm vào danh sách
+        </button>
+      </div>
+
+      <hr class="border-slate-100 my-1">
+
+      <!-- Danh sách giáo viên đã thêm -->
+      <div class="flex-1 overflow-y-auto max-h-60">
+        <p id="teacherCountLabel" class="font-bold text-slate-500 text-[11px] mb-2">Đã thêm (0 giáo viên):</p>
+        <div id="teacherList" class="space-y-2">
+          <div class="text-slate-400 text-center py-4 italic text-[11px]">Chưa có giáo viên nào...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CỘT PHẢI: MA TRẬN LỊCH SÁNG - CHIỀU TOÀN TRƯỜNG -->
+    <section class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 flex flex-col lg:col-span-3">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xs font-extrabold uppercase text-slate-700 tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-table-cells text-sky-600"></i> Ma Trận Phân Bổ Ca Sáng / Chiều (Thứ 2 - Thứ 7)
+        </h2>
+        <span id="matrixStatus" class="text-[11px] bg-sky-50 text-sky-700 font-semibold px-2.5 py-1 rounded-lg border border-sky-100">
+          Sẵn sàng xếp lịch
+        </span>
+      </div>
+
+      <!-- Bảng ma trận hiển thị -->
+      <div class="overflow-x-auto flex-1 border border-slate-200 rounded-2xl">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
+              <th class="p-3 border-r border-slate-200 font-bold w-28">Thứ / Buổi</th>
+              <th class="p-3 border-r border-slate-200 font-bold text-center">Thứ 2</th>
+              <th class="p-3 border-r border-slate-200 font-bold text-center">Thứ 3</th>
+              <th class="p-3 border-r border-slate-200 font-bold text-center">Thứ 4</th>
+              <th class="p-3 border-r border-slate-200 font-bold text-center">Thứ 5</th>
+              <th class="p-3 border-r border-slate-200 font-bold text-center">Thứ 6</th>
+              <th class="p-3 font-bold text-center">Thứ 7</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-700">
+            <!-- Ca Sáng -->
+            <tr>
+              <td class="p-3 font-bold bg-sky-50/50 border-r border-slate-200 text-sky-900">
+                <i class="fa-solid fa-sun text-amber-500 mr-1"></i> CA SÁNG
+              </td>
+              <td class="p-3 border-r border-slate-200 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Mon_Morning"><span class="text-slate-300 italic">Trống</span></td>
+              <td class="p-3 border-r border-slate-200 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Tue_Morning"><span class="text-slate-300 italic">Trống</span></td>
+              <td class="p-3 border-r border-slate-200 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Wed_Morning"><span class="text-slate-300 italic">Trống</span></td>
+              <td class="p-3 border-r border-slate-200 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Thu_Morning"><span class="text-slate-300 italic">Trống</span></td>
+              <td class="p-3 border-r border-slate-200 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Fri_Morning"><span class="text-slate-300 italic">Trống</span></td>
+              <td class="p-3 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Sat_Morning"><span class="text-slate-300 italic">Trống</span></td>
+            </tr>
+            <!-- Ca Chiều -->
+            <tr>
+              <td class="p-3 font-bold bg-indigo-50/50 border-r border-slate-200 text-indigo-900">
+                <i class="fa-solid fa-moon text-indigo-500 mr-1"></i> CA CHIỀU
+              </td>
+              <td class="p-3 border-r border-slate-200 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Mon_Afternoon"><span class="text-slate-300 italic">Trống</span></td>
+              <td class="p-3 border-r border-slate-200 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Tue_Afternoon"><span class="text-slate-300 italic">Trống</span></td>
+              <td class="p-3 border-r border-slate-200 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Wed_Afternoon"><span class="text-slate-300 italic">Trống</span></td>
+              <td class="p-3 border-r border-slate-200 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Thu_Afternoon"><span class="text-slate-300 italic">Trống</span></td>
+              <td class="p-3 border-r border-slate-200 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Fri_Afternoon"><span class="text-slate-300 italic">Trống</span></td>
+              <td class="p-3 hover:bg-slate-50 h-24 align-top text-center space-y-1" data-cell="Sat_Afternoon"><span class="text-slate-300 italic">Trống</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Nút hành động thuật toán -->
+      <div class="mt-4 flex justify-end gap-3">
+        <button onclick="runAutoSchedule()" class="bg-gradient-to-r from-sky-600 to-indigo-600 hover:opacity-90 text-white font-bold px-5 py-2.5 rounded-xl shadow transition flex items-center gap-2">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Chạy Xếp TKB Tự Động
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT XỬ LÝ LOGIC THUẬT TOÁN -->
+  <script>
+    // Lấy danh sách giáo viên từ localStorage hoặc khởi tạo mảng rỗng
+    function getTeachers() {
+      const data = localStorage.getItem('edutkb_teachers');
+      return data ? JSON.parse(data) : [];
+    }
+
+    function saveTeachers(list) {
+      localStorage.setItem('edutkb_teachers', JSON.stringify(list));
+      renderTeachers();
+    }
+
+    // Thêm giáo viên mới
+    function addTeacher() {
+      const name = document.getElementById('teacherName').value.trim();
+      const slots = document.getElementById('teacherSlots').value.trim();
+      const fixedSession = document.getElementById('fixedSession').value;
+
+      if (!name) {
+        alert('Vui lòng nhập tên giáo viên!');
+        return;
+      }
+
+      const teachers = getTeachers();
+      teachers.push({
+        id: Date.now(),
+        name: name,
+        slots: parseInt(slots) || 12,
+        fixed: fixedSession // Khóa cứng nếu có chọn
+      });
+
+      saveTeachers(teachers);
+
+      // Reset form
+      document.getElementById('teacherName').value = '';
+      document.getElementById('teacherSlots').value = '';
+      document.getElementById('fixedSession').value = '';
+    }
+
+    // Xóa giáo viên
+    function deleteTeacher(id) {
+      let teachers = getTeachers();
+      teachers = teachers.filter(t => t.id !== id);
+      saveTeachers(teachers);
+    }
+
+    // Xóa toàn bộ dữ liệu
+    function clearAllData() {
+      if (confirm('Bạn có chắc muốn xóa toàn bộ danh sách giáo viên và lịch?')) {
+        localStorage.removeItem('edutkb_teachers');
+        renderTeachers();
+        clearMatrixUI();
+      }
+    }
+
+    // Hiển thị danh sách giáo viên ra cột trái
+    function renderTeachers() {
+      const teachers = getTeachers();
+      const container = document.getElementById('teacherList');
+      document.getElementById('teacherCountLabel').innerText = `Đã thêm (${teachers.length} giáo viên):`;
+
+      if (teachers.length === 0) {
+        container.innerHTML = `<div class="text-slate-400 text-center py-4 italic text-[11px]">Chưa có giáo viên nào...</div>`;
+        return;
+      }
+
+      let html = '';
+      teachers.forEach(t => {
+        let fixedBadge = t.fixed ? `<span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-semibold">Ghim: ${t.fixed}</span>` : `<span class="text-[10px] text-slate-400">Linh hoạt</span>`;
+        html += `
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 flex justify-between items-center">
+            <div>
+              <p class="font-bold text-slate-800">${t.name}</p>
+              <p class="text-[10px] text-slate-500">Định mức: ${t.slots} tiết | ${fixedBadge}</p>
+            </div>
+            <button onclick="deleteTeacher(${t.id})" class="text-rose-500 hover:text-rose-700 p-1 transition"><i class="fa-solid fa-trash text-xs"></i></button>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    // Xóa sạch chữ trong bảng ma trận
+    function clearMatrixUI() {
+      const cells = document.querySelectorAll('td[data-cell]');
+      cells.forEach(cell => {
+        cell.innerHTML = `<span class="text-slate-300 italic">Trống</span>`;
+      });
+      document.getElementById('matrixStatus').innerText = "Sẵn sàng xếp lịch";
+      document.getElementById('matrixStatus').className = "text-[11px] bg-sky-50 text-sky-700 font-semibold px-2.5 py-1 rounded-lg border border-sky-100";
+    }
+
+    // --- THUẬT TOÁN XẾP TỰ ĐỘNG KẾT HỢP CỐ ĐỊNH CỨNG ---
+    function runAutoSchedule() {
+      const teachers = getTeachers();
+      if (teachers.length === 0) {
+        alert('Vui lòng thêm ít nhất một giáo viên trước khi chạy xếp lịch!');
+        return;
+      }
+
+      // Danh sách các ô trong ma trận tuần (6 ngày x 2 ca)
+      const allCells = [
+        "Mon_Morning", "Mon_Afternoon", "Tue_Morning", "Tue_Afternoon",
+        "Wed_Morning", "Wed_Afternoon", "Thu_Morning", "Thu_Afternoon",
+        "Fri_Morning", "Fri_Afternoon", "Sat_Morning", "Sat_Afternoon"
+      ];
+
+      // Reset các ô về trống trước khi xếp
+      let matrixData = {};
+      allCells.forEach(c => matrixData[c] = []);
+
+      // BƯỚC 1: Xử lý ràng buộc cứng (Ghim giáo viên vào ca cố định)
+      teachers.forEach(t => {
+        if (t.fixed && matrixData[t.fixed]) {
+          matrixData[t.fixed].push(`${t.name} <span class="text-[9px] bg-amber-100 text-amber-800 px-1 rounded">(Cố định)</span>`);
+        }
+      });
+
+      // BƯỚC 2: Thuật toán phân bổ tự động phần còn lại cho các giáo viên linh hoạt
+      let flexibleTeachers = teachers.filter(t => !t.fixed);
+      
+      // Vòng lặp phân phối đơn giản dựa trên quỹ ca trống trong tuần
+      let teacherIndex = 0;
+      allCells.forEach(cellKey => {
+        // Nếu ô đó chưa quá tải, có thể nhét thêm giáo viên linh hoạt vào
+        if (matrixData[cellKey].length < 2 && flexibleTeachers.length > 0) {
+          let currentT = flexibleTeachers[teacherIndex % flexibleTeachers.length];
+          matrixData[cellKey].push(`${currentT.name}`);
+          teacherIndex++;
+        }
+      });
+
+      // BƯỚC 3: Đưa dữ liệu lên Giao diện Ma trận
+      allCells.forEach(cellKey => {
+        const cellEl = document.querySelector(`td[data-cell="${cellKey}"]`);
+        if (matrixData[cellKey].length > 0) {
+          cellEl.innerHTML = matrixData[cellKey].map(name => `<div class="bg-indigo-50 text-indigo-700 font-semibold px-2 py-1 rounded border border-indigo-100 mb-1 text-[11px]">${name}</div>`).join('');
+        } else {
+          cellEl.innerHTML = `<span class="text-slate-300 italic">Trống</span>`;
+        }
+      });
+
+      // Cập nhật trạng thái
+      const statusEl = document.getElementById('matrixStatus');
+      statusEl.innerText = "Xếp lịch tự động thành công!";
+      statusEl.className = "text-[11px] bg-emerald-50 text-emerald-700 font-semibold px-2.5 py-1 rounded-lg border border-emerald-100";
+    }
+
+    // Tải dữ liệu khi mở trang
+    window.onload = function() {
+      renderTeachers();
+    };
+  </script>
+
+</body>
+</html>
