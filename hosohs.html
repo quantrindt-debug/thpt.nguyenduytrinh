@@ -200,46 +200,45 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbzdwituas3YJjOOJsag-gotQomgyKvSw2--L0tiPFMHHkAGduMfIB7ayW9b3s9fiaM8/exec";
     let currentStudentCode = "";
 
-    function verifyStudent() {
-      // ⚠️ Đã sửa từ 'soBD' thành 'hsMa' cho khớp với id của ô input ở trên
-      const ma = document.getElementById('hsMa').value.trim();
-      const ns = document.getElementById('hsNgaySinh').value.trim();
+ function verifyStudent() {
+  const ma = document.getElementById('soBD').value.trim(); // Khớp với id="soBD" ở trên
+  const ns = document.getElementById('hsNgaySinh').value.trim();
 
-      fetch(`${API_URL}?action=getStudentProfile&soBD=${encodeURIComponent(ma)}&ngaySinh=${encodeURIComponent(ns)}`)
-        .then(res => res.json())
-        .then(res => {
-          if (res.status === 'success') {
-            currentStudentCode = ma;
-            // Đổ dữ liệu lên form
-            document.getElementById('txtHoTen').value = res.data.hoTen || '';
-            document.getElementById('txtGioiTinh').value = res.data.gioiTinh || 'Nam';
-            document.getElementById('txtNgaySinh').value = res.data.ngaySinh || '';
-            document.getElementById('txtDanToc').value = res.data.danToc || '';
-            document.getElementById('txtTonGiao').value = res.data.tonGiao || '';
-            document.getElementById('txtCanCuoc').value = res.data.canCuoc || '';
-            document.getElementById('txtChoO').value = res.data.choO || '';
-            document.getElementById('txtHoKhau').value = res.data.hoKhau || '';
-            document.getElementById('txtDtsHS').value = res.data.sdtHS || '';
-            
-            // Đổ dữ liệu sức khỏe
-            document.getElementById('txtNhomMau').value = res.data.nhomMau || '';
-            document.getElementById('txtChieuCao').value = res.data.chieuCao || '';
-            document.getElementById('txtCanNang').value = res.data.canNang || '';
-            document.getElementById('txtSoBHYT').value = res.data.soBHYT || '';
+  fetch(`${API_URL}?action=getStudentProfile&soBD=${encodeURIComponent(ma)}&ngaySinh=${encodeURIComponent(ns)}`)
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === 'success') {
+        currentStudentCode = ma;
+        // Đổ dữ liệu lên form
+        document.getElementById('txtHoTen').value = res.data.hoTen || '';
+        document.getElementById('txtGioiTinh').value = res.data.gioiTinh || 'Nam';
+        document.getElementById('txtNgaySinh').value = res.data.ngaySinh || '';
+        document.getElementById('txtDanToc').value = res.data.danToc || '';
+        document.getElementById('txtTonGiao').value = res.data.tonGiao || '';
+        document.getElementById('txtCanCuoc').value = res.data.canCuoc || '';
+        document.getElementById('txtChoO').value = res.data.choO || '';
+        document.getElementById('txtHoKhau').value = res.data.hoKhau || '';
+        document.getElementById('txtDtsHS').value = res.data.sdtHS || '';
+        
+        // Đổ dữ liệu sức khỏe
+        document.getElementById('txtNhomMau').value = res.data.nhomMau || '';
+        document.getElementById('txtChieuCao').value = res.data.chieuCao || '';
+        document.getElementById('txtCanNang').value = res.data.canNang || '';
+        document.getElementById('txtSoBHYT').value = res.data.soBHYT || '';
 
-            document.getElementById('hsLopHienThi').innerText = `Lớp: ${res.data.lop || '---'}`;
+        document.getElementById('hsLopHienThi').innerText = `Lớp: ${res.data.lop || '---'}`;
 
-            document.getElementById('hsLoginBox').classList.add('hidden');
-            document.getElementById('hsProfileBox').classList.remove('hidden');
-          } else {
-            alert("❌ Không tìm thấy thông tin hoặc ngày sinh không đúng!");
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          alert("Lỗi kết nối máy chủ khi xác thực!");
-        });
-    }
+        document.getElementById('hsLoginBox').classList.add('hidden');
+        document.getElementById('hsProfileBox').classList.remove('hidden');
+      } else {
+        alert("❌ Không tìm thấy thông tin hoặc ngày sinh không đúng!");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Lỗi kết nối máy chủ khi xác thực!");
+    });
+}
 
     // Hàm chuyển đổi file sang Base64
     function getFileAsBase64(fileInputId) {
