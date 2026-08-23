@@ -366,14 +366,57 @@
       document.getElementById('txtBietBoi').value = data.bietBoi || '';
       document.getElementById('txtBenhVeMat').value = data.benhVeMat || '';
       document.getElementById('txtSucKhoeHocKy').value = data.sucKhoeHocKy || '';
-      document.getElementById('txtGhiChuBM').value = data.ghiChuBM || '';
-   
+      document.getElementById('txtGhiChuBM').value = data.ghiChuBM || '';              
       document.getElementById('hsLopHienThi').innerText = `Lớp: ${data.maLop || '---'} | Họ tên: ${data.hoTen || ''}`;
-
       document.getElementById('hsLoginBox').classList.add('hidden');
       document.getElementById('hsChangePassBox').classList.add('hidden');
       document.getElementById('hsProfileBox').classList.remove('hidden'); 
+      // --- XỬ LÝ HIỂN THỊ LINK TỆP ĐÃ LƯU (THAY CHO VIỆC GÁN VÀO INPUT FILE) ---
+      
+      // 1. CCCD Mặt Trước
+      const viewMT = document.getElementById('view_fileCCCDMocTruoc');
+      if (viewMT) {
+          if (data.linkCCCDMT) {
+              viewMT.innerHTML = `<a href="${data.linkCCCDMT}" target="_blank" class="text-blue-600 underline text-sm">🔗 Xem tệp CCCD mặt trước đã lưu</a>`;
+          } else {
+              viewMT.innerHTML = `<span class="text-gray-400 text-sm">Chưa có tệp</span>`;
+          }
+      }
+      document.getElementById('fileCCCDMocTruoc').value = ''; // Giữ nguyên trống cho input file
 
+      // 2. CCCD Mặt Sau
+      const viewMS = document.getElementById('view_fileCCCDMocSau');
+      if (viewMS) {
+          if (data.linkCCCDMS) {
+              viewMS.innerHTML = `<a href="${data.linkCCCDMS}" target="_blank" class="text-blue-600 underline text-sm">🔗 Xem tệp CCCD mặt sau đã lưu</a>`;
+          } else {
+              viewMS.innerHTML = `<span class="text-gray-400 text-sm">Chưa có tệp</span>`;
+          }
+      }
+      document.getElementById('fileCCCDMocSau').value = '';
+
+      // 3. Giấy Khai Sinh
+      const viewGKS = document.getElementById('view_fileGiayKhaiSinh');
+      if (viewGKS) {
+          if (data.linkGKS) {
+              viewGKS.innerHTML = `<a href="${data.linkGKS}" target="_blank" class="text-blue-600 underline text-sm">🔗 Xem tệp Giấy khai sinh đã lưu</a>`;
+          } else {
+              viewGKS.innerHTML = `<span class="text-gray-400 text-sm">Chưa có tệp</span>`;
+          }
+      }
+      document.getElementById('fileGiayKhaiSinh').value = '';
+
+      // 4. Hồ Sơ Bổ Sung
+      const viewExtra = document.getElementById('view_fileHoSoBoSung');
+      if (viewExtra) {
+          if (data.linkExtra) {
+              viewExtra.innerHTML = `<a href="${data.linkExtra}" target="_blank" class="text-blue-600 underline text-sm">🔗 Xem tệp Hồ sơ bổ sung đã lưu</a>`;
+          } else {
+              viewExtra.innerHTML = `<span class="text-gray-400 text-sm">Chưa có tệp</span>`;
+          }
+      }
+      document.getElementById('fileHoSoBoSung').value = '';
+        
       // ================= XỬ LÝ KHÓA GIAO DIỆN NẾU isLocked = TRUE =================
       const isLocked = data.isLocked || false; 
       if (isLocked) {
