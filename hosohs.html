@@ -8,7 +8,19 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-slate-100 min-h-screen py-8 px-4 font-sans flex items-center justify-center">
-
+<!-- ================= TIÊU ĐỀ TRÊN: TÊN TRƯỜNG ================= -->
+  <header class="w-full max-w-4xl text-center mb-6">
+    <div class="inline-block bg-sky-100 text-sky-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+      Cổng thông tin tuyển sinh 2026 - 2027
+    </div>
+    <h1 class="text-xl md:text-2xl font-extrabold text-slate-800 uppercase tracking-tight">
+      TRƯỜNG THPT ĐỒNG LỘC
+    </h1>
+    <p class="text-slate-500 text-xs mt-0.5 font-medium">
+      Hệ thống đăng ký và quản lý hồ sơ học sinh trực tuyến
+    </p>
+  </header>
+  =================================================
   <!-- MÀN HÌNH ĐĂNG NHẬP -->
   <div id="hsLoginBox" class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
     <div class="text-center mb-6">
@@ -32,17 +44,7 @@
       </button>
     </form>
   </div>
-  <header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white shadow-md py-6 px-4 mb-6 rounded-2xl text-center">
-    <div class="max-w-3xl mx-auto">
-        <span class="inline-block bg-white/10 text-blue-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-2 backdrop-blur-sm">
-            Cổng thông tin quản lý hồ sơ học sinh 2026 - 2027
-        </span>
-        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight uppercase">
-            TRƯỜNG THPT NGUYỄN DUY TRINH
-        </h1>
-        
-    </div>
-</header>
+ 
   <!-- MÀN HÌNH ĐỔI MẬT KHẨU LẦN ĐẦU -->
   <div id="hsChangePassBox" class="hidden bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
     <div class="text-center mb-6">
@@ -285,11 +287,17 @@
         💾 GỬI VÀ CẬP NHẬT HỒ SƠ
       </button>
     </form>
-            <span class="inline-block bg-white/10 text-blue-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-2 backdrop-blur-sm">
-            Hỗ trợ kỹ thuật SĐT: 0978 92 93 99
-        </span>
-  </div>
-
+    </div>
+<!-- ================= TIÊU ĐỀ DƯỚI: 1 DÒNG LIÊN HỆ ================= -->
+  <footer class="w-full mt-6 py-2.5 px-4 text-center text-slate-500 text-xs border-t border-slate-200 bg-white/50 rounded-xl">
+    <div class="flex flex-wrap justify-center items-center gap-2 md:gap-6">
+      <span class="font-medium text-slate-700"><i class="fa-solid fa-headset text-sky-600 mr-1"></i> Hỗ trợ kỹ thuật: 0988.xxx.xxx</span>
+      <span class="hidden md:inline text-slate-300">|</span>
+      <span>📧 Email: <a href="mailto:c3dongloc@nghean.edu.vn" class="text-sky-600 hover:underline">c3dongloc@nghean.edu.vn</a></span>
+      <span class="hidden md:inline text-slate-300">|</span>
+      <span>© 2026 Trường THPT Đồng Lộc</span>
+    </div>
+  </footer>
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbx_JrmXio35cXobgk6TRrsRYCrfmCH2Lz7mjswM-mV-bPuObRu_smGR9ZrG2T-_qNsT/exec";
     
