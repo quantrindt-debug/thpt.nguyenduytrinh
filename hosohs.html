@@ -7,51 +7,52 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-100 min-h-screen py-8 px-4 font-sans">
+<body class="bg-slate-100 min-h-screen py-8 px-4 font-sans flex items-center justify-center">
 
   <!-- MÀN HÌNH ĐĂNG NHẬP -->
- <div id="hsLoginBox" class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
-  <div class="text-center mb-6">
-    <div class="w-14 h-14 bg-sky-100 text-sky-600 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 shadow-inner">
-      <i class="fa-solid fa-shield-halved"></i>
+  <div id="hsLoginBox" class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
+    <div class="text-center mb-6">
+      <div class="w-14 h-14 bg-sky-100 text-sky-600 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 shadow-inner">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-800">CỔNG ĐĂNG NHẬP HỌC SINH</h2>
+      <p class="text-xs text-slate-500 mt-1">Nhập Số Căn cước và Mật khẩu của bạn</p>
     </div>
-    <h2 class="text-xl font-bold text-slate-800">CỔNG ĐĂNG NHẬP HỌC SINH</h2>
-    <p class="text-xs text-slate-500 mt-1">Nhập Số Căn cước và Mật khẩu của bạn</p>
+    <form onsubmit="event.preventDefault(); loginStudent();" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Số Căn cước (CCCD)</label>
+        <input type="text" id="loginCCCD" required placeholder="Nhập số CCCD" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-mono">
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mật khẩu</label>
+        <input type="password" id="loginPass" required placeholder="Nhập mật khẩu" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm">
+      </div>
+      <button type="submit" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-sky-600/30 transition">
+        ĐĂNG NHẬP HỆ THỐNG
+      </button>
+    </form>
   </div>
-  <form onsubmit="event.preventDefault(); loginStudent();" class="space-y-4">
-    <div>
-      <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Số Căn cước (CCCD)</label>
-      <input type="text" id="loginCCCD" required placeholder="Nhập số CCCD" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-mono">
-    </div>
-    <div>
-      <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mật khẩu</label>
-      <input type="password" id="loginPass" required placeholder="Nhập mật khẩu" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm">
-    </div>
-    <button type="submit" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-sky-600/30">
-      ĐĂNG NHẬP HỆ THỐNG
-    </button>
-  </form>
-</div>
 
-<!-- MÀN HÌNH ĐỔI MẬT KHẨU LẦN ĐẦU (Ẩn mặc định) -->
-<div id="hsChangePassBox" class="hidden bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
-  <div class="text-center mb-6">
-    <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 shadow-inner">
-      <i class="fa-solid fa-key"></i>
+  <!-- MÀN HÌNH ĐỔI MẬT KHẨU LẦN ĐẦU (Ẩn mặc định) -->
+  <div id="hsChangePassBox" class="hidden bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
+    <div class="text-center mb-6">
+      <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 shadow-inner">
+        <i class="fa-solid fa-key"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-800">ĐỔI MẬT KHẨU LẦN ĐẦU</h2>
+      <p class="text-xs text-amber-600 mt-1 font-medium">Vì là đăng nhập lần đầu, bạn bắt buộc phải đổi mật khẩu mới để bảo mật!</p>
     </div>
-    <h2 class="text-xl font-bold text-slate-800">ĐỔI MẬT KHẨU LẦN ĐẦU</h2>
-    <p class="text-xs text-amber-600 mt-1 font-medium">Vì là đăng nhập lần đầu, bạn bắt buộc phải đổi mật khẩu mới để bảo mật!</p>
+    <form onsubmit="event.preventDefault(); changePasswordFirstTime();" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mật khẩu mới (tối thiểu 6 ký tự)</label>
+        <input type="password" id="newPass" required placeholder="Nhập mật khẩu mới của bạn" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm">
+      </div>
+      <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-amber-600/30 transition">
+        XÁC NHẬN & VÀO HỒ SƠ
+      </button>
+    </form>
   </div>
-  <form onsubmit="event.preventDefault(); changePasswordFirstTime();" class="space-y-4">
-    <div>
-      <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mật khẩu mới</label>
-      <input type="password" id="newPass" required placeholder="Nhập mật khẩu mới của bạn" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm">
-    </div>
-    <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-amber-600/30">
-      XÁC NHẬN & VÀO HỒ SƠ
-    </button>
-  </form>
-</div>
+
   <!-- GIAO DIỆN FORM CẬP NHẬT CHI TIẾT (Ẩn ban đầu) -->
   <div id="hsProfileBox" class="hidden bg-white rounded-2xl shadow-xl p-6 md:p-10 max-w-4xl w-full border border-slate-200 mx-auto">
     <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-6">
@@ -113,62 +114,27 @@
         </div>
       </div>
 
-      <!-- PHẦN 3: THÔNG TIN GIA ĐÌNH -->
+      <!-- PHẦN 3: LIÊN LẠC -->
       <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-        <h3 class="text-sm font-bold text-sky-700 mb-3 uppercase"><i class="fa-solid fa-users"></i> 3. Thông tin Phụ huynh (Bố / Mẹ)</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Bố -->
-          <div class="space-y-3">
-            <h4 class="text-xs font-bold text-slate-700 uppercase">Thông tin Bố</h4>
-            <input type="text" id="txtTenhCha" placeholder="Họ tên bố" class="w-full px-3 py-2 bg-white border rounded-lg text-sm">
-            <div class="grid grid-cols-2 gap-2">
-              <input type="text" id="txtNamSinhCha" placeholder="Năm sinh" class="px-3 py-2 bg-white border rounded-lg text-sm">
-              <input type="text" id="txtDtpCha" placeholder="Điện thoại bố" class="px-3 py-2 bg-white border rounded-lg text-sm">
-            </div>
-            <input type="text" id="txtNgheNghiepCha" placeholder="Nghề nghiệp / Đơn vị công tác" class="w-full px-3 py-2 bg-white border rounded-lg text-sm">
-          </div>
-          <!-- Mẹ -->
-          <div class="space-y-3">
-            <h4 class="text-xs font-bold text-slate-700 uppercase">Thông tin Mẹ</h4>
-            <input type="text" id="txtTenhMe" placeholder="Họ tên mẹ" class="w-full px-3 py-2 bg-white border rounded-lg text-sm">
-            <div class="grid grid-cols-2 gap-2">
-              <input type="text" id="txtNamSinhMe" placeholder="Năm sinh" class="px-3 py-2 bg-white border rounded-lg text-sm">
-              <input type="text" id="txtDtpMe" placeholder="Điện thoại mẹ" class="px-3 py-2 bg-white border rounded-lg text-sm">
-            </div>
-            <input type="text" id="txtNgheNghiepMe" placeholder="Nghề nghiệp / Đơn vị công tác" class="w-full px-3 py-2 bg-white border rounded-lg text-sm">
-          </div>
-        </div>
-      </div>
-
-      <!-- PHẦN 4: LIÊN LẠC & CHÍNH SÁCH -->
-      <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-        <h3 class="text-sm font-bold text-sky-700 mb-3 uppercase"><i class="fa-solid fa-address-book"></i> 4. Thông tin liên lạc & Khác</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <h3 class="text-sm font-bold text-sky-700 mb-3 uppercase"><i class="fa-solid fa-address-book"></i> 3. Thông tin liên lạc</h3>
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Điện thoại Học sinh</label>
             <input type="text" id="txtDtsHS" class="w-full px-3 py-2 bg-white border rounded-lg text-sm">
           </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Điện thoại nhận SLL</label>
-            <input type="text" id="txtDtsSLL" class="w-full px-3 py-2 bg-white border rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Diện chính sách</label>
-            <input type="text" id="txtChinhSach" class="w-full px-3 py-2 bg-white border rounded-lg text-sm">
-          </div>
         </div>
       </div>
 
-      <!-- PHẦN 5: THÔNG TIN SỨC KHỎE & BẢO HIỂM -->
+      <!-- PHẦN 4: THÔNG TIN SỨC KHỎE & BẢO HIỂM -->
       <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-        <h3 class="text-sm font-bold text-sky-700 mb-3 uppercase"><i class="fa-solid fa-heart-pulse"></i> 5. Thông tin sức khỏe & Bảo hiểm</h3>
+        <h3 class="text-sm font-bold text-sky-700 mb-3 uppercase"><i class="fa-solid fa-heart-pulse"></i> 4. Thông tin sức khỏe & Bảo hiểm</h3>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Nhóm máu</label>
-            <input type="text" id="txtNhomMau" placeholder="VD: A, B, O, AB..." class="w-full px-3 py-2 bg-white border rounded-lg text-sm">
+            <input type="text" id="txtNhomMau" placeholder="VD: A, B, O..." class="w-full px-3 py-2 bg-white border rounded-lg text-sm">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Chiều cao (cm)</label>
+            <label class="px-1 block text-xs font-semibold text-slate-600 mb-1">Chiều cao (cm)</label>
             <input type="text" id="txtChieuCao" placeholder="VD: 165" class="w-full px-3 py-2 bg-white border rounded-lg text-sm">
           </div>
           <div>
@@ -182,9 +148,9 @@
         </div>
       </div>
 
-      <!-- PHẦN 6: TẢI FILE MINH CHỨNG (4 mục yêu cầu) -->
+      <!-- PHẦN 5: TẢI FILE MINH CHỨNG -->
       <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
-        <h3 class="text-sm font-bold text-amber-800 mb-3 uppercase"><i class="fa-solid fa-cloud-arrow-up"></i> 6. Tải tệp minh chứng đính kèm</h3>
+        <h3 class="text-sm font-bold text-amber-800 mb-3 uppercase"><i class="fa-solid fa-cloud-arrow-up"></i> 5. Tải tệp minh chứng đính kèm</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div>
             <label class="block font-bold text-slate-700 mb-1">CCCD Mặt trước</label>
@@ -214,98 +180,112 @@
   </div>
 
   <script>
-  
     // Link Web App Google Apps Script của bạn
     const API_URL = "https://script.google.com/macros/s/AKfycbzdwituas3YJjOOJsag-gotQomgyKvSw2--L0tiPFMHHkAGduMfIB7ayW9b3s9fiaM8/exec";
-    let currentStudentCode = "";
+    
+    let currentStudentMaHS = "";
+    let temporaryCCCD = ""; 
 
- function verifyStudent() {
-  const ma = document.getElementById('soBD').value.trim(); // Khớp với id="soBD" ở trên
-  const ns = document.getElementById('hsNgaySinh').value.trim();
+    function loginStudent() {
+      const cccd = document.getElementById('loginCCCD').value.trim();
+      const pass = document.getElementById('loginPass').value.trim();
 
-  fetch(`${API_URL}?action=getStudentProfile&soBD=${encodeURIComponent(ma)}&ngaySinh=${encodeURIComponent(ns)}`)
-    .let currentStudentMaHS = "";
-  let temporaryCCCD = ""; // Lưu tạm CCCD khi đổi mật khẩu lần đầu
+      fetch(`${API_URL}?action=loginStudent&cccd=${encodeURIComponent(cccd)}&password=${encodeURIComponent(pass)}`)
+        .then(res => res.json())
+        .then(res => {
+          if (res.status === 'success') {
+            loadStudentDataToUI(res.data, res.maHS);
+          } else if (res.status === 'first_time') {
+            temporaryCCCD = res.cccd;
+            alert(res.message);
+            document.getElementById('hsLoginBox').classList.add('hidden');
+            document.getElementById('hsChangePassBox').classList.remove('hidden');
+          } else {
+            alert("❌ " + res.message);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Lỗi kết nối máy chủ!");
+        });
+    }
 
-  function loginStudent() {
-    const cccd = document.getElementById('loginCCCD').value.trim();
-    const pass = document.getElementById('loginPass').value.trim();
+    function changePasswordFirstTime() {
+      const newPassword = document.getElementById('newPass').value.trim();
+      if (!newPassword || newPassword.length < 6) {
+        alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
+        return;
+      }
 
-    fetch(`${API_URL}?action=loginStudent&cccd=${encodeURIComponent(cccd)}&password=${encodeURIComponent(pass)}`)
+      fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: "changePasswordFirstTime",
+          cccd: temporaryCCCD,
+          newPassword: newPassword
+        })
+      })
       .then(res => res.json())
       .then(res => {
         if (res.status === 'success') {
+          alert("🔔 " + res.message + "\nVui lòng ghi nhớ mật khẩu này để đăng nhập cho các lần sau!");
+          document.getElementById('hsChangePassBox').classList.add('hidden');
           loadStudentDataToUI(res.data, res.maHS);
-        } else if (res.status === 'first_time') {
-          temporaryCCCD = res.cccd;
-          alert(res.message);
-          document.getElementById('hsLoginBox').classList.add('hidden');
-          document.getElementById('hsChangePassBox').classList.remove('hidden');
         } else {
           alert("❌ " + res.message);
         }
       })
       .catch(err => {
         console.error(err);
-        alert("Lỗi kết nối máy chủ!");
+        alert("Lỗi kết nối máy chủ khi đổi mật khẩu!");
       });
-  }
-
-  function changePasswordFirstTime() {
-    const newPassword = document.getElementById('newPass').value.trim();
-    if (!newPassword || newPassword.length < 6) {
-      alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
-      return;
     }
 
-    fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: "changePasswordFirstTime",
-        cccd: temporaryCCCD,
-        newPassword: newPassword
-      })
-    })
-    .then(res => res.json())
-    .then(res => {
-      if (res.status === 'success') {
-        alert("🔔 " + res.message + "\nVui lòng ghi nhớ mật khẩu này để đăng nhập cho các lần sau!");
-        document.getElementById('hsChangePassBox').classList.add('hidden');
-        loadStudentDataToUI(res.data, res.maHS);
-      } else {
-        alert("❌ " + res.message);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Lỗi kết nối máy chủ khi đổi mật khẩu!");
-    });
-  }
+    function loadStudentDataToUI(data, maHS) {
+      currentStudentMaHS = maHS; // Lưu mã học sinh để dùng khi cập nhật
+      
+      // Đổ dữ liệu lên form hồ sơ
+      document.getElementById('txtHoTen').value = data.hoTen || '';
+      document.getElementById('txtGioiTinh').value = data.gioiTinh || 'Nam';
+      document.getElementById('txtNgaySinh').value = data.ngaySinh || '';
+      document.getElementById('txtDanToc').value = data.danToc || '';
+      document.getElementById('txtTonGiao').value = data.tonGiao || '';
+      document.getElementById('txtCanCuoc').value = data.canCuoc || '';
+      document.getElementById('txtChoO').value = data.choO || '';
+      document.getElementById('txtHoKhau').value = data.hoKhau || '';
+      document.getElementById('txtDtsHS').value = data.sdtHS || '';
+      
+      document.getElementById('txtNhomMau').value = data.nhomMau || '';
+      document.getElementById('txtChieuCao').value = data.chieuCao || '';
+      document.getElementById('txtCanNang').value = data.canNang || '';
+      document.getElementById('txtSoBHYT').value = data.soBHYT || '';
 
-  function loadStudentDataToUI(data, maHS) {
-    currentStudentMaHS = maHS;
-    // Đổ dữ liệu lên form hồ sơ
-    document.getElementById('txtHoTen').value = data.hoTen || '';
-    document.getElementById('txtGioiTinh').value = data.gioiTinh || 'Nam';
-    document.getElementById('txtNgaySinh').value = data.ngaySinh || '';
-    document.getElementById('txtDanToc').value = data.danToc || '';
-    document.getElementById('txtTonGiao').value = data.tonGiao || '';
-    document.getElementById('txtCanCuoc').value = data.canCuoc || '';
-    document.getElementById('txtChoO').value = data.choO || '';
-    document.getElementById('txtHoKhau').value = data.hoKhau || '';
-    document.getElementById('txtDtsHS').value = data.sdtHS || '';
-    
-    document.getElementById('txtNhomMau').value = data.nhomMau || '';
-    document.getElementById('txtChieuCao').value = data.chieuCao || '';
-    document.getElementById('txtCanNang').value = data.canNang || '';
-    document.getElementById('txtSoBHYT').value = data.soBHYT || '';
+      document.getElementById('hsLopHienThi').innerText = `Lớp: ${data.lop || '---'}`;
 
-    document.getElementById('hsLopHienThi').innerText = `Lớp: ${data.lop || '---'}`;
+      document.getElementById('hsLoginBox').classList.add('hidden');
+      document.getElementById('hsChangePassBox').classList.add('hidden');
+      document.getElementById('hsProfileBox').classList.remove('hidden'); 
+    }
 
-    document.getElementById('hsLoginBox').classList.add('hidden');
-    document.getElementById('hsChangePassBox').classList.add('hidden');
-    document.getElementById('hsProfileBox').classList.remove('hidden'); // Mở form hồ sơ chính
-  }
+    // Hàm chuyển file sang Base64 để gửi lên GAS
+    function getFileAsBase64(inputId) {
+      return new Promise((resolve, reject) => {
+        const fileInput = document.getElementById(inputId);
+        if (!fileInput.files || fileInput.files.length === 0) {
+          resolve(null);
+          return;
+        }
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = () => resolve({
+          base64: reader.result,
+          mimeType: file.type,
+          name: file.name
+        });
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
 
     async function saveStudentProfile() {
       const btn = document.getElementById('btnSave');
@@ -313,7 +293,6 @@
       btn.innerHTML = "Đang tải file và lưu dữ liệu...";
 
       try {
-        // Đọc 4 tệp minh chứng
         const fileCCCD1 = await getFileAsBase64('fileCCCD1');
         const fileCCCD2 = await getFileAsBase64('fileCCCD2');
         const fileKhaiSinh = await getFileAsBase64('fileKhaiSinh');
@@ -321,7 +300,7 @@
 
         const payload = {
           action: "updateStudentProfile",
-          soBD: currentStudentCode, // Gửi số báo danh lên để doPost nhận diện
+          maHS: currentStudentMaHS, // Sử dụng mã học sinh để doPost định vị đúng dòng ở sheet DanhSachHocSinh
           data: {
             sdtHS: document.getElementById('txtDtsHS').value,
             choO: document.getElementById('txtChoO').value,
