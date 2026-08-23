@@ -20,7 +20,7 @@
     </div>
     <form onsubmit="event.preventDefault(); verifyStudent();" class="space-y-4">
       <div>
-        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mã Học Sinh</label>
+        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Số báo danh</label>
         <input type="text" id="hsMa" required placeholder="VD: HS01234" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm uppercase font-mono">
       </div>
       <div>
@@ -200,7 +200,7 @@
     let currentStudentCode = "";
 
     function verifyStudent() {
-      const ma = document.getElementById('hsMa').value.trim();
+      const ma = document.getElementById('soBaoDanh').value.trim();
       const ns = document.getElementById('hsNgaySinh').value.trim();
 
       fetch(`${API_URL}?action=getStudentProfile&maHS=${encodeURIComponent(ma)}&ngaySinh=${encodeURIComponent(ns)}`)
