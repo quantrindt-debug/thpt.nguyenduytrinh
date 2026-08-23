@@ -8,7 +8,17 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-slate-100 min-h-screen py-8 px-4 font-sans flex items-center justify-center">
-
+<header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white shadow-md py-6 px-4 mb-6 rounded-2xl text-center">
+    <div class="max-w-3xl mx-auto">
+        <span class="inline-block bg-white/10 text-blue-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-2 backdrop-blur-sm">
+            Cổng thông tin quản lý hồ sơ học sinh 2026 - 2027
+        </span>
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight uppercase">
+            TRƯỜNG THPT NGUYỄN DUY TRINH
+        </h1>
+        
+    </div>
+</header>
   <!-- MÀN HÌNH ĐĂNG NHẬP -->
   <div id="hsLoginBox" class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
     <div class="text-center mb-6">
@@ -82,11 +92,11 @@
             <input type="text" id="txtCanCuoc" disabled class="w-full px-3 py-2 bg-slate-200 border rounded-lg text-sm text-slate-600 cursor-not-allowed">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-500 mb-1">Mã Học Sinh / Định danh</label>
+            <label class="block text-xs font-semibold text-slate-500 mb-1" placeholder="nhà trường nhập">Mã Học Sinh / Định danh</label>
             <input type="text" id="txtMaHS" disabled class="w-full px-3 py-2 bg-slate-200 border rounded-lg text-sm text-slate-600 cursor-not-allowed">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-500 mb-1">Giới tính</label>
+            <label class="block text-xs font-semibold text-slate-500 mb-1" placeholder="Gõ đúng Nam/Nữ">Giới tính</label>
             <input type="text" id="txtGioiTinh" disabled class="w-full px-3 py-2 bg-slate-200 border rounded-lg text-sm text-slate-600 cursor-not-allowed">
           </div>
         </div>
@@ -99,46 +109,46 @@
         <div class="mb-4">
           <h4 class="font-bold text-slate-700 text-xs mb-2 border-b pb-1">Chỗ ở hiện nay</h4>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-            <div><label class="font-semibold text-slate-600 mb-1 block">SN/Xóm</label><input type="text" id="txtChoOSnXom" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">SN/Xóm</label><input type="text" id="txtChoOSnXom" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="VD: Xóm Quán Hành 3"></div>
             <div><label class="font-semibold text-slate-600 mb-1 block">Khu dân cư</label><input type="text" id="txtChoOKhuDanCu" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-            <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtChoOXa" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-            <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtChoOTinh" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtChoOXa" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="VD: xã Nghi Lộc"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtChoOTinh" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder=""VD: Nghệ An"></div>
           </div>
         </div>
 
         <div class="mb-4">
           <h4 class="font-bold text-slate-700 text-xs mb-2 border-b pb-1">Hộ khẩu thường trú</h4>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-            <div><label class="font-semibold text-slate-600 mb-1 block">SN/Xóm</label><input type="text" id="txtHkSnXom" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">SN/Xóm</label><input type="text" id="txtHkSnXom" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="VD: Xóm 8"></div>
             <div><label class="font-semibold text-slate-600 mb-1 block">Khu dân cư</label><input type="text" id="txtHkKhuDanCu" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-            <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtHkXa" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-            <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtHkTinh" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtHkXa" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="VD: Xã Nghi Trung"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtHkTinh" class="w-full px-3 py-2 bg-white border rounded-lg" "VD Nghệ An"></div>
           </div>
         </div>
 
         <div class="mb-4">
           <h4 class="font-bold text-slate-700 text-xs mb-2 border-b pb-1">Nơi sinh</h4>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            <div><label class="font-semibold text-slate-600 mb-1 block">Thông tin nơi sinh</label><input type="text" id="txtNsThongTin" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-            <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtNsXa" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-            <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtNsTinh" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Thông tin nơi sinh</label><input type="text" id="txtNsThongTin" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="VD: Bệnh viện Đa Khoa Nghi Lộc"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtNsXa" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="VD: Xã Đông Lộc"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtNsTinh" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="Nghệ An"></div>
           </div>
         </div>
 
         <div class="mb-4">
           <h4 class="font-bold text-slate-700 text-xs mb-2 border-b pb-1">Quê quán</h4>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            <div><label class="font-semibold text-slate-600 mb-1 block">Thông tin quê quán</label><input type="text" id="txtQqThongTin" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-            <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtQqXa" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-            <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtQqTinh" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Thông tin quê quán</label><input type="text" id="txtQqThongTin" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="VD: Xóm 1"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtQqXa" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="VD: Xã Nghi Trung"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtQqTinh" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="Nghệ An"></div>
           </div>
         </div>
 
         <div>
           <h4 class="font-bold text-slate-700 text-xs mb-2 border-b pb-1">Nơi khai sinh</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtNksXa" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-            <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtNksTinh" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtNksXa" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="VD: Xã Đông Lộc"></div>
+            <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtNksTinh" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="VD: Nghệ AN></div>
           </div>
         </div>
       </div>
@@ -151,10 +161,10 @@
           <div><label class="font-bold text-slate-700 mb-1 block">Nơi cấp CCCD</label><input type="text" id="txtNoiCapCCCD" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
           <div><label class="font-bold text-slate-700 mb-1 block">Dân tộc</label><input type="text" id="txtDanToc" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
           <div><label class="font-bold text-slate-700 mb-1 block">Tôn giáo</label><input type="text" id="txtTonGiao" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-          <div><label class="font-bold text-slate-700 mb-1 block">Diện chính sách</label><input type="text" id="txtChinhSach" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-          <div><label class="font-bold text-slate-700 mb-1 block">Cận nghèo</label><input type="text" id="txtCanGheo" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-          <div><label class="font-bold text-slate-700 mb-1 block">Đoàn viên</label><input type="text" id="txtDoanVien" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
-          <div><label class="font-bold text-slate-700 mb-1 block">Đội viên</label><input type="text" id="txtDoiVien" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+          <div><label class="font-bold text-slate-700 mb-1 block">Diện chính sách</label><input type="text" id="txtChinhSach" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="VD: Con thương binh"></div>
+          <div><label class="font-bold text-slate-700 mb-1 block">Cận nghèo</label><input type="text" id="txtCanGheo" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="Nếu có gõ X"></div>
+          <div><label class="font-bold text-slate-700 mb-1 block">Đoàn viên</label><input type="text" id="txtDoanVien" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="Nếu có gõ X"></div>
+          <div><label class="font-bold text-slate-700 mb-1 block">Đội viên</label><input type="text" id="txtDoiVien" class="w-full px-3 py-2 bg-white border rounded-lg" placeholder="Nếu có gõ X"></div>
         </div>
       </div>
 
@@ -163,24 +173,24 @@
         <h3 class="text-sm font-bold text-emerald-800 mb-3 uppercase"><i class="fa-solid fa-people-roof"></i> 4. Thông tin Gia đình (Bố & Mẹ)</h3>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
           <div class="md:col-span-5 font-bold text-emerald-900 border-b pb-1">Thông tin Bố</div>
-          <div><label class="block mb-1">Họ tên Bố</label><input type="text" id="txtTenCha" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="block mb-1">Nghề nghiệp</label><input type="text" id="txtNgheCha" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="block mb-1">Năm sinh</label><input type="text" id="txtNamSinhCha" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="block mb-1">Số CCCD Bố</label><input type="text" id="txtCccdCha" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="block mb-1">Đơn vị công tác</label><input type="text" id="txtCoQuanCha" class="w-full p-2 bg-white border rounded-lg"></div>
+          <div><label class="block mb-1">Họ tên Bố</label><input type="text" id="txtTenCha" class="w-full p-2 bg-white border rounded-lg" placeholder="Gõ đủ họ và tên"></div>
+          <div><label class="block mb-1">Nghề nghiệp</label><input type="text" id="txtNgheCha" class="w-full p-2 bg-white border rounded-lg" placeholder="Chỉ gõ nghề"></div>
+          <div><label class="block mb-1">Năm sinh</label><input type="text" id="txtNamSinhCha" class="w-full p-2 bg-white border rounded-lg" placeholder="VD: 1983"></div>
+          <div><label class="block mb-1">Số CCCD Bố</label><input type="text" id="txtCccdCha" class="w-full p-2 bg-white border rounded-lg" placeholder="Gõ CCCD bố"></div>
+          <div><label class="block mb-1">Đơn vị công tác</label><input type="text" id="txtCoQuanCha" class="w-full p-2 bg-white border rounded-lg" ></div>
 
           <div class="md:col-span-5 font-bold text-emerald-900 border-b pb-1 mt-2">Thông tin Mẹ</div>
-          <div><label class="block mb-1">Họ tên Mẹ</label><input type="text" id="txtTenMe" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="block mb-1">Nghề nghiệp</label><input type="text" id="txtNgheMe" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="block mb-1">Năm sinh</label><input type="text" id="txtNamSinhMe" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="block mb-1">Số CCCD Mẹ</label><input type="text" id="txtCccdMe" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="block mb-1">Đơn vị công tác</label><input type="text" id="txtCoQuanMe" class="w-full p-2 bg-white border rounded-lg"></div>
+          <div><label class="block mb-1">Họ tên Mẹ</label><input type="text" id="txtTenMe" class="w-full p-2 bg-white border rounded-lg" placeholder="Phải gỏ đũ họ và tên"></div>
+          <div><label class="block mb-1">Nghề nghiệp</label><input type="text" id="txtNgheMe" class="w-full p-2 bg-white border rounded-lg" placeholder="VD: Bác sỹ"></div>
+          <div><label class="block mb-1">Năm sinh</label><input type="text" id="txtNamSinhMe" class="w-full p-2 bg-white border rounded-lg" placeholder="Bắt buộc gõ VD: 1985"></div>
+          <div><label class="block mb-1">Số CCCD Mẹ</label><input type="text" id="txtCccdMe" class="w-full p-2 bg-white border rounded-lg" placeholder="Gõ CCCD mẹ"></div>
+          <div><label class="block mb-1">Đơn vị công tác</label><input type="text" id="txtCoQuanMe" class="w-full p-2 bg-white border rounded-lg" placeholder="Gõ nơi làm việc của mẹ"></div>
         </div>
       </div>
 
       <!-- PHẦN 5: LIÊN LẠC & SỨC KHỎE -->
       <div class="bg-purple-50/50 p-4 rounded-xl border border-purple-100">
-        <h3 class="text-sm font-bold text-purple-800 mb-3 uppercase"><i class="fa-solid fa-address-book"></i> 5. Liên lạc & Thể chất / Sức khỏe</h3>
+        <h3 class="text-sm font-bold text-purple-800 mb-3 uppercase"><i class="fa-solid fa-address-book"></i> 5. Liên lạc & Thể chất / Sức khỏe </h3>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
           <div><label class="font-bold mb-1 block">SĐT Sổ liên lạc điện tử</label><input type="text" id="txtSdtSLL" class="w-full p-2 bg-white border rounded-lg"></div>
           <div><label class="font-bold mb-1 block">Email SLL điện tử</label><input type="text" id="txtEmailSLL" class="w-full p-2 bg-white border rounded-lg"></div>
@@ -191,17 +201,16 @@
           <div><label class="font-bold mb-1 block">Nội trú / Bán trú</label><input type="text" id="txtNoiTruBTru" class="w-full p-2 bg-white border rounded-lg"></div>
           <div><label class="font-bold mb-1 block">Chức vụ trong lớp</label><input type="text" id="txtChucVu" class="w-full p-2 bg-white border rounded-lg"></div>
           <div><label class="font-bold mb-1 block">Nhiệm vụ phụ trách</label><input type="text" id="txtNhiemVuPhuTrach" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="font-bold mb-1 block">Nhà ở xa trên 5km?</label><input type="text" id="txtOXaTren5km" class="w-full p-2 bg-white border rounded-lg"></div>
+          <div><label class="font-bold mb-1 block">Nhà ở xa trên 5km?</label><input type="text" id="txtOXaTren5km" class="w-full p-2 bg-white border rounded-lg" placeholder="phải gõ nếu >5km"></div>
           <div><label class="font-bold mb-1 block">Chỗ ngồi</label><input type="text" id="txtChoNgoi" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="font-bold mb-1 block">Cân nặng (kg)</label><input type="text" id="txtCanNang" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="font-bold mb-1 block">Chiều cao (cm)</label><input type="text" id="txtChieuCao" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="font-bold mb-1 block">Biết bơi? (Có/Không)</label><input type="text" id="txtBietBoi" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="font-bold mb-1 block">Bệnh về mắt</label><input type="text" id="txtBenhVeMat" class="w-full p-2 bg-white border rounded-lg"></div>
-          <div><label class="font-bold mb-1 block">Sức khỏe học kỳ</label><input type="text" id="txtSucKhoeHocKy" class="w-full p-2 bg-white border rounded-lg"></div>
-          
+          <div><label class="font-bold mb-1 block">Cân nặng (kg)</label><input type="text" id="txtCanNang" class="w-full p-2 bg-white border rounded-lg" placeholder="Bắt buộc VD: 60></div>
+          <div><label class="font-bold mb-1 block">Chiều cao (cm)</label><input type="text" id="txtChieuCao" class="w-full p-2 bg-white border rounded-lg" placeholder="Bắt buộc VD: 165"></div>
+          <div><label class="font-bold mb-1 block">Biết bơi? (Có/Không)</label><input type="text" id="txtBietBoi" class="w-full p-2 bg-white border rounded-lg" placeholder="Nếu có gõ X"></div>
+          <div><label class="font-bold mb-1 block">Bệnh về mắt</label><input type="text" id="txtBenhVeMat" class="w-full p-2 bg-white border rounded-lg" placeholder="Nếu có gõ X"></div>
+          <div><label class="font-bold mb-1 block">Sức khỏe học kỳ</label><input type="text" id="txtSucKhoeHocKy" class="w-full p-2 bg-white border rounded-lg" placeholder="Bắt buộc: Tốt/Bình thường/Hay ốm đau"></div>
           <div class="md:col-span-4">
             <label class="font-bold mb-1 block text-rose-700">📝 Ghi chú chung (Cột BM)</label>
-            <textarea id="txtGhiChuBM" rows="2" placeholder="Nhập các nội dung cần lưu ý thêm cho nhà trường..." class="w-full p-2 bg-white border border-rose-200 rounded-lg"></textarea>
+            <textarea id="txtGhiChuBM" rows="2" placeholder="Nhập các nội dung cần lưu ý thêm cho nhà trường VD có sai sót về thông tin cơ bản về CCCD, họ và tên, ngày sinh..." class="w-full p-2 bg-white border border-rose-200 rounded-lg"></textarea>
           </div>
         </div>
       </div>
@@ -276,6 +285,9 @@
         💾 GỬI VÀ CẬP NHẬT HỒ SƠ
       </button>
     </form>
+            <span class="inline-block bg-white/10 text-blue-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-2 backdrop-blur-sm">
+            Hỗ trợ kỹ thuật SĐT: 0978 92 93 99
+        </span>
   </div>
 
   <script>
