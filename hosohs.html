@@ -208,39 +208,66 @@
     <!-- PHẦN 6: TỆP MINH CHỨNG & HỒ SƠ ĐÍNH KÈM -->
     <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
       <h3 class="text-sm font-bold text-rose-800 mb-3 uppercase"><i class="fa-solid fa-file-arrow-up"></i> 6. Tệp minh chứng & Hồ sơ đính kèm</h3>
-      <div class="mb-4 p-3 border rounded-lg bg-slate-50">
-          <label class="block font-medium text-sm text-slate-700 mb-1">CCCD Mặt Trước:</label>
+          <div class="mb-4 p-3 border rounded-lg bg-slate-50">
+              <label class="block font-medium text-sm text-slate-700 mb-1">CCCD Mặt Trước:</label>
+              
+              <!-- Phần 1: Nơi hiển thị tệp đã lưu trước đó -------------------------------->
+              <div id="view_fileCCCDMocTruoc" class="mb-2">
+                  <!-- Script sẽ tự động điền link vào đây (nếu có) -->
+                  <span class="text-gray-400 text-sm italic">Đang tải trạng thái tệp...</span>
+              </div>
           
-          <!-- Phần 1: Nơi hiển thị tệp đã lưu trước đó -->
-          <div id="view_fileCCCDMocTruoc" class="mb-2">
-              <!-- Script sẽ tự động điền link vào đây (nếu có) -->
-              <span class="text-gray-400 text-sm italic">Đang tải trạng thái tệp...</span>
-          </div>
-  
-          <!-- Phần 2: Ô chọn tệp mới nếu muốn thay đổi -->
-          <div class="flex items-center gap-2">
-              <input type="file" id="fileCCCDMocTruoc" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-          </div>
-        <label class="block font-medium text-sm text-slate-700 mb-1">CCCD Mặt Trước:</label>
+              <!-- Phần 2: Ô chọn tệp mới nếu muốn thay đổi -->
+              <div class="flex items-center gap-2">
+                  <input type="file" id="fileCCCDMocTruoc" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+              </div>
+              <small class="text-slate-500 text-xs mt-1 block">*(Chỉ chọn tệp mới nếu bạn muốn thay thế tệp cũ)*</small>
           
-          <!-- Phần 1: Nơi hiển thị tệp đã lưu trước đó -->
-          <div id="view_fileCCCDMocSau" class="mb-2">
-              <!-- Script sẽ tự động điền link vào đây (nếu có) -->
-              <span class="text-gray-400 text-sm italic">Đang tải trạng thái tệp...</span>
+       <div class="mb-4 p-3 border rounded-lg bg-slate-50">
+              <label class="block font-medium text-sm text-slate-700 mb-1">CCCD Mặt Sauc:</label>
+              
+              <!-- Phần 1: Nơi hiển thị tệp đã lưu trước đó ----------------------------->
+              <div id="view_fileCCCDMocSau" class="mb-2">
+                  <!-- Script sẽ tự động điền link vào đây (nếu có) -->
+                  <span class="text-gray-400 text-sm italic">Đang tải trạng thái tệp...</span>
+              </div>
+          
+              <!-- Phần 2: Ô chọn tệp mới nếu muốn thay đổi -->
+              <div class="flex items-center gap-2">
+                  <input type="file" id="fileCCCDMocSau" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+              </div>
+              <small class="text-slate-500 text-xs mt-1 block">*(Chỉ chọn tệp mới nếu bạn muốn thay thế tệp cũ)*</small>
+         </div>
+          <div class="mb-4 p-3 border rounded-lg bg-slate-50">
+              <label class="block font-medium text-sm text-slate-700 mb-1">Giấy Khai Sinh:</label>
+              
+              <!-- Phần 1: Nơi hiển thị tệp đã lưu trước đó --------------------------------->
+              <div id="view_fileGiayKhaiSinh" class="mb-2">
+                  <!-- Script sẽ tự động điền link vào đây (nếu có) -->
+                  <span class="text-gray-400 text-sm italic">Đang tải trạng thái tệp...</span>
+              </div>
+          
+              <!-- Phần 2: Ô chọn tệp mới nếu muốn thay đổi -->
+              <div class="flex items-center gap-2">
+                  <input type="file" id="fileGiayKhaiSinh" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+             </div>
+              <small class="text-slate-500 text-xs mt-1 block">*(Chỉ chọn tệp mới nếu bạn muốn thay thế tệp cũ)*</small>
+          <div class="mb-4 p-3 border rounded-lg bg-slate-50">
+              <label class="block font-medium text-sm text-slate-700 mb-1">Hồ sơ bổ sung:</label>
+              
+              <!-- Phần 1: Nơi hiển thị tệp đã lưu trước đó ----------------------------------------->
+              <div id="view_"fileHoSoBoSung" class="mb-2">
+                  <!-- Script sẽ tự động điền link vào đây (nếu có) -->
+                  <span class="text-gray-400 text-sm italic">Đang tải trạng thái tệp...</span>
+              </div>
+          
+              <!-- Phần 2: Ô chọn tệp mới nếu muốn thay đổi -->
+              <div class="flex items-center gap-2">
+                  <input type="file" id="fileHoSoBoSung" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+              </div>
+              <small class="text-slate-500 text-xs mt-1 block">*(Chỉ chọn tệp mới nếu bạn muốn thay thế tệp cũ)*</small>
           </div>
-  
-          <!-- Phần 2: Ô chọn tệp mới nếu muốn thay đổi -->
-          <div class="flex items-center gap-2">
-              <input type="file" id="fileCCCDMocSau" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-          </div>
-          <small class="text-slate-500 text-xs mt-1 block">*(Chỉ chọn tệp mới nếu bạn muốn thay thế tệp cũ)*</small>
-          <label class="font-bold mb-1 block text-slate-700">Giấy khai sinh <span class="text-rose-600">*</span></label>
-          <input type="file" id="fileGiayKhaiSinh" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
-      </div>
-        <div>
-          <label class="font-bold mb-1 block text-slate-700">Hồ sơ bổ sung (nếu có)</label>
-          <input type="file" id="fileHoSoBoSung" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-slate-300 rounded-lg file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100">
-        </div>
+                 
     </div>
       
       <div id="updateMsg" class="hidden p-3 rounded-lg text-xs font-semibold"></div>
