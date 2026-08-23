@@ -277,7 +277,33 @@
 
     function loadStudentDataToUI(data, cccdParam) {
       currentStudentCCCD = cccdParam || temporaryCCCD || document.getElementById('loginCCCD').value.trim();
+      // --- XỬ LÝ KHÓA/MỞ GIAO DIỆN ---
+    // Giả sử data từ server trả về có thêm thuộc tính isLocked (true/false) hoặc trangThaiKhoa
+    const isLocked = data.isLocked || false; // hoặc kiểm tra theo logic của bạn
+    
+    if (isLocked) {
+      // 1. Ẩn nút Lưu thay đổi đi
+      const btnSave = document.getElementById('btnSaveProfile'); // Đặt ID nút lưu của bạn vào đây
+      if (btnSave) btnSave.classList.add('hidden');
       
+      // 2. Vô hiệu hóa toàn bộ các ô input/select trong form hồ sơ để học sinh chỉ được xem
+      const allInputs = document.querySelectorAll('#hsProfileBox input, #hsProfileBox select, #hsProfileBox textarea');
+      allInputs.forEach(input => {
+        input.disabled = true;
+        input.classList.add('bg-gray-100', 'cursor-not-allowed'); // Thêm hiệu ứng xám mờ cho chuyên nghiệp
+      });
+      
+      // 3. Hiển thị thông báo nhỏ trên đầu trang cho học sinh biết
+      let noticeBox = document.getElementById('lockedNotice');
+      if (!noticeBox) {
+        noticeBox = document.createElement('div');
+        noticeBox.id = 'lockedNotice';
+        noticeBox.className = 'bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded';
+        noticeBox.innerHTML = '⚠️ <strong>Hồ sơ đã bị khóa:</strong> Nhà trường đã khóa chế độ chỉnh sửa. Bạn chỉ có quyền xem thông tin.';
+        const profileBox = document.getElementById('hsProfileBox');
+        profileBox.insertBefore(noticeBox, profileBox.firstChild);
+      }
+    }
       // Khóa thông tin gốc
       document.getElementById('txtHoTen').value = data.hoTen || '';
       document.getElementById('txtNgaySinh').value = data.ngaySinh || '';
