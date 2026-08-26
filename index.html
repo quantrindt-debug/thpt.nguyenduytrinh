@@ -133,7 +133,7 @@
       </span>
     </div>
     
-    <div onclick="launchApp('kehoachchamcong')" class="flex flex-col items-center group cursor-pointer w-20">
+    <div onclick="launchApp('KeHoachChamCong')" class="flex flex-col items-center group cursor-pointer w-20">
       <div class="w-13 h-13 p-3.5 bg-cyan-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
@@ -141,7 +141,7 @@
         Kế hoạch chấm công
       </span>
     </div>
-     <div onclick="launchApp('sochunhiem')" class="flex flex-col items-center group cursor-pointer w-20">
+     <div onclick="launchApp('SoChuNhiem')" class="flex flex-col items-center group cursor-pointer w-20">
       <div class="w-13 h-13 p-3.5 bg-cyan-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
@@ -149,7 +149,7 @@
         Sổ chủ nhiệm
       </span>
     </div>
-    <div onclick="launchApp('quanlythidualop')" class="flex flex-col items-center group cursor-pointer w-20">
+    <div onclick="launchApp('QuanLyThiDuaLop')" class="flex flex-col items-center group cursor-pointer w-20">
       <div class="w-13 h-13 p-3.5 bg-cyan-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
@@ -244,7 +244,7 @@
 
         <!-- MENU CON (HIỂN THỊ KHI HOVER) -->
         <div class="hidden group-hover:block absolute left-full top-0 ml-1 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 p-1.5 space-y-1 z-[9010]">
-          <button onclick="launchApp('hosohocsinh')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+          <button onclick="launchApp('HoSoHocSinh')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
             <i class="fa-solid fa-folder-open text-violet-500 w-4 text-center"></i>
             <span>Quản lý Hồ sơ học sinh</span>
           </button>
@@ -252,25 +252,25 @@
             <i class="fa-solid fa-sitemap text-amber-500 w-4 text-center"></i>
             <span>Xếp lớp vào 10</span>
           </button>
-          <button onclick="launchApp('sochunhiem')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+          <button onclick="launchApp('SoChuNhiem')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
             <i class="fa-solid fa-book-open text-cyan-500 w-4 text-center"></i>
             <span>Sổ Chủ Nhiệm</span>
           </button>
-          <button onclick="launchApp('quanlythidualop')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+          <button onclick="launchApp('QuanLyThiDuaLop')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
             <i class="fa-solid fa-award text-emerald-500 w-4 text-center"></i>
             <span>Quản lý & Theo dõi thi đua lớp</span>
           </button>
         </div>
       </div>
 
-      <!-- NHÓM 3: HỆ THỐNG & ĐẢM BẢO CHẤT LƯỢNG -->
+      <!-- NHÓM 3: HỒ SƠ QUẢN LÝ CÔNG VIỆC -->
       <div class="relative group">
         <div class="flex items-center justify-between px-3 py-2.5 hover:bg-emerald-50 rounded-xl transition cursor-pointer text-xs font-bold text-slate-700">
           <div class="flex items-center gap-2.5">
             <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
               <i class="fa-solid fa-gears"></i>
             </div>
-            <span>Hệ thống & ĐBCL</span>
+            <span>Kế hoạch công việc</span>
           </div>
           <i class="fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
         </div>
@@ -281,13 +281,17 @@
             <i class="fa-solid fa-database text-emerald-600 w-4 text-center"></i>
             <span>Cơ sở dữ liệu trường</span>
           </button>
-          <button onclick="launchApp('kehoachchamcong')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+          <button onclick="launchApp('KeHoachChamCong')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
             <i class="fa-solid fa-calendar-check text-blue-500 w-4 text-center"></i>
-            <span>Kế hoạch chấm công</span>
+            <span>Giao nhiệm vụ phát sinh</span>
           </button>
-          <button onclick="launchApp('CKDBCLGD')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+          <button onclick="launchApp('KeHoachNamHoc')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
             <i class="fa-solid fa-file-contract text-teal-500 w-4 text-center"></i>
-            <span>Cam kết đảm bảo chất lượng GD</span>
+            <span>Kế hoạch năm học</span>
+          </button>
+          <button onclick="launchApp('BaoCaoKeHoachGiao')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+            <i class="fa-solid fa-file-contract text-teal-500 w-4 text-center"></i>
+            <span>Báo cáo kế hoạch giao & Kết quả</span>
           </button>
         </div>
       </div>
