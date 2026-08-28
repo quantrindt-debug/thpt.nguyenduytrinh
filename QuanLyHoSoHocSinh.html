@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Hồ sơ & Thông tin Thiếu</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Kiểm tra bảo mật phân quyền đăng nhập từ KienonaOS
+        if (sessionStorage.getItem("kienora_auth") !== "authenticated_true") {
+            alert("Cảnh báo: Bạn chưa đăng nhập vào hệ thống KienonaOS!");
+            window.location.href = "../index.html";
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased p-6">
+    <div class="max-w-6xl mx-auto space-y-6">
+        <!-- Header -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Quản lý Hồ sơ Học sinh & Cột BR</h1>
+                <p class="text-sm text-slate-600 mt-1">Kiểm tra thông tin thiếu từ A đến BQ và lưu ghi chú cá nhân.</p>
+            </div>
+            <a href="../dashboard.html" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-sm font-medium transition">← Về Trang Chủ</a>
+        </div>
+
+        <!-- Chọn lớp -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+            <label class="font-semibold text-slate-700">Chọn lớp quản lý:</label>
+            <select id="selectLop" class="border border-slate-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none w-64" onchange="taiDuLieuLop()">
+                <option value="">-- Chọn lớp học --</option>
+            </select>
+        </div>
+
+        <!-- Thống kê & Chi tiết -->
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Danh sách HS -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h3 class="font-bold text-slate-800 mb-3">Danh sách học sinh</h3>
+                <div id="danhSachHSContainer" class="space-y-2 max-h-[500px] overflow-y-auto">
+                    <span class="text-sm text-slate-400 italic">Vui lòng chọn lớp...</span>
+                </div>
+            </div>
+
+            <!-- Chi tiết học sinh & Cột BR -->
+            <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <h3 class="font-bold text-slate-800" id="tieuDeChiTietHS">Chi tiết thông tin thiếu (A đến BQ)</h3>
+                <div id="chiTietHSCard" class="bg-slate-50 p-4 rounded-xl border border-slate-100 min-h-[100px]">
+                    <p class="text-sm text-slate-400 italic">Chọn một học sinh bên trái để xem...</p>
+                </div>
+
+                <div id="khungNhanTinBR" class="hidden space-y-3 pt-3 border-t border-slate-200">
+                    <label class="block text-sm font-medium text-slate-700">Ghi chú / Nhắn nhở (Lưu vào Cột BR):</label>
+                    <textarea id="noiDungBR" rows="3" class="w-full border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nhập ghi chú..."></textarea>
+                    <button onclick="luuNoiDungBR()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl text-sm shadow-sm transition">Lưu vào Cột BR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gọi file script xử lý logic nằm cùng thư mục -->
+    <script src="script.js"></script>
+</body>
+</html>
