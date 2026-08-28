@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập Hệ thống - KienonaOS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-md w-full bg-white/10 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/20 text-white">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold tracking-wider text-blue-400">KienonaOS</h1>
+            <p class="text-sm text-slate-300 mt-2">Hệ thống Quản lý Trường học Thông minh</p>
+        </div>
+
+        <form onsubmit="xuLyDangNhap(event)" class="space-y-5">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Tên đăng nhập / Tài khoản</label>
+                <input type="text" id="username" required class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="Nhập tài khoản quản trị...">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Mật khẩu</label>
+                <input type="password" id="password" required class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="••••••••">
+            </div>
+
+            <div id="thongBaoLoi" class="hidden text-xs text-rose-400 font-medium text-center bg-rose-950/50 p-2.5 rounded-lg border border-rose-800/50"></div>
+
+            <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition duration-200">
+                Đăng nhập Hệ thống
+            </button>
+        </form>
+
+        <div class="mt-8 text-center text-xs text-slate-500">
+            &copy; 2026 KienonaOS Education Management System.
+        </div>
+    </div>
+
+    <script>
+      function dangNhap(cccd, password) {
+    fetch("https://script.google.com/macros/s/AKfycbx_JrmXio35cXobgk6TRrsRYCrfmCH2Lz7mjswM-mV-bPuObRu_smGR9ZrG2T-_qNsT/exec?action=loginStudent&cccd=" + cccd + "&password=" + password)
+        .then(res => res.json())
+        .then(response => {
+            if (response.status === "success") {
+                console.log("Đăng nhập thành công, dữ liệu học sinh:", response.data);
+                // Lưu session hoặc chuyển đến trang quản lý cá nhân của học sinh
+            } else if (response.status === "first_time") {
+                alert(response.message);
+                // Chuyển sang giao diện bắt buộc đổi mật khẩu lần đầu
+            } else {
+                alert(response.message);
+            }
+        });
+}
+        function xuLyDangNhap(event) {
+            event.preventDefault();
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const thongBao = document.getElementById('thongBaoLoi');
+
+            // Thầy có thể thay đổi tài khoản mật khẩu mặc định tại đây hoặc kết nối API xác thực GV
+            if (user === "admin" && pass === "123456") {
+                // Đánh dấu phiên làm việc đã đăng nhập hợp lệ
+                sessionStorage.setItem("kienora_auth", "authenticated_true");
+                
+                // Chuyển hướng sang trang tổng quan/dashboard hoặc trang hồ sơ học sinh
+                window.location.href = "./quan-ly-ho-so/hosohocsinh.html";
+            } else {
+                thongBao.classList.remove('hidden');
+                thongBao.innerText = "Tên đăng nhập hoặc mật khẩu không chính xác!";
+            }
+        }
+    </script>
+</body>
+</html>
