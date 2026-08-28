@@ -1,0 +1,84 @@
+
+const API_URL = "YOUR_WEB_APP_URL"; 
+let hocSinhDangChon = null;
+
+window.onload = function() {
+    fetch(`${API_URL}?action=layDanhSachLop`)
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById('selectLop');
+            select.innerHTML = '<option value="">-- Chọn lớp học --</option>';
+            data.dsLop.forEach(lop => {
+                select.innerHTML += `<option value="${lop}">${lop}</option>`;
+            });
+        })
+        .catch(err => console.error("Lỗi tải danh sách lớp:", err));
+};
+
+function taiDuLieuLop() {
+    const tenLop = document.getElementById('selectLop').value;
+    if(!tenLop) return;
+
+    fetch(`${API_URL}?action=kiemTraLop&tenLop=${encodeURIComponent(tenLop)}`)
+        .then(res => res.json())
+        .then(data => {
+            hienThiDanhSachHS(data.chiTietHS);
+        })
+        .catch(err => console.error("Lỗi tải dữ liệu lớp:", err));
+}
+
+function hienThiDanhSachHS(danhSach) {
+    const container = document.getElementById('danhSachHSContainer');
+    container.innerHTML = '';
+    if(danhSach.length === 0) {
+        container.innerHTML = '<span class="text-sm text-slate-400 italic">Không có học sinh.</span>';
+        return;
+    }
+    danhSach.forEach(hs => {
+        const soLuongThieu = hs.thieu.length;
+        const badgeColor = soLuongThieu === 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700';
+        container.innerHTML += `
+            <div onclick='chonHocSinh(${JSON.stringify(hs)})' class="p-3 bg-slate-50 hover:bg-blue-50 cursor-pointer rounded-xl border border-slate-100 flex justify-between items-center transition">
+                <div>
+                    <p class="text-sm font-semibold text-slate-800">${hs.tenHS}</p>
+                    <p class="text-xs text-slate-500">Mã: ${hs.maHS}</p>
+                </div>
+                <span class="text-xs font-bold px-2 py-1 rounded-lg ${badgeColor}">${soLuongThieu} thiếu</span>
+            </div>
+        `;
+    });
+}
+
+function chonHocSinh(hs) {
+    hocSinhDangChon = hs;
+    const card = document.getElementById('chiTietHSCard');
+    document.getElementById('khungNhanTinBR').classList.remove('hidden');
+    document.getElementById('noiDungBR').value = hs.ghiChuBR || '';
+
+    if(hs.thieu.length === 0) {
+        card.innerHTML = `<p class="text-sm text-emerald-600 font-semibold">Học sinh <strong>${hs.tenHS}</strong> đã hoàn thành đầy đủ thông tin từ A đến BQ!</p>`;
+    } else {
+        let htmlList = hs.thieu.map(c => `<span class="bg-rose-50 text-rose-600 border border-rose-100 text-xs px-2.5 py-1 rounded-lg font-medium">${c}</span>`).join(' ');
+        card.innerHTML = `
+            <p class="text-sm font-semibold text-slate-800 mb-2">Học sinh: <span class="text-blue-600">${hs.tenHS}</span> còn thiếu các cột sau:</p>
+            <div class="flex flex-wrap gap-2">${htmlList}</div>
+        `;
+    }
+}
+
+function luuNoiDungBR() {
+    if(!hocSinhDangChon) return;
+    const noiDung = document.getElementById('noiDungBR').value;
+
+    fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'luuBR', rowNum: hocSinhDangChon.rowNum, noiDung: noiDung })
+    })
+    .then(res => res.json())
+    .then(res => {
+        alert(res.message);
+        hocSinhDangChon.ghiChuBR = noiDung;
+        taiDuLieuLop();
+    })
+    .catch(err => console.error("Lỗi lưu cột BR:", err));
+}
