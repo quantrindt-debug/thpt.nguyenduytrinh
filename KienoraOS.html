@@ -1,98 +1,518 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ thống Quản lý - KienonaOS</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Quản Lý Giáo Dục OS</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .desktop-bg {
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920') no-repeat center center fixed;
+      background-size: cover;
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 min-h-screen text-white flex flex-col">
+<body class="desktop-bg h-screen w-screen overflow-hidden font-sans select-none relative" onclick="closeStartMenuOnOutside(event)">
 
-    <!-- Thanh tiêu đề hệ thống (OS Header) -->
-    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center shadow-lg">
-        <div class="flex items-center space-x-3">
-            <div class="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-600/30">
-                <i class="fa-solid fa-layer-group text-white text-lg"></i>
+  <!-- ================= 1. BÀN LÀM VIỆC (DESKTOP ICONS) ================= -->
+  <div class="p-6 grid grid-flow-col grid-rows-5 auto-cols-max gap-x-8 gap-y-6 max-h-[calc(100vh-48px)] overflow-x-auto overflow-y-hidden z-10 relative">
+    
+    <div onclick="openDbLink()" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-emerald-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-database"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        CSDL Trường
+      </span>
+    </div>
+
+    <div onclick="launchApp('tuyensinh10')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-rose-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-user-plus"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Tuyển sinh Lớp 10
+      </span>
+    </div>
+
+    <div onclick="launchApp('quantridaucap')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-sliders"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Quản trị đầu cấp
+      </span>
+    </div>
+
+    <div onclick="launchApp('xeplop')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-amber-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-sitemap"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Xếp lớp vào 10
+      </span>
+    </div>
+
+    <div onclick="launchApp('tracuunv')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-cyan-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Tra cứu NV
+      </span>
+    </div>
+    
+    <div onclick="launchApp('KeHoachChamCong')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-cyan-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-calendar-check"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Kế hoạch chấm công
+      </span>
+    </div>
+
+    <div onclick="launchApp('SoChuNhiem')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-cyan-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-book-open"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Sổ chủ nhiệm
+      </span>
+    </div>
+
+    <div onclick="launchApp('QuanLyThiDuaLop')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-cyan-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-award"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Thi đua lớp
+      </span>
+    </div>
+
+    <div onclick="launchApp('hosohocsinh')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-violet-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-folder-open"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Hồ sơ học sinh
+      </span>
+    </div>
+
+    <div onclick="launchApp('CKDBCLGD')" class="flex flex-col items-center group cursor-pointer w-20">
+      <div class="w-13 h-13 p-3.5 bg-violet-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition duration-200">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <span class="text-[11px] leading-tight text-white text-center mt-1.5 font-medium drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] group-hover:underline">
+        Hệ thống CKĐBCLGD
+      </span>
+    </div>
+
+  </div>
+
+
+  <!-- ================= 2. KHU VỰC CỬA SỔ ĐỘNG ================= -->
+  <div id="desktop-windows-container"></div>
+
+
+  <!-- ================= 3. START MENU ================= -->
+  <div id="startMenu" class="hidden absolute bottom-12 left-2 w-80 md:w-96 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200 z-[9000] transition-all duration-200">
+    <div class="bg-gradient-to-r from-sky-700 to-blue-900 p-4 text-white flex items-center gap-3 rounded-t-2xl">
+      <div class="w-12 h-12 bg-white/10 border border-white/20 text-amber-300 rounded-2xl flex items-center justify-center font-bold text-xl shadow-inner backdrop-blur-sm">
+        <i class="fa-solid fa-user-tie"></i>
+      </div>
+      <div class="overflow-hidden">
+        <h4 id="userFullName" class="font-bold text-sm truncate">Chưa đăng nhập</h4>
+        <p id="userSchoolName" class="text-xs text-sky-200 truncate">Vui lòng đăng nhập...</p>
+        <div class="flex gap-2 mt-1.5">
+          <span id="userSchoolCode" class="text-[10px] bg-sky-950/80 text-sky-200 px-2 py-0.5 rounded font-mono font-bold">---</span>
+          <span id="userRole" class="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded font-semibold">---</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-2 max-h-80 overflow-y-auto custom-scrollbar space-y-1">
+      
+      <!-- NHÓM 1: TUYỂN SINH -->
+      <div class="relative group">
+        <div class="flex items-center justify-between px-3 py-2.5 hover:bg-sky-50 rounded-xl transition cursor-pointer text-xs font-bold text-slate-700">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-user-plus"></i>
             </div>
-            <div>
-                <h1 class="text-lg font-bold tracking-wide text-blue-400">KienonaOS</h1>
-                <p class="text-xs text-slate-400">Hệ điều hành Quản lý Giáo dục</p>
+            <span>Quản lý Tuyển sinh</span>
+          </div>
+          <i class="fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
+        </div>
+
+        <div class="hidden group-hover:block absolute left-full top-0 ml-1 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 p-1.5 space-y-1 z-[9010]">
+          <button onclick="launchApp('tuyensinh10')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+            <i class="fa-solid fa-user-plus text-rose-500 w-4 text-center"></i>
+            <span>Tuyển sinh Lớp 10 & Nguyện vọng</span>
+          </button>
+          <button onclick="launchApp('quantridaucap')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+            <i class="fa-solid fa-sliders text-indigo-500 w-4 text-center"></i>
+            <span>Quản trị đầu cấp</span>
+          </button>
+          <button onclick="launchApp('tracuunv')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+            <i class="fa-solid fa-magnifying-glass text-cyan-500 w-4 text-center"></i>
+            <span>Tra cứu nguyện vọng trúng tuyển</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- NHÓM 2: HỌC SINH & LỚP HỌC -->
+      <div class="relative group">
+        <div class="flex items-center justify-between px-3 py-2.5 hover:bg-violet-50 rounded-xl transition cursor-pointer text-xs font-bold text-slate-700">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-violet-100 text-violet-700 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-school"></i>
             </div>
+            <span>Học sinh & Lớp học</span>
+          </div>
+          <i class="fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
         </div>
 
-        <!-- Thông tin tài khoản lấy từ phiên làm việc -->
-        <div class="flex items-center space-x-4">
-            <div class="text-right hidden sm:block">
-                <div id="tenTaiKhoan" class="text-sm font-semibold text-slate-200">Đang tải...</div>
-                <div class="text-xs text-emerald-400 flex items-center justify-end space-x-1">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Đang trực tuyến</span>
-                </div>
+        <div class="hidden group-hover:block absolute left-full top-0 ml-1 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 p-1.5 space-y-1 z-[9010]">
+          <button onclick="launchApp('hosohocsinh')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+            <i class="fa-solid fa-folder-open text-violet-500 w-4 text-center"></i>
+            <span>Quản lý Hồ sơ học sinh</span>
+          </button>
+          <button onclick="launchApp('xeplop')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+            <i class="fa-solid fa-sitemap text-amber-500 w-4 text-center"></i>
+            <span>Xếp lớp vào 10</span>
+          </button>
+          <button onclick="launchApp('SoChuNhiem')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+            <i class="fa-solid fa-book-open text-cyan-500 w-4 text-center"></i>
+            <span>Sổ Chủ Nhiệm</span>
+          </button>
+          <button onclick="launchApp('QuanLyThiDuaLop')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+            <i class="fa-solid fa-award text-emerald-500 w-4 text-center"></i>
+            <span>Quản lý & Theo dõi thi đua lớp</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- NHÓM 3: CÔNG VIỆC -->
+      <div class="relative group">
+        <div class="flex items-center justify-between px-3 py-2.5 hover:bg-emerald-50 rounded-xl transition cursor-pointer text-xs font-bold text-slate-700">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-gears"></i>
             </div>
-            <button onclick="dangXuat()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-2">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                <span>Thoát</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Màn hình desktop chứa các ứng dụng/trang con -->
-    <main class="flex-1 max-w-6xl w-full mx-auto p-6 md:p-10 flex flex-col justify-center">
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-100">Bảng điều khiển hệ thống</h2>
-            <p class="text-sm text-slate-400 mt-1">Chọn ứng dụng chức năng bên dưới để bắt đầu làm việc.</p>
+            <span>Kế hoạch công việc</span>
+          </div>
+          <i class="fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
         </div>
 
-        <!-- Danh sách ứng dụng (Grid App Icons) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            <!-- Ứng dụng: Quản lý Hồ sơ Học sinh -->
-            <a href="./quan-ly-ho-so/hosohocsinh.html" class="group bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 hover:border-blue-500/50 p-6 rounded-3xl transition duration-300 shadow-xl flex flex-col justify-between">
-                <div>
-                    <div class="w-12 h-12 bg-blue-600/20 text-blue-400 rounded-2xl flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition duration-300">
-                        <i class="fa-solid fa-address-card"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-100 group-hover:text-blue-400 transition">Hồ sơ Học sinh</h3>
-                    <p class="text-xs text-slate-400 mt-2 leading-relaxed">Quản lý, cập nhật thông tin chi tiết và duyệt minh chứng học sinh toàn trường.</p>
-                </div>
-                <div class="mt-6 flex items-center text-xs font-semibold text-blue-400 space-x-1 group-hover:translate-x-1 transition">
-                    <span>Mở ứng dụng</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </div>
-            </a>
-
-            <!-- Có thể thêm các trang con khác ở đây trong tương lai -->
+        <div class="hidden group-hover:block absolute left-full top-0 ml-1 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 p-1.5 space-y-1 z-[9010]">
+          <button onclick="openDbLink()" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+            <i class="fa-solid fa-database text-emerald-600 w-4 text-center"></i>
+            <span>Cơ sở dữ liệu trường</span>
+          </button>
+          <button onclick="launchApp('KeHoachChamCong')" class="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-slate-100 rounded-xl transition text-left text-xs text-slate-700 font-medium">
+            <i class="fa-solid fa-calendar-check text-blue-500 w-4 text-center"></i>
+            <span>Giao nhiệm vụ phát sinh</span>
+          </button>
         </div>
-    </main>
+      </div>
 
-    <!-- Chân trang -->
-    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800/50">
-        KienonaOS &copy; 2026 - Phát triển bởi Thầy Lê Duy Hải
-    </footer>
+    </div>
 
-    <script>
-        // Kiểm tra bảo mật ngay khi nạp trang OS
-        window.addEventListener('DOMContentLoaded', () => {
-            const isAuth = sessionStorage.getItem("kienora_auth");
-            
-            // Nếu chưa đăng nhập, đá văng về trang đăng nhập riêng (hoặc thông báo)
-            if (!isAuth || isAuth !== "authenticated_true") {
-                alert("Phiên làm việc không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại!");
-                window.location.href = "../login.html"; // Đường dẫn trỏ về trang login thực tế của thầy
-                return;
-            }
+    <div class="p-2 bg-slate-50 border-t border-slate-200 rounded-b-2xl">
+      <button onclick="logout()" class="w-full flex items-center justify-center gap-2 p-2 hover:bg-rose-100 text-rose-600 rounded-xl transition font-semibold text-xs">
+        <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất hệ thống
+      </button>
+    </div>
+  </div>
 
-            // Lấy thông tin tài khoản được lưu trữ trước đó khi đăng nhập thành công
-            const username = sessionStorage.getItem("kienora_username") || "Quản trị viên";
-            document.getElementById('tenTaiKhoan').innerText = username;
-        });
 
-        function dangXuat() {
-            sessionStorage.clear();
-            window.location.href = "../login.html";
+  <!-- ================= 4. TASKBAR ================= -->
+  <div class="absolute bottom-0 left-0 w-full h-11 bg-slate-900/80 backdrop-blur-md border-t border-slate-700/50 flex items-center justify-between px-3 z-[9000]">
+    <div class="flex items-center gap-3">
+      <button onclick="toggleStartMenu(event)" class="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow transition active:scale-95">
+        <i class="fa-solid fa-border-all text-sm"></i>
+        <span id="taskbarUser">Hệ thống</span>
+      </button>
+
+      <div id="taskbar-apps" class="flex items-center gap-2 pl-3 border-l border-slate-700/50 overflow-x-auto"></div>
+    </div>
+
+    <div id="clock" class="text-white text-xs font-medium tracking-wide bg-slate-800/60 px-3 py-1 rounded-md border border-slate-700">
+      00:00:00
+    </div>
+  </div>
+
+
+  <!-- ================= 5. SCRIPT XỬ LÝ HỆ THỐNG & CHẶN TRUY CẬP TRỰC TIẾP ================= -->
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxw9_IwDZqka0NzwFKX9KihjvTP2-EEBsNGzxVBrPn4vQJMXMfwFQtsQTsliPA0xaRa/exec"; 
+
+    const APP_REGISTRY = {
+      'tuyensinh10': { title: 'Tuyển sinh Lớp 10', icon: 'fa-solid fa-user-plus text-rose-400' },
+      'quantridaucap': { title: 'Quản trị đầu cấp', icon: 'fa-solid fa-sliders text-indigo-400' },
+      'xeplop': { title: 'Xếp lớp vào 10', icon: 'fa-solid fa-sitemap text-amber-400' },
+      'hosohocsinh': { title: 'Quản lý Hồ sơ học sinh', icon: 'fa-solid fa-folder-open text-violet-400' },
+      'tracuunv': { title: 'Tra cứu Nguyện vọng', icon: 'fa-solid fa-magnifying-glass text-cyan-400' },
+      'KeHoachChamCong': { title: 'Kế hoạch chấm công', icon: 'fa-solid fa-calendar-check text-blue-400' },
+      'SoChuNhiem': { title: 'Sổ chủ nhiệm', icon: 'fa-solid fa-book-open text-cyan-400' },
+      'QuanLyThiDuaLop': { title: 'Theo dõi thi đua lớp', icon: 'fa-solid fa-award text-emerald-400' },
+      'CKDBCLGD': { title: 'Hệ thống CKĐBCLGD', icon: 'fa-solid fa-shield-halved text-violet-400' }
+    };
+
+    let currentSession = { maTruong: '', maNhanSu: '', token: '', user: null, school: null };
+    let activeZIndex = 100;
+    let openWindowsCount = 0;
+
+    // --- KIỂM TRA BẢO MẬT & NHẬN PHIÊN LÀM VIỆC KHI MỞ TRANG ---
+    function checkSessionAndInit() {
+      const savedSession = localStorage.getItem('kienona_session');
+      
+      if (!savedSession) {
+        alert("⚠️ Bạn chưa đăng nhập hoặc truy cập trực tiếp trái phép! Hệ thống sẽ chuyển về trang đăng nhập.");
+        window.location.href = 'login.html'; // Thay 'login.html' bằng tên file trang đăng nhập thực tế của thầy
+        return;
+      }
+
+      try {
+        const sessionData = JSON.parse(savedSession);
+        if (!sessionData.token || !sessionData.maTruong) {
+          throw new Error("Phiên không hợp lệ");
         }
-    </script>
+        
+        // Gán dữ liệu phiên làm việc
+        currentSession = sessionData;
+
+        // Hiển thị thông tin lên Start Menu và Taskbar
+        const extractedMaNS = sessionData.maNhanSu || '';
+        document.getElementById('userFullName').innerText = (sessionData.user.fullName || 'Cán bộ') + (extractedMaNS ? " (" + extractedMaNS + ")" : "");
+        document.getElementById('userSchoolName').innerText = sessionData.school.tenTruong || ('Trường: ' + sessionData.maTruong);
+        document.getElementById('userSchoolCode').innerText = "MÃ: " + sessionData.maTruong;
+        document.getElementById('userRole').innerText = sessionData.user.vaiTro || 'Giáo viên';
+        document.getElementById('taskbarUser').innerText = sessionData.user.fullName || sessionData.maTruong;
+
+      } catch (e) {
+        localStorage.removeItem('kienona_session');
+        alert("⚠️ Phiên làm việc đã hết hạn hoặc bị lỗi! Vui lòng đăng nhập lại.");
+        window.location.href = 'login.html';
+      }
+    }
+
+    // Chạy kiểm tra ngay khi tải trang
+    checkSessionAndInit();
+
+    function launchApp(appId) {
+      if (!currentSession.maTruong || !currentSession.token) {
+        alert("Vui lòng đăng nhập hệ thống trước!");
+        return;
+      }
+
+      const appMeta = APP_REGISTRY[appId] || { title: appId, icon: 'fa-solid fa-window-maximize text-cyan-600' };
+
+      let existingWin = document.getElementById(`win-${appId}`);
+      if (existingWin) {
+        if (existingWin.classList.contains('hidden')) {
+          existingWin.classList.remove('hidden');
+        }
+        bringToFront(appId);
+        return;
+      }
+
+      const menu = document.getElementById('startMenu');
+      if (menu) menu.classList.add('hidden');
+
+      openWindowsCount++;
+      const offset = (openWindowsCount % 5) * 25;
+      activeZIndex++;
+
+      const container = document.getElementById('desktop-windows-container');
+      const winDiv = document.createElement('div');
+      winDiv.id = `win-${appId}`;
+      winDiv.onclick = () => bringToFront(appId);
+      winDiv.style.zIndex = activeZIndex;
+      winDiv.style.top = `${48 + offset}px`;
+      winDiv.style.left = `${Math.max(20, offset)}px`;
+      winDiv.className = "fixed w-[80vw] md:w-[75vw] h-[75vh] bg-white backdrop-blur border border-slate-300 rounded-xl shadow-2xl flex flex-col overflow-hidden resize min-w-[320px] min-h-[200px] transition-all duration-100";
+
+      winDiv.innerHTML = `
+        <div class="flex items-center justify-between bg-slate-100 px-4 py-2 border-b border-slate-200 select-none cursor-move">
+          <div class="flex items-center gap-2 text-slate-700 text-sm font-semibold truncate pr-2">
+            <i class="${appMeta.icon}"></i>
+            <span id="title-${appId}" class="truncate">${appMeta.title} - Đang tải...</span>
+          </div>
+          
+          <div class="flex items-center gap-1.5">
+            <button onclick="event.stopPropagation(); minimizeApp('${appId}')" class="w-7 h-7 flex items-center justify-center hover:bg-slate-200 text-slate-500 hover:text-slate-800 rounded-lg transition" title="Thu nhỏ">
+              <i class="fa-solid fa-minus text-xs"></i>
+            </button>
+            <button onclick="event.stopPropagation(); toggleMaximizeApp('${appId}')" class="w-7 h-7 flex items-center justify-center hover:bg-slate-200 text-slate-500 hover:text-slate-800 rounded-lg transition" title="Phóng to / Khôi phục">
+              <i id="max-icon-${appId}" class="fa-regular fa-square text-xs"></i>
+            </button>
+            <button onclick="event.stopPropagation(); closeApp('${appId}')" class="w-7 h-7 flex items-center justify-center hover:bg-rose-600 text-slate-500 hover:text-white rounded-lg transition" title="Đóng">
+              <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex-1 w-full h-full overflow-hidden bg-white relative">
+          <iframe id="iframe-${appId}" class="w-full h-full border-0"></iframe>
+        </div>
+      `;
+
+      container.appendChild(winDiv);
+      addTaskbarItem(appId, appMeta);
+
+      const requestUrl = `${API_URL}?action=getAppUrl&account=${encodeURIComponent(currentSession.maTruong + "." + currentSession.maNhanSu)}&sessionToken=${encodeURIComponent(currentSession.token)}&maTruong=${encodeURIComponent(currentSession.maTruong)}&appId=${encodeURIComponent(appId)}`;
+
+      fetch(requestUrl)
+        .then(res => res.json())
+        .then(res => {
+          if (res.status === 'success' && res.data && res.data.url) {
+            document.getElementById(`title-${appId}`).innerText = `${appMeta.title} - [${currentSession.school ? currentSession.school.tenTruong : currentSession.maTruong}]`;
+            document.getElementById(`iframe-${appId}`).src = res.data.url;
+          } else {
+            alert("🔒 Không thể truy cập: " + (res.message || "Không tìm thấy cấu hình trang web!"));
+            closeApp(appId);
+          }
+        })
+        .catch(err => {
+          alert("Lỗi truy vấn đường dẫn: " + err.message);
+          closeApp(appId);
+        });
+    }
+
+    function addTaskbarItem(appId, appMeta) {
+      const tbContainer = document.getElementById('taskbar-apps');
+      const btn = document.createElement('button');
+      btn.id = `tb-${appId}`;
+      btn.onclick = () => toggleAppFromTaskbar(appId);
+      btn.className = "flex items-center gap-2 px-3 py-1 bg-slate-800 border-b-2 border-cyan-400 text-white rounded-t text-xs font-medium transition hover:bg-slate-700 shrink-0";
+      btn.innerHTML = `<i class="${appMeta.icon}"></i><span class="max-w-[120px] truncate">${appMeta.title}</span>`;
+      tbContainer.appendChild(btn);
+      bringToFront(appId);
+    }
+
+    function toggleAppFromTaskbar(appId) {
+      const win = document.getElementById(`win-${appId}`);
+      if (!win) return;
+
+      if (win.classList.contains('hidden')) {
+        win.classList.remove('hidden');
+        bringToFront(appId);
+      } else {
+        if (parseInt(win.style.zIndex) === activeZIndex) {
+          minimizeApp(appId);
+        } else {
+          bringToFront(appId);
+        }
+      }
+    }
+
+    function bringToFront(appId) {
+      const win = document.getElementById(`win-${appId}`);
+      if (!win) return;
+      activeZIndex++;
+      win.style.zIndex = activeZIndex;
+
+      document.querySelectorAll('#taskbar-apps button').forEach(b => {
+        b.className = "flex items-center gap-2 px-3 py-1 bg-slate-900/50 border-b-2 border-transparent text-slate-400 rounded-t text-xs font-medium transition hover:bg-slate-800 hover:text-slate-200 shrink-0";
+      });
+      const activeTb = document.getElementById(`tb-${appId}`);
+      if (activeTb) {
+        activeTb.className = "flex items-center gap-2 px-3 py-1 bg-slate-800 border-b-2 border-cyan-400 text-white rounded-t text-xs font-medium transition hover:bg-slate-700 shrink-0";
+      }
+    }
+
+    function minimizeApp(appId) {
+      const win = document.getElementById(`win-${appId}`);
+      if (win) win.classList.add('hidden');
+      
+      const tb = document.getElementById(`tb-${appId}`);
+      if (tb) {
+        tb.className = "flex items-center gap-2 px-3 py-1 bg-slate-900/50 border-b-2 border-transparent text-slate-400 rounded-t text-xs font-medium transition hover:bg-slate-800 hover:text-slate-200 shrink-0";
+      }
+    }
+
+    function toggleMaximizeApp(appId) {
+      const win = document.getElementById(`win-${appId}`);
+      const maxIcon = document.getElementById(`max-icon-${appId}`);
+      if (!win) return;
+
+      if (!win.dataset.maximized || win.dataset.maximized === "false") {
+        win.dataset.oldTop = win.style.top;
+        win.dataset.oldLeft = win.style.left;
+        win.dataset.oldWidth = win.style.width;
+        win.dataset.oldHeight = win.style.height;
+
+        win.style.top = "0px";
+        win.style.left = "0px";
+        win.style.width = "100vw";
+        win.style.height = "calc(100vh - 44px)";
+        win.classList.remove('rounded-xl');
+        win.classList.add('rounded-none');
+        if (maxIcon) maxIcon.className = "fa-regular fa-clone text-xs";
+        win.dataset.maximized = "true";
+      } else {
+        win.style.top = win.dataset.oldTop || "48px";
+        win.style.left = win.dataset.oldLeft || "20px";
+        win.style.width = win.dataset.oldWidth || "75vw";
+        win.style.height = win.dataset.oldHeight || "75vh";
+        win.classList.remove('rounded-none');
+        win.classList.add('rounded-xl');
+        if (maxIcon) maxIcon.className = "fa-regular fa-square text-xs";
+        win.dataset.maximized = "false";
+      }
+      bringToFront(appId);
+    }
+
+    function closeApp(appId) {
+      const win = document.getElementById(`win-${appId}`);
+      if (win) win.remove();
+
+      const tb = document.getElementById(`tb-${appId}`);
+      if (tb) tb.remove();
+    }
+
+    function openDbLink() {
+      if (currentSession.school && currentSession.school.dbUrl) {
+        window.open(currentSession.school.dbUrl, '_blank');
+      } else {
+        alert("Chưa cấu hình liên kết CSDL cho đơn vị này!");
+      }
+    }
+
+    function logout() {
+      // Xóa thông tin phiên trong localStorage để chặn truy cập lần sau
+      localStorage.removeItem('kienona_session');
+      currentSession = { maTruong: '', maNhanSu: '', token: '', user: null, school: null };
+      
+      // Chuyển hướng người dùng về trang đăng nhập
+      window.location.href = 'login.html'; // Thay 'login.html' bằng tên file trang đăng nhập của thầy
+    }
+
+    function toggleStartMenu(event) {
+      if (event) event.stopPropagation();
+      document.getElementById('startMenu').classList.toggle('hidden');
+    }
+
+    function closeStartMenuOnOutside(event) {
+      const menu = document.getElementById('startMenu');
+      if (menu && !menu.classList.contains('hidden') && !menu.contains(event.target)) {
+        menu.classList.add('hidden');
+      }
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const clockEl = document.getElementById('clock');
+      if (clockEl) clockEl.innerText = now.toLocaleTimeString('vi-VN');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
 </body>
 </html>
