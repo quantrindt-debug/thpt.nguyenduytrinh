@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập Hệ thống - KienonaOS</title>
+    <title>Đăng nhập Hệ thống - KienoraOS</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 min-h-screen flex items-center justify-center p-6">
@@ -64,7 +64,7 @@
                 sessionStorage.setItem("kienora_auth", "authenticated_true");
                 
                 // Chuyển hướng sang trang tổng quan/dashboard hoặc trang hồ sơ học sinh
-                window.location.href = "./quan-ly-ho-so/hosohocsinh.html";
+                window.location.href = "KienoraOS.html";
             } else {
                 thongBao.classList.remove('hidden');
                 thongBao.innerText = "Tên đăng nhập hoặc mật khẩu không chính xác!";
