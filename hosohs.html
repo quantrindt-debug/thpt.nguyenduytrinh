@@ -206,6 +206,7 @@
           <div><label class="font-bold mb-1 block">Biết bơi? (Có/Không)</label><input type="text" id="txtBietBoi" class="w-full p-2 bg-white border rounded-lg" placeholder="Nếu có gõ X"></div>
           <div><label class="font-bold mb-1 block">Bệnh về mắt</label><input type="text" id="txtBenhVeMat" class="w-full p-2 bg-white border rounded-lg" placeholder="Nếu có gõ X"></div>
           <div><label class="font-bold mb-1 block">Sức khỏe học kỳ</label><input type="text" id="txtSucKhoeHocKy" class="w-full p-2 bg-white border rounded-lg" placeholder="Bắt buộc: Tốt/Bình thường/Hay ốm đau"></div>
+          <div><label class="font-bold mb-1 block">Số BHYT</label><input type="text" id="txtsobhyte" class="w-full p-2 bg-white border rounded-lg" placeholder="Bắt buộc: số BHYT"></div>
           <div class="md:col-span-4">
             <label class="font-bold mb-1 block text-rose-700">📝 Ghi chú chung (Cột BM)</label>
             <textarea id="txtGhiChuBM" rows="2" placeholder="Nhập các nội dung cần lưu ý thêm cho nhà trường VD có sai sót về thông tin cơ bản về CCCD, họ và tên, ngày sinh..." class="w-full p-2 bg-white border border-rose-200 rounded-lg"></textarea>
@@ -401,6 +402,7 @@
       document.getElementById('txtBietBoi').value = data.bietBoi || '';
       document.getElementById('txtBenhVeMat').value = data.benhVeMat || '';
       document.getElementById('txtSucKhoeHocKy').value = data.sucKhoeHocKy || '';
+      document.getElementById('txtsobhyte').value = data.sobhyt || '';
       document.getElementById('txtGhiChuBM').value = data.ghiChuBM || '';              
       document.getElementById('hsLopHienThi').innerText = `Lớp: ${data.maLop || '---'} | Họ tên: ${data.hoTen || ''}`;
       document.getElementById('hsLoginBox').classList.add('hidden');
