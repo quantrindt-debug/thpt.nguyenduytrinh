@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cổng Thông Tin Học Sinh - KienoraOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Liên kết file manifest -->
+<link rel="manifest" href="../manifest.json">
+<!-- Cấu hình cho iOS (iPhone/iPad) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KienoraOS">
+<link rel="apple-touch-icon" href="icon-192.png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* Phong cách giáo dục: Nền xanh dương nhạt tươi sáng, trong trẻo */
+    body {
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #e2e8f0 100%);
+      color: #1e293b;
+      min-height: 100vh;
+    }
+    .kienora-box {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(186, 230, 253, 0.6);
+      box-shadow: 0 20px 40px -15px rgba(14, 116, 144, 0.12);
+    }
+    .kienora-input {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      transition: all 0.2s ease;
+    }
+    .kienora-input:focus {
+      background: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      outline: none;
+    }
+    /* Hiệu ứng icon nổi bật, KHÔNG CÓ NỀN TRẮNG BAO QUANH */
+    .os-icon-btn {
+      transition: all 0.25s ease;
+    }
+    .os-icon-btn:hover {
+      transform: translateY(-6px);
+    }
+  </style>
+</head>
+<body class="py-8 px-4 font-sans flex flex-col items-center justify-center">
+
+  <!-- ================= 1. MÀN HÌNH ĐĂNG NHẬP ================= -->
+  <div id="hsLoginBox" class="kienora-box p-8 rounded-[2rem] w-full max-w-md text-center">
+    <div class="mb-6">
+      <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-sky-500 text-white rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4 shadow-lg shadow-blue-500/30">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <h2 class="text-2xl font-black text-blue-900 tracking-wide">KienoraOS</h2>
+      <p class="text-xs text-slate-600 mt-1 font-semibold">Trường THPT Nguyễn Duy Trinh</p>
+    </div>
+
+    <form onsubmit="event.preventDefault(); loginStudent();" class="space-y-4 text-left">
+      <div>
+        <label class="block text-[11px] font-bold text-blue-900 uppercase tracking-wider mb-1.5">Số Căn cước (CCCD)</label>
+        <input type="text" id="loginCCCD" required placeholder="Nhập số CCCD" class="kienora-input w-full px-4 py-3 rounded-xl text-sm font-mono">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-blue-900 uppercase tracking-wider mb-1.5">Mật khẩu</label>
+        <input type="password" id="loginPass" required placeholder="Nhập mật khẩu" class="kienora-input w-full px-4 py-3 rounded-xl text-sm">
+      </div>
+
+      <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white font-bold py-3.5 rounded-xl text-sm shadow-lg shadow-blue-600/30 transition-all">
+        Xác thực & Đăng nhập
+      </button>
+    </form>
+
+    <div class="mt-8 pt-6 border-t border-sky-100 text-center">
+      <p class="text-[11px] text-slate-500 tracking-wide">© 2026 KienoraOS Education Management System.</p>
+    </div>
+  </div>
+ 
+  <!-- ================= 2. MÀN HÌNH ĐỔI MẬT KHẨU LẦN ĐẦU ================= -->
+  <div id="hsChangePassBox" class="hidden kienora-box p-8 rounded-[2rem] w-full max-w-md text-center">
+    <div class="mb-6">
+      <div class="w-16 h-16 bg-gradient-to-tr from-amber-500 to-orange-600 text-white rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4 shadow-lg shadow-amber-500/25">
+        <i class="fa-solid fa-key"></i>
+      </div>
+      <h2 class="text-xl font-black text-blue-900 tracking-wide">ĐỔI MẬT KHẨU LẦN ĐẦU</h2>
+      <p class="text-xs text-amber-700 mt-1 font-semibold">Bắt buộc đổi mật khẩu mới để bảo mật tài khoản!</p>
+    </div>
+    <form onsubmit="event.preventDefault(); changePasswordFirstTime();" class="space-y-4 text-left">
+      <div>
+        <label class="block text-[11px] font-bold text-blue-900 uppercase tracking-wider mb-1.5">Mật khẩu mới (tối thiểu 6 ký tự)</label>
+        <input type="password" id="newPass" required placeholder="Nhập mật khẩu mới" class="kienora-input w-full px-4 py-3 rounded-xl text-sm">
+      </div>
+      <button type="submit" class="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl text-sm shadow-lg shadow-amber-600/25 transition-all">
+        Xác nhận & Vào hệ thống
+      </button>
+    </form>
+    <div class="mt-8 pt-6 border-t border-sky-100 text-center">
+      <p class="text-[11px] text-slate-500">Trường THPT Nguyễn Duy Trinh</p>
+    </div>
+  </div>
+
+  <!-- ================= 3. GIAO DIỆN HỆ ĐIỀU HÀNH (OS DESKTOP & CÁC CỬA SỔ) ================= -->
+  <div id="hsOSDashboard" class="hidden max-w-5xl w-full mx-auto space-y-6">
+    
+    <!-- Thanh Header OS (Tiêu đề màu xanh Blue chuẩn giáo dục) -->
+    <div class="kienora-box p-4 rounded-2xl flex justify-between items-center border-l-4 border-blue-600">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-sky-600 text-white rounded-xl flex items-center justify-center shadow">
+          <i class="fa-solid fa-user-graduate"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-blue-900 text-sm" id="osStudentName">Họ tên: ---</h3>
+          <p class="text-[11px] text-emerald-700 font-semibold" id="osStudentClass">Lớp: ---</p>
+        </div>
+      </div>
+      <button onclick="location.reload()" class="text-xs text-rose-600 bg-rose-50 border border-rose-200 px-3 py-2 rounded-xl hover:bg-rose-100 font-semibold transition">
+        <i class="fa-solid fa-power-off mr-1"></i> Đăng xuất
+      </button>
+    </div>
+
+    <!-- MÀN HÌNH CHÍNH (CÁC BIỂU TƯỢNG - KHÔNG CÓ NỀN TRẮNG BAO QUANH) -->
+    <div id="osHomeScreen" class="grid grid-cols-2 md:grid-cols-4 gap-6 py-6 text-center">
+      
+      <!-- Icon 1: Hồ sơ học sinh -->
+      <div onclick="openApp('profile')" class="os-icon-btn flex flex-col items-center cursor-pointer group p-4">
+        <div class="w-20 h-20 text-blue-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition">
+          <i class="fa-solid fa-id-card-clip"></i>
+        </div>
+        <h4 class="font-bold text-blue-950 text-sm">Hồ sơ học sinh</h4>
+        <p class="text-[10px] text-slate-600 mt-0.5">Xem & cập nhật thông tin</p>
+      </div>
+
+      <!-- Icon 2: Bài tập giáo viên -->
+      <div onclick="openApp('homework')" class="os-icon-btn flex flex-col items-center cursor-pointer group p-4">
+        <div class="w-20 h-20 text-indigo-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition">
+          <i class="fa-solid fa-book-open-reader"></i>
+        </div>
+        <h4 class="font-bold text-blue-950 text-sm">Bài tập giáo viên</h4>
+        <p class="text-[10px] text-slate-600 mt-0.5">Xem bài tập & hạn nộp</p>
+      </div>
+
+      <!-- Icon 3: Thông báo chung -->
+      <div onclick="openApp('notifications')" class="os-icon-btn flex flex-col items-center cursor-pointer group p-4">
+        <div class="w-20 h-20 text-amber-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition">
+          <i class="fa-solid fa-bullhorn"></i>
+        </div>
+        <h4 class="font-bold text-blue-950 text-sm">Thông báo chung</h4>
+        <p class="text-[10px] text-slate-600 mt-0.5">Tin từ nhà trường & GVCN</p>
+      </div>
+
+      <!-- Icon 4: Nề nếp & Thi đua -->
+      <div onclick="openApp('conduct')" class="os-icon-btn flex flex-col items-center cursor-pointer group p-4">
+        <div class="w-20 h-20 text-emerald-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition">
+          <i class="fa-solid fa-award"></i>
+        </div>
+        <h4 class="font-bold text-blue-950 text-sm">Nề nếp & Thi đua</h4>
+        <p class="text-[10px] text-slate-600 mt-0.5">Điểm số & kỷ luật</p>
+      </div>
+
+    </div>
+
+    <!-- ================= 4. CÁC CỬA SỔ ỨNG DỤNG ================= -->
+
+    <!-- Cửa sổ 1: Hồ sơ học sinh -->
+    <div id="appProfile" class="hidden kienora-box rounded-[2rem] p-6 md:p-10">
+      <div class="flex justify-between items-center border-b border-sky-200 pb-4 mb-6">
+        <h3 class="text-lg font-bold text-blue-900"><i class="fa-solid fa-id-card-clip text-blue-600 mr-2"></i> Hồ Sơ Chi Tiết Học Sinh</h3>
+        <button onclick="closeApp()" class="text-xs text-blue-900 bg-sky-100 px-3 py-1.5 rounded-xl hover:bg-sky-200 font-semibold transition"><i class="fa-solid fa-arrow-left mr-1"></i> Quay lại Desktop</button>
+      </div>
+
+      <form id="formUpdateProfile" onsubmit="event.preventDefault(); saveStudentProfile();" class="space-y-6">
+        <!-- PHẦN 1: THÔNG TIN GỐC -->
+        <div class="bg-sky-50/70 p-4 rounded-2xl border border-sky-100">
+          <h3 class="text-sm font-bold text-blue-900 mb-3 uppercase"><i class="fa-solid fa-lock mr-1.5"></i> 1. Thông tin gốc (Không được chỉnh sửa)</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div><label class="block font-semibold text-slate-600 mb-1">Họ và Tên</label><input type="text" id="txtHoTen" disabled class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-slate-600 cursor-not-allowed"></div>
+            <div><label class="block font-semibold text-slate-600 mb-1">Ngày sinh</label><input type="text" id="txtNgaySinh" disabled class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-slate-600 cursor-not-allowed"></div>
+            <div><label class="block font-semibold text-slate-600 mb-1">Số Căn cước (CCCD)</label><input type="text" id="txtCanCuoc" disabled class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-slate-600 cursor-not-allowed"></div>
+            <div><label class="block font-semibold text-slate-600 mb-1">Mã Học Sinh</label><input type="text" id="txtMaHS" disabled class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-slate-600 cursor-not-allowed"></div>
+            <div><label class="block font-semibold text-slate-600 mb-1">Giới tính</label><input type="text" id="txtGioiTinh" disabled class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-slate-600 cursor-not-allowed"></div>
+          </div>
+        </div>
+
+        <!-- PHẦN 2: NƠI CƯ TRÚ & QUÊ QUÁN -->
+        <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100">
+          <h3 class="text-sm font-bold text-blue-900 mb-3 uppercase"><i class="fa-solid fa-map-location-dot mr-1.5"></i> 2. Nơi cư trú & Quê quán</h3>
+          <div class="mb-4">
+            <h4 class="font-bold text-slate-700 text-xs mb-2 border-b border-blue-200 pb-1">Chỗ ở hiện nay</h4>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+              <div><label class="font-semibold text-slate-600 mb-1 block">Xóm</label><input type="text" id="txtNoXom" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Khu dân cư</label><input type="text" id="txtNoKhuDanCu" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtNoXaPhuong" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtNoTinhTp" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <h4 class="font-bold text-slate-700 text-xs mb-2 border-b border-blue-200 pb-1">Hộ khẩu thường trú</h4>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+              <div><label class="font-semibold text-slate-600 mb-1 block">Xóm</label><input type="text" id="txtHkXom" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Khu dân cư</label><input type="text" id="txtHkKhuDanCu" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtHkXaPhuong" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtHkTinhTp" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PHẦN 3: GIA ĐÌNH -->
+        <div class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
+          <h3 class="text-sm font-bold text-emerald-900 mb-3 uppercase"><i class="fa-solid fa-people-roof mr-1.5"></i> 3. Thông tin Gia đình (Bố & Mẹ)</h3>
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
+            <div class="md:col-span-5 font-bold text-emerald-900 border-b border-emerald-200 pb-1">Thông tin Bố</div>
+            <div><label class="block mb-1 text-slate-700">Họ tên Bố</label><input type="text" id="txtTenCha" class="w-full p-2.5 kienora-input rounded-xl"></div>
+            <div><label class="block mb-1 text-slate-700">Năm sinh</label><input type="text" id="txtNamSinhCha" class="w-full p-2.5 kienora-input rounded-xl"></div>
+            <div><label class="block mb-1 text-slate-700">Số CCCD Bố</label><input type="text" id="txtCccdCha" class="w-full p-2.5 kienora-input rounded-xl"></div>
+            <div><label class="block mb-1 text-slate-700">Điện thoại Bố</label><input type="text" id="txtSdtBo" class="w-full p-2.5 kienora-input rounded-xl"></div>
+            <div><label class="block mb-1 text-slate-700">Đơn vị công tác</label><input type="text" id="txtCoQuanCha" class="w-full p-2.5 kienora-input rounded-xl"></div>
+
+            <div class="md:col-span-5 font-bold text-emerald-900 border-b border-emerald-200 pb-1 mt-2">Thông tin Mẹ</div>
+            <div><label class="block mb-1 text-slate-700">Họ tên Mẹ</label><input type="text" id="txtTenMe" class="w-full p-2.5 kienora-input rounded-xl"></div>
+            <div><label class="block mb-1 text-slate-700">Nghề nghiệp</label><input type="text" id="txtNgheMe" class="w-full p-2.5 kienora-input rounded-xl"></div>
+            <div><label class="block mb-1 text-slate-700">Năm sinh</label><input type="text" id="txtNamSinhMe" class="w-full p-2.5 kienora-input rounded-xl"></div>
+            <div><label class="block mb-1 text-slate-700">Số CCCD Mẹ</label><input type="text" id="txtCccdMe" class="w-full p-2.5 kienora-input rounded-xl"></div>
+            <div><label class="block mb-1 text-slate-700">Điện thoại Mẹ</label><input type="text" id="txtSdtMe" class="w-full p-2.5 kienora-input rounded-xl"></div>
+          </div>
+        </div>
+
+        <!-- PHẦN 4: SỨC KHỎE & CHỨC VỤ -->
+        <div class="bg-purple-50/50 p-4 rounded-2xl border border-purple-100">
+          <h3 class="text-sm font-bold text-purple-900 mb-3 uppercase"><i class="fa-solid fa-address-book mr-1.5"></i> 4. Sức khỏe & Phân công</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+            <div><label class="font-bold mb-1 block text-slate-500">Chức vụ (Không sửa)</label><input type="text" id="txtChucVu" disabled class="w-full p-2.5 bg-slate-200 border rounded-xl text-slate-500 cursor-not-allowed"></div>
+            <div><label class="font-bold mb-1 block text-slate-700">Cân nặng (kg)</label><input type="text" id="txtCanNang" class="w-full p-2.5 kienora-input rounded-xl"></div>
+            <div><label class="font-bold mb-1 block text-slate-700">Chiều cao (cm)</label><input type="text" id="txtChieuCao" class="w-full p-2.5 kienora-input rounded-xl"></div>
+            <div><label class="font-bold mb-1 block text-slate-700">Số BHYT</label><input type="text" id="txtSoBHYT" class="w-full p-2.5 kienora-input rounded-xl"></div>
+          </div>
+        </div>
+
+        <button type="submit" id="btnSave" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-2xl text-sm shadow-lg shadow-blue-600/25 transition">
+          💾 LƯU THAY ĐỔI HỒ SƠ
+        </button>
+      </form>
+    </div>
+
+    <!-- Cửa sổ 2: Bài tập giáo viên -->
+    <div id="appHomework" class="hidden kienora-box rounded-[2rem] p-6 md:p-10">
+      <div class="flex justify-between items-center border-b border-sky-200 pb-4 mb-6">
+        <h3 class="text-lg font-bold text-blue-900"><i class="fa-solid fa-book-open-reader text-indigo-600 mr-2"></i> Bài Tập Được Giao Từ Giáo Viên</h3>
+        <button onclick="closeApp()" class="text-xs text-blue-900 bg-sky-100 px-3 py-1.5 rounded-xl hover:bg-sky-200 font-semibold transition"><i class="fa-solid fa-arrow-left mr-1"></i> Quay lại Desktop</button>
+      </div>
+      <div id="homeworkListContainer" class="space-y-3">
+        <p class="text-xs text-slate-500 italic text-center py-6">Đang tải danh sách bài tập...</p>
+      </div>
+    </div>
+
+    <!-- Cửa sổ 3: Thông báo nhà trường -->
+    <div id="appNotifications" class="hidden kienora-box rounded-[2rem] p-6 md:p-10">
+      <div class="flex justify-between items-center border-b border-sky-200 pb-4 mb-6">
+        <h3 class="text-lg font-bold text-blue-900"><i class="fa-solid fa-bullhorn text-amber-600 mr-2"></i> Thông Báo Nhà Trường & GVCN</h3>
+        <button onclick="closeApp()" class="text-xs text-blue-900 bg-sky-100 px-3 py-1.5 rounded-xl hover:bg-sky-200 font-semibold transition"><i class="fa-solid fa-arrow-left mr-1"></i> Quay lại Desktop</button>
+      </div>
+      <div id="notifListContainer" class="space-y-3">
+        <p class="text-xs text-slate-500 italic text-center py-6">Đang tải thông báo...</p>
+      </div>
+    </div>
+
+    <!-- Cửa sổ 4: Nề nếp & Thi đua -->
+    <div id="appConduct" class="hidden kienora-box rounded-[2rem] p-6 md:p-10">
+      <div class="flex justify-between items-center border-b border-sky-200 pb-4 mb-6">
+        <h3 class="text-lg font-bold text-blue-900"><i class="fa-solid fa-award text-emerald-600 mr-2"></i> Điểm Nề Nếp & Thi Đua Cá Nhân</h3>
+        <button onclick="closeApp()" class="text-xs text-blue-900 bg-sky-100 px-3 py-1.5 rounded-xl hover:bg-sky-200 font-semibold transition"><i class="fa-solid fa-arrow-left mr-1"></i> Quay lại Desktop</button>
+      </div>
+      <div id="conductListContainer" class="space-y-3">
+        <p class="text-xs text-slate-500 italic text-center py-6">Chưa có dữ liệu nề nếp thi đua.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // 🔴 KẾT NỐI SUPABASE
+       const SUPABASE_URL = 'https://ywccbfpyilwdpokgllus.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_YShqjad87nsgJJTlTX5rbw_K5zO48Jr';
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentStudentCCCD = "";
+    let currentStudentID = null;
+    let currentMaHocSinh = "";
+    let currentMaLop = "";
+
+    function formatDateToDisplay(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      let month = '' + (d.getMonth() + 1);
+      let day = '' + d.getDate();
+      let year = d.getFullYear();
+      if (month.length < 2) month = '0' + month;
+      if (day.length < 2) day = '0' + day;
+      return [day, month, year].join('/');
+    }
+
+    async function loginStudent() {
+      const cccd = document.getElementById('loginCCCD').value.trim();
+      const pass = document.getElementById('loginPass').value.trim();
+
+      try {
+        let { data: hsData, error: hsError } = await db
+          .from('hoc_sinh')
+          .select('*')
+          .eq('so_can_cuoc', cccd)
+          .maybeSingle();
+
+        if (hsError) throw hsError;
+        if (!hsData) {
+          alert("❌ Không tìm thấy học sinh với số Căn cước này!");
+          return;
+        }
+
+        if (hsData.mat_khau !== pass) {
+          alert("❌ Mật khẩu không chính xác!");
+          return;
+        }
+
+        let canDoiMatKhau = hsData.doi_mat_khau === true || String(hsData.doi_mat_khau).toLowerCase() === 'true';
+        if (canDoiMatKhau) {
+          currentStudentCCCD = cccd;
+          document.getElementById('hsLoginBox').classList.add('hidden');
+          document.getElementById('hsChangePassBox').classList.remove('hidden');
+          return;
+        }
+
+        currentMaHocSinh = hsData.ma_hoc_sinh;
+        currentMaLop = hsData.ma_lop;
+        currentStudentID = hsData.id;
+
+        let [dd, gd, sk] = await Promise.all([
+          db.from('dinh_danh_ca_nhan').select('*').eq('ma_hoc_sinh', currentMaHocSinh).maybeSingle(),
+          db.from('quan_he_gia_dinh').select('*').eq('ma_hoc_sinh', currentMaHocSinh).maybeSingle(),
+          db.from('ho_so_su_khoe').select('*').eq('ma_hoc_sinh', currentMaHocSinh).maybeSingle()
+        ]);
+
+        hsData.dinh_danh_ca_nhan = dd.data || {};
+        hsData.quan_he_gia_dinh = gd.data || {};
+        hsData.ho_so_su_khoe = sk.data || {};
+
+        loadStudentDataToUI(hsData);
+
+      } catch (err) {
+        console.error("Lỗi đăng nhập:", err);
+        alert("❌ Lỗi kết nối CSDL Supabase: " + err.message);
+      }
+    }
+
+    async function changePasswordFirstTime() {
+      const newPassword = document.getElementById('newPass').value.trim();
+      if (!newPassword || newPassword.length < 6) {
+        alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
+        return;
+      }
+      try {
+        await db.from('hoc_sinh').update({ mat_khau: newPassword, doi_mat_khau: false }).eq('so_can_cuoc', currentStudentCCCD);
+        alert("🔔 Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
+        location.reload();
+      } catch (err) {
+        alert("❌ Lỗi đổi mật khẩu: " + err.message);
+      }
+    }
+
+    function loadStudentDataToUI(hs) {
+      document.getElementById('osStudentName').innerText = `Họ tên: ${hs.ho_va_ten || ''}`;
+      document.getElementById('osStudentClass').innerText = `Lớp: ${hs.ma_lop || '---'}`;
+
+      document.getElementById('txtHoTen').value = hs.ho_va_ten || '';
+      document.getElementById('txtNgaySinh').value = formatDateToDisplay(hs.ngay_sinh) || '';
+      document.getElementById('txtCanCuoc').value = hs.so_can_cuoc || '';
+      document.getElementById('txtMaHS').value = hs.ma_hoc_sinh || '';
+      document.getElementById('txtGioiTinh').value = hs.gioi_tinh || '';
+      document.getElementById('txtChucVu').value = hs.chuc_vu || '';
+
+      const dd = hs.dinh_danh_ca_nhan;
+      document.getElementById('txtNoXom').value = dd.no_xom || '';
+      document.getElementById('txtNoKhuDanCu').value = dd.no_khu_dan_cu || '';
+      document.getElementById('txtNoXaPhuong').value = dd.no_xa_phuong || '';
+      document.getElementById('txtNoTinhTp').value = dd.no_tinh_tp || '';
+      document.getElementById('txtHkXom').value = dd.hk_xom || '';
+      document.getElementById('txtHkKhuDanCu').value = dd.hk_khu_dan_cu || '';
+      document.getElementById('txtHkXaPhuong').value = dd.hk_xa_phuong || '';
+      document.getElementById('txtHkTinhTp').value = dd.hk_tinh_tp || '';
+
+      const gd = hs.quan_he_gia_dinh;
+      document.getElementById('txtTenCha').value = gd.ho_ten_cha || '';
+      document.getElementById('txtNamSinhCha').value = gd.nam_sinh_cha || '';
+      document.getElementById('txtCccdCha').value = gd.cccd_cha || '';
+      document.getElementById('txtSdtBo').value = gd.dien_thoai_cha || '';
+      document.getElementById('txtCoQuanCha').value = gd.don_vi_cong_tac_cha || '';
+      document.getElementById('txtTenMe').value = gd.ten_me || '';
+      document.getElementById('txtNgheMe').value = gd.nghe_nghiep_me || '';
+      document.getElementById('txtNamSinhMe').value = gd.nam_sinh_me || '';
+      document.getElementById('txtCccdMe').value = gd.cccd_me || '';
+      document.getElementById('txtSdtMe').value = gd.dien_thoai_me || '';
+
+      const sk = hs.ho_so_su_khoe;
+      document.getElementById('txtCanNang').value = sk.can_nang || '';
+      document.getElementById('txtChieuCao').value = sk.chieu_cao || '';
+      document.getElementById('txtSoBHYT').value = sk.so_bhyt || '';
+
+      document.getElementById('hsLoginBox').classList.add('hidden');
+      document.getElementById('hsChangePassBox').classList.add('hidden');
+      document.getElementById('hsOSDashboard').classList.remove('hidden');
+    }
+
+    function openApp(appName) {
+      document.getElementById('osHomeScreen').classList.add('hidden');
+      document.getElementById('appProfile').classList.add('hidden');
+      document.getElementById('appHomework').classList.add('hidden');
+      document.getElementById('appNotifications').classList.add('hidden');
+      document.getElementById('appConduct').classList.add('hidden');
+
+      if (appName === 'profile') document.getElementById('appProfile').classList.remove('hidden');
+      if (appName === 'homework') {
+        document.getElementById('appHomework').classList.remove('hidden');
+        loadHomework();
+      }
+      if (appName === 'notifications') {
+        document.getElementById('appNotifications').classList.remove('hidden');
+        loadNotifications();
+      }
+      if (appName === 'conduct') document.getElementById('appConduct').classList.remove('hidden');
+    }
+
+    function closeApp() {
+      document.getElementById('appProfile').classList.add('hidden');
+      document.getElementById('appHomework').classList.add('hidden');
+      document.getElementById('appNotifications').classList.add('hidden');
+      document.getElementById('appConduct').classList.add('hidden');
+      document.getElementById('osHomeScreen').classList.remove('hidden');
+    }
+
+    async function loadHomework() {
+      const container = document.getElementById('homeworkListContainer');
+      try {
+        let { data, error } = await db.from('bai_tap').select('*').or(`ma_hoc_sinh.eq.${currentMaHocSinh},ma_lop.eq.${currentMaLop}`);
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">🎉 Hiện tại em chưa có bài tập nào!</p>`;
+          return;
+        }
+        let html = '';
+        data.forEach(item => {
+          html += `<div class="bg-white p-4 rounded-2xl border border-sky-100 shadow-sm"><span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 font-bold rounded-lg text-[10px] uppercase">${item.mon_hoc || 'Môn học'}</span><h4 class="font-bold text-blue-900 text-sm mt-2">${item.tieu_de}</h4><p class="text-xs text-slate-700 mt-1 bg-slate-50 p-3 rounded-xl">${item.noi_dung}</p><p class="text-[11px] text-rose-600 font-semibold mt-2"><i class="fa-regular fa-clock mr-1"></i> Hạn nộp: ${item.han_nop || '---'}</p></div>`;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<p class="text-xs text-rose-500 text-center py-4">Không thể tải bài tập.</p>`;
+      }
+    }
+
+    async function loadNotifications() {
+      const container = document.getElementById('notifListContainer');
+      try {
+        let { data, error } = await db.from('thong_bao').select('*').order('id', { ascending: false });
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">📭 Chưa có thông báo nào từ nhà trường.</p>`;
+          return;
+        }
+        let html = '';
+        data.forEach(item => {
+          html += `<div class="bg-white p-4 rounded-2xl border border-sky-100 shadow-sm"><h4 class="font-bold text-blue-900 text-sm mb-1">${item.tieu_de}</h4><p class="text-xs text-slate-700 bg-slate-50 p-3 rounded-xl">${item.noi_dung}</p><span class="text-[10px] text-slate-400 mt-2 block">Ngày đăng: ${item.ngay_dang || '---'}</span></div>`;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Chưa cấu hình bảng thông báo trên cơ sở dữ liệu.</p>`;
+      }
+    }
+
+    async function saveStudentProfile() {
+      const btn = document.getElementById('btnSave');
+      btn.innerText = "⏳ Đang lưu...";
+      btn.disabled = true;
+      try {
+        await db.from('dinh_danh_ca_nhan').update({
+          no_xom: document.getElementById('txtNoXom').value.trim(),
+          no_khu_dan_cu: document.getElementById('txtNoKhuDanCu').value.trim(),
+          no_xa_phuong: document.getElementById('txtNoXaPhuong').value.trim(),
+          no_tinh_tp: document.getElementById('txtNoTinhTp').value.trim(),
+          hk_xom: document.getElementById('txtHkXom').value.trim(),
+          hk_khu_dan_cu: document.getElementById('txtHkKhuDanCu').value.trim(),
+          hk_xa_phuong: document.getElementById('txtHkXaPhuong').value.trim(),
+          hk_tinh_tp: document.getElementById('txtHkTinhTp').value.trim()
+        }).eq('ma_hoc_sinh', currentMaHocSinh);
+
+        await db.from('quan_he_gia_dinh').update({
+          ho_ten_cha: document.getElementById('txtTenCha').value.trim(),
+          nam_sinh_cha: document.getElementById('txtNamSinhCha').value.trim(),
+          cccd_cha: document.getElementById('txtCccdCha').value.trim(),
+          dien_thoai_cha: document.getElementById('txtSdtBo').value.trim(),
+          don_vi_cong_tac_cha: document.getElementById('txtCoQuanCha').value.trim(),
+          ten_me: document.getElementById('txtTenMe').value.trim(),
+          nghe_nghiep_me: document.getElementById('txtNgheMe').value.trim(),
+          nam_sinh_me: document.getElementById('txtNamSinhMe').value.trim(),
+          cccd_me: document.getElementById('txtCccdMe').value.trim(),
+          dien_thoai_me: document.getElementById('txtSdtMe').value.trim()
+        }).eq('ma_hoc_sinh', currentMaHocSinh);
+
+        await db.from('ho_so_su_khoe').update({
+          can_nang: document.getElementById('txtCanNang').value.trim(),
+          chieu_cao: document.getElementById('txtChieuCao').value.trim(),
+          so_bhyt: document.getElementById('txtSoBHYT').value.trim()
+        }).eq('ma_hoc_sinh', currentMaHocSinh);
+
+        alert("✅ Cập nhật hồ sơ thành công!");
+      } catch (err) {
+        alert("❌ Lỗi lưu: " + err.message);
+      } finally {
+        btn.innerText = "💾 LƯU THAY ĐỔI HỒ SƠ";
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
