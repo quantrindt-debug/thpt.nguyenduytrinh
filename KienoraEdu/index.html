@@ -3,26 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cổng Thông Tin Học Sinh - KienoraEdu</title>
+  <title>Cổng Thông Tin KienoraOS - Giáo viên & Học sinh</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Liên kết file manifest -->
-<link rel="manifest" href="manifest.json">
-<!-- Cấu hình cho iOS (iPhone/iPad) -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="KienoraEdu">
-<link rel="apple-touch-icon" href="icon-192.png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* Phong cách giáo dục: Nền xanh dương nhạt tươi sáng, trong trẻo */
     body {
       background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #e2e8f0 100%);
       color: #1e293b;
       min-height: 100vh;
     }
     .kienora-box {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(16px);
       border: 1px solid rgba(186, 230, 253, 0.6);
       box-shadow: 0 20px 40px -15px rgba(14, 116, 144, 0.12);
@@ -39,7 +31,6 @@
       box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
       outline: none;
     }
-    /* Hiệu ứng icon nổi bật, KHÔNG CÓ NỀN TRẮNG BAO QUANH */
     .os-icon-btn {
       transition: all 0.25s ease;
     }
@@ -50,7 +41,7 @@
 </head>
 <body class="py-8 px-4 font-sans flex flex-col items-center justify-center">
 
-  <!-- ================= 1. MÀN HÌNH ĐĂNG NHẬP ================= -->
+  <!-- ================= MÀN HÌNH ĐĂNG NHẬP CHUNG ================= -->
   <div id="hsLoginBox" class="kienora-box p-8 rounded-[2rem] w-full max-w-md text-center">
     <div class="mb-6">
       <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-sky-500 text-white rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4 shadow-lg shadow-blue-500/30">
@@ -60,17 +51,20 @@
       <p class="text-xs text-slate-600 mt-1 font-semibold">Trường THPT Nguyễn Duy Trinh</p>
     </div>
 
-    <form onsubmit="event.preventDefault(); loginStudent();" class="space-y-4 text-left">
-      <div>
-        <label class="block text-[11px] font-bold text-blue-900 uppercase tracking-wider mb-1.5">Số Căn cước (CCCD)</label>
-        <input type="text" id="loginCCCD" required placeholder="Nhập số CCCD" class="kienora-input w-full px-4 py-3 rounded-xl text-sm font-mono">
-      </div>
+    <div class="flex bg-slate-100 p-1 rounded-xl mb-4">
+      <button type="button" onclick="switchLoginRole('student')" id="roleBtnStudent" class="flex-1 py-2 text-xs font-bold rounded-lg bg-white text-blue-900 shadow-sm transition">Học sinh / Phụ huynh</button>
+      <button type="button" onclick="switchLoginRole('teacher')" id="roleBtnTeacher" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 transition">Giáo viên</button>
+    </div>
 
+    <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-4 text-left">
+      <div>
+        <label id="lblAccount" class="block text-[11px] font-bold text-blue-900 uppercase tracking-wider mb-1.5">Số Căn cước (CCCD) học sinh</label>
+        <input type="text" id="loginAccount" required placeholder="Nhập số CCCD" class="kienora-input w-full px-4 py-3 rounded-xl text-sm font-mono">
+      </div>
       <div>
         <label class="block text-[11px] font-bold text-blue-900 uppercase tracking-wider mb-1.5">Mật khẩu</label>
         <input type="password" id="loginPass" required placeholder="Nhập mật khẩu" class="kienora-input w-full px-4 py-3 rounded-xl text-sm">
       </div>
-
       <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white font-bold py-3.5 rounded-xl text-sm shadow-lg shadow-blue-600/30 transition-all">
         Xác thực & Đăng nhập
       </button>
@@ -81,7 +75,7 @@
     </div>
   </div>
  
-  <!-- ================= 2. MÀN HÌNH ĐỔI MẬT KHẨU LẦN ĐẦU ================= -->
+  <!-- ================= MÀN HÌNH ĐỔI MẬT KHẨU LẦN ĐẦU ================= -->
   <div id="hsChangePassBox" class="hidden kienora-box p-8 rounded-[2rem] w-full max-w-md text-center">
     <div class="mb-6">
       <div class="w-16 h-16 bg-gradient-to-tr from-amber-500 to-orange-600 text-white rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4 shadow-lg shadow-amber-500/25">
@@ -99,15 +93,10 @@
         Xác nhận & Vào hệ thống
       </button>
     </form>
-    <div class="mt-8 pt-6 border-t border-sky-100 text-center">
-      <p class="text-[11px] text-slate-500">Trường THPT Nguyễn Duy Trinh</p>
-    </div>
   </div>
 
-  <!-- ================= 3. GIAO DIỆN HỆ ĐIỀU HÀNH (OS DESKTOP & CÁC CỬA SỔ) ================= -->
+  <!-- ================= PHẦN 1: GIAO DIỆN OS HỌC SINH ================= -->
   <div id="hsOSDashboard" class="hidden max-w-5xl w-full mx-auto space-y-6">
-    
-    <!-- Thanh Header OS (Tiêu đề màu xanh Blue chuẩn giáo dục) -->
     <div class="kienora-box p-4 rounded-2xl flex justify-between items-center border-l-4 border-blue-600">
       <div class="flex items-center space-x-3">
         <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-sky-600 text-white rounded-xl flex items-center justify-center shadow">
@@ -123,50 +112,36 @@
       </button>
     </div>
 
-    <!-- MÀN HÌNH CHÍNH (CÁC BIỂU TƯỢNG - KHÔNG CÓ NỀN TRẮNG BAO QUANH) -->
-    <div id="osHomeScreen" class="grid grid-cols-2 md:grid-cols-4 gap-6 py-6 text-center">
-      
-      <!-- Icon 1: Hồ sơ học sinh -->
+    <!-- Màn hình desktop học sinh -->
+    <div id="osHomeScreen" class="grid grid-cols-2 md:grid-cols-5 gap-6 py-6 text-center">
       <div onclick="openApp('profile')" class="os-icon-btn flex flex-col items-center cursor-pointer group p-4">
-        <div class="w-20 h-20 text-blue-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition">
-          <i class="fa-solid fa-id-card-clip"></i>
-        </div>
+        <div class="w-20 h-20 text-blue-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition"><i class="fa-solid fa-id-card-clip"></i></div>
         <h4 class="font-bold text-blue-950 text-sm">Hồ sơ học sinh</h4>
         <p class="text-[10px] text-slate-600 mt-0.5">Xem & cập nhật thông tin</p>
       </div>
-
-      <!-- Icon 2: Bài tập giáo viên -->
       <div onclick="openApp('homework')" class="os-icon-btn flex flex-col items-center cursor-pointer group p-4">
-        <div class="w-20 h-20 text-indigo-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition">
-          <i class="fa-solid fa-book-open-reader"></i>
-        </div>
+        <div class="w-20 h-20 text-indigo-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition"><i class="fa-solid fa-book-open-reader"></i></div>
         <h4 class="font-bold text-blue-950 text-sm">Bài tập giáo viên</h4>
         <p class="text-[10px] text-slate-600 mt-0.5">Xem bài tập & hạn nộp</p>
       </div>
-
-      <!-- Icon 3: Thông báo chung -->
       <div onclick="openApp('notifications')" class="os-icon-btn flex flex-col items-center cursor-pointer group p-4">
-        <div class="w-20 h-20 text-amber-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition">
-          <i class="fa-solid fa-bullhorn"></i>
-        </div>
+        <div class="w-20 h-20 text-amber-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition"><i class="fa-solid fa-bullhorn"></i></div>
         <h4 class="font-bold text-blue-950 text-sm">Thông báo chung</h4>
         <p class="text-[10px] text-slate-600 mt-0.5">Tin từ nhà trường & GVCN</p>
       </div>
-
-      <!-- Icon 4: Nề nếp & Thi đua -->
       <div onclick="openApp('conduct')" class="os-icon-btn flex flex-col items-center cursor-pointer group p-4">
-        <div class="w-20 h-20 text-emerald-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition">
-          <i class="fa-solid fa-award"></i>
-        </div>
+        <div class="w-20 h-20 text-emerald-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition"><i class="fa-solid fa-award"></i></div>
         <h4 class="font-bold text-blue-950 text-sm">Nề nếp & Thi đua</h4>
         <p class="text-[10px] text-slate-600 mt-0.5">Điểm số & kỷ luật</p>
       </div>
-
+      <div onclick="openApp('messages')" class="os-icon-btn flex flex-col items-center cursor-pointer group p-4">
+        <div class="w-20 h-20 text-sky-600 flex items-center justify-center text-4xl mb-2 drop-shadow-md group-hover:scale-110 transition"><i class="fa-solid fa-comments"></i></div>
+        <h4 class="font-bold text-blue-950 text-sm">Hộp thư trao đổi</h4>
+        <p class="text-[10px] text-slate-600 mt-0.5">Nhắn tin với GVCN</p>
+      </div>
     </div>
 
-    <!-- ================= 4. CÁC CỬA SỔ ỨNG DỤNG ================= -->
-
-    <!-- Cửa sổ 1: Hồ sơ học sinh -->
+    <!-- Cửa sổ Hồ sơ - Chuẩn 6 Phần Chi Tiết Đầy Đủ -->
     <div id="appProfile" class="hidden kienora-box rounded-[2rem] p-6 md:p-10">
       <div class="flex justify-between items-center border-b border-sky-200 pb-4 mb-6">
         <h3 class="text-lg font-bold text-blue-900"><i class="fa-solid fa-id-card-clip text-blue-600 mr-2"></i> Hồ Sơ Chi Tiết Học Sinh</h3>
@@ -175,122 +150,452 @@
 
       <form id="formUpdateProfile" onsubmit="event.preventDefault(); saveStudentProfile();" class="space-y-6">
         <!-- PHẦN 1: THÔNG TIN GỐC -->
-        <div class="bg-sky-50/70 p-4 rounded-2xl border border-sky-100">
-          <h3 class="text-sm font-bold text-blue-900 mb-3 uppercase"><i class="fa-solid fa-lock mr-1.5"></i> 1. Thông tin gốc (Không được chỉnh sửa)</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            <div><label class="block font-semibold text-slate-600 mb-1">Họ và Tên</label><input type="text" id="txtHoTen" disabled class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-slate-600 cursor-not-allowed"></div>
-            <div><label class="block font-semibold text-slate-600 mb-1">Ngày sinh</label><input type="text" id="txtNgaySinh" disabled class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-slate-600 cursor-not-allowed"></div>
-            <div><label class="block font-semibold text-slate-600 mb-1">Số Căn cước (CCCD)</label><input type="text" id="txtCanCuoc" disabled class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-slate-600 cursor-not-allowed"></div>
-            <div><label class="block font-semibold text-slate-600 mb-1">Mã Học Sinh</label><input type="text" id="txtMaHS" disabled class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-slate-600 cursor-not-allowed"></div>
-            <div><label class="block font-semibold text-slate-600 mb-1">Giới tính</label><input type="text" id="txtGioiTinh" disabled class="w-full px-3 py-2 bg-slate-200 border border-slate-300 rounded-xl text-slate-600 cursor-not-allowed"></div>
+        <div class="bg-slate-100 p-4 rounded-xl border border-slate-300">
+          <h3 class="text-sm font-bold text-slate-700 mb-3 uppercase"><i class="fa-solid fa-lock"></i> 1. Thông tin gốc (Không được chỉnh sửa - Sai sót báo Nhà trường)</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">Họ và Tên</label>
+              <input type="text" id="txtHoTen" disabled class="w-full px-3 py-2 bg-slate-200 border rounded-lg text-sm text-slate-600 cursor-not-allowed">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">Ngày sinh</label>
+              <input type="text" id="txtNgaySinh" disabled class="w-full px-3 py-2 bg-slate-200 border rounded-lg text-sm text-slate-600 cursor-not-allowed">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">Số Căn cước (CCCD)</label>
+              <input type="text" id="txtCanCuoc" disabled class="w-full px-3 py-2 bg-slate-200 border rounded-lg text-sm text-slate-600 cursor-not-allowed">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">Mã Học Sinh / Định danh</label>
+              <input type="text" id="txtMaHS" disabled class="w-full px-3 py-2 bg-slate-200 border rounded-lg text-sm text-slate-600 cursor-not-allowed">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">Giới tính</label>
+              <input type="text" id="txtGioiTinh" disabled class="w-full px-3 py-2 bg-slate-200 border rounded-lg text-sm text-slate-600 cursor-not-allowed">
+            </div>
           </div>
         </div>
 
         <!-- PHẦN 2: NƠI CƯ TRÚ & QUÊ QUÁN -->
-        <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100">
-          <h3 class="text-sm font-bold text-blue-900 mb-3 uppercase"><i class="fa-solid fa-map-location-dot mr-1.5"></i> 2. Nơi cư trú & Quê quán</h3>
+        <div class="bg-sky-50/50 p-4 rounded-xl border border-sky-100">
+          <h3 class="text-sm font-bold text-sky-800 mb-3 uppercase"><i class="fa-solid fa-map-location-dot"></i> 2. Nơi cư trú & Quê quán</h3>
+          
           <div class="mb-4">
-            <h4 class="font-bold text-slate-700 text-xs mb-2 border-b border-blue-200 pb-1">Chỗ ở hiện nay</h4>
+            <h4 class="font-bold text-slate-700 text-xs mb-2 border-b pb-1">Chỗ ở hiện nay</h4>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-              <div><label class="font-semibold text-slate-600 mb-1 block">Xóm</label><input type="text" id="txtNoXom" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
-              <div><label class="font-semibold text-slate-600 mb-1 block">Khu dân cư</label><input type="text" id="txtNoKhuDanCu" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
-              <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtNoXaPhuong" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
-              <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtNoTinhTp" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">SN/Xóm</label><input type="text" id="txtChoOSnXom" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Khu dân cư</label><input type="text" id="txtChoOKhuDanCu" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtChoOXa" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtChoOTinh" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
             </div>
           </div>
+
           <div class="mb-4">
-            <h4 class="font-bold text-slate-700 text-xs mb-2 border-b border-blue-200 pb-1">Hộ khẩu thường trú</h4>
+            <h4 class="font-bold text-slate-700 text-xs mb-2 border-b pb-1">Hộ khẩu thường trú</h4>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-              <div><label class="font-semibold text-slate-600 mb-1 block">Xóm</label><input type="text" id="txtHkXom" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
-              <div><label class="font-semibold text-slate-600 mb-1 block">Khu dân cư</label><input type="text" id="txtHkKhuDanCu" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
-              <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtHkXaPhuong" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
-              <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtHkTinhTp" class="w-full px-3 py-2 kienora-input rounded-xl"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">SN/Xóm</label><input type="text" id="txtHkSnXom" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Khu dân cư</label><input type="text" id="txtHkKhuDanCu" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtHkXa" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtHkTinh" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <h4 class="font-bold text-slate-700 text-xs mb-2 border-b pb-1">Nơi sinh</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              <div><label class="font-semibold text-slate-600 mb-1 block">Thông tin nơi sinh</label><input type="text" id="txtNsThongTin" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtNsXa" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtNsTinh" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <h4 class="font-bold text-slate-700 text-xs mb-2 border-b pb-1">Quê quán</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              <div><label class="font-semibold text-slate-600 mb-1 block">Thông tin quê quán</label><input type="text" id="txtQqThongTin" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtQqXa" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtQqTinh" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-slate-700 text-xs mb-2 border-b pb-1">Nơi khai sinh</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div><label class="font-semibold text-slate-600 mb-1 block">Xã/Phường</label><input type="text" id="txtNksXa" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+              <div><label class="font-semibold text-slate-600 mb-1 block">Tỉnh/Tp</label><input type="text" id="txtNksTinh" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
             </div>
           </div>
         </div>
 
-        <!-- PHẦN 3: GIA ĐÌNH -->
-        <div class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
-          <h3 class="text-sm font-bold text-emerald-900 mb-3 uppercase"><i class="fa-solid fa-people-roof mr-1.5"></i> 3. Thông tin Gia đình (Bố & Mẹ)</h3>
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
-            <div class="md:col-span-5 font-bold text-emerald-900 border-b border-emerald-200 pb-1">Thông tin Bố</div>
-            <div><label class="block mb-1 text-slate-700">Họ tên Bố</label><input type="text" id="txtTenCha" class="w-full p-2.5 kienora-input rounded-xl"></div>
-            <div><label class="block mb-1 text-slate-700">Năm sinh</label><input type="text" id="txtNamSinhCha" class="w-full p-2.5 kienora-input rounded-xl"></div>
-            <div><label class="block mb-1 text-slate-700">Số CCCD Bố</label><input type="text" id="txtCccdCha" class="w-full p-2.5 kienora-input rounded-xl"></div>
-            <div><label class="block mb-1 text-slate-700">Điện thoại Bố</label><input type="text" id="txtSdtBo" class="w-full p-2.5 kienora-input rounded-xl"></div>
-            <div><label class="block mb-1 text-slate-700">Đơn vị công tác</label><input type="text" id="txtCoQuanCha" class="w-full p-2.5 kienora-input rounded-xl"></div>
-
-            <div class="md:col-span-5 font-bold text-emerald-900 border-b border-emerald-200 pb-1 mt-2">Thông tin Mẹ</div>
-            <div><label class="block mb-1 text-slate-700">Họ tên Mẹ</label><input type="text" id="txtTenMe" class="w-full p-2.5 kienora-input rounded-xl"></div>
-            <div><label class="block mb-1 text-slate-700">Nghề nghiệp</label><input type="text" id="txtNgheMe" class="w-full p-2.5 kienora-input rounded-xl"></div>
-            <div><label class="block mb-1 text-slate-700">Năm sinh</label><input type="text" id="txtNamSinhMe" class="w-full p-2.5 kienora-input rounded-xl"></div>
-            <div><label class="block mb-1 text-slate-700">Số CCCD Mẹ</label><input type="text" id="txtCccdMe" class="w-full p-2.5 kienora-input rounded-xl"></div>
-            <div><label class="block mb-1 text-slate-700">Điện thoại Mẹ</label><input type="text" id="txtSdtMe" class="w-full p-2.5 kienora-input rounded-xl"></div>
-          </div>
-        </div>
-
-        <!-- PHẦN 4: SỨC KHỎE & CHỨC VỤ -->
-        <div class="bg-purple-50/50 p-4 rounded-2xl border border-purple-100">
-          <h3 class="text-sm font-bold text-purple-900 mb-3 uppercase"><i class="fa-solid fa-address-book mr-1.5"></i> 4. Sức khỏe & Phân công</h3>
+        <!-- PHẦN 3: THÔNG TIN CÁ NHÂN & ĐOÀN ĐỘI -->
+        <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
+          <h3 class="text-sm font-bold text-amber-800 mb-3 uppercase"><i class="fa-solid fa-user-tag"></i> 3. Thông tin cá nhân, Dân tộc & Chính sách</h3>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-            <div><label class="font-bold mb-1 block text-slate-500">Chức vụ (Không sửa)</label><input type="text" id="txtChucVu" disabled class="w-full p-2.5 bg-slate-200 border rounded-xl text-slate-500 cursor-not-allowed"></div>
-            <div><label class="font-bold mb-1 block text-slate-700">Cân nặng (kg)</label><input type="text" id="txtCanNang" class="w-full p-2.5 kienora-input rounded-xl"></div>
-            <div><label class="font-bold mb-1 block text-slate-700">Chiều cao (cm)</label><input type="text" id="txtChieuCao" class="w-full p-2.5 kienora-input rounded-xl"></div>
-            <div><label class="font-bold mb-1 block text-slate-700">Số BHYT</label><input type="text" id="txtSoBHYT" class="w-full p-2.5 kienora-input rounded-xl"></div>
+            <div><label class="font-bold text-slate-700 mb-1 block">Ngày cấp CCCD</label><input type="text" id="txtNgayCapCCCD" placeholder="DD/MM/YYYY" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold text-slate-700 mb-1 block">Nơi cấp CCCD</label><input type="text" id="txtNoiCapCCCD" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold text-slate-700 mb-1 block">Dân tộc</label><input type="text" id="txtDanToc" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold text-slate-700 mb-1 block">Tôn giáo</label><input type="text" id="txtTonGiao" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold text-slate-700 mb-1 block">Diện chính sách</label><input type="text" id="txtChinhSach" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold text-slate-700 mb-1 block">Cận nghèo</label><input type="text" id="txtCanGheo" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold text-slate-700 mb-1 block">Đoàn viên</label><input type="text" id="txtDoanVien" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold text-slate-700 mb-1 block">Đội viên</label><input type="text" id="txtDoiVien" class="w-full px-3 py-2 bg-white border rounded-lg"></div>
           </div>
         </div>
 
-        <button type="submit" id="btnSave" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-2xl text-sm shadow-lg shadow-blue-600/25 transition">
-          💾 LƯU THAY ĐỔI HỒ SƠ
+        <!-- PHẦN 4: THÔNG TIN GIA ĐÌNH -->
+        <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
+          <h3 class="text-sm font-bold text-emerald-800 mb-3 uppercase"><i class="fa-solid fa-people-roof"></i> 4. Thông tin Gia đình (Bố & Mẹ)</h3>
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
+            <div class="md:col-span-5 font-bold text-emerald-900 border-b pb-1">Thông tin Bố</div>
+            <div><label class="block mb-1">Họ tên Bố</label><input type="text" id="txtTenCha" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="block mb-1">Nghề nghiệp</label><input type="text" id="txtNgheCha" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="block mb-1">Năm sinh</label><input type="text" id="txtNamSinhCha" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="block mb-1">Số CCCD Bố</label><input type="text" id="txtCccdCha" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="block mb-1">Đơn vị công tác</label><input type="text" id="txtCoQuanCha" class="w-full p-2 bg-white border rounded-lg"></div>
+
+            <div class="md:col-span-5 font-bold text-emerald-900 border-b pb-1 mt-2">Thông tin Mẹ</div>
+            <div><label class="block mb-1">Họ tên Mẹ</label><input type="text" id="txtTenMe" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="block mb-1">Nghề nghiệp</label><input type="text" id="txtNgheMe" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="block mb-1">Năm sinh</label><input type="text" id="txtNamSinhMe" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="block mb-1">Số CCCD Mẹ</label><input type="text" id="txtCccdMe" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="block mb-1">Đơn vị công tác</label><input type="text" id="txtCoQuanMe" class="w-full p-2 bg-white border rounded-lg"></div>
+          </div>
+        </div>
+
+        <!-- PHẦN 5: LIÊN LẠC & SỨC KHỎE -->
+        <div class="bg-purple-50/50 p-4 rounded-xl border border-purple-100">
+          <h3 class="text-sm font-bold text-purple-800 mb-3 uppercase"><i class="fa-solid fa-address-book"></i> 5. Liên lạc & Thể chất / Sức khỏe </h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+            <div><label class="font-bold mb-1 block">SĐT Sổ liên lạc điện tử</label><input type="text" id="txtSdtSLL" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Email SLL điện tử</label><input type="text" id="txtEmailSLL" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Điện thoại Bố</label><input type="text" id="txtSdtBo" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Điện thoại Mẹ</label><input type="text" id="txtSdtMe" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Điện thoại Học sinh</label><input type="text" id="txtSdtHS" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Khuyết tật (nếu có)</label><input type="text" id="txtKhuyetTat" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Nội trú / Bán trú</label><input type="text" id="txtNoiTruBTru" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Chức vụ trong lớp</label><input type="text" id="txtChucVu" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Nhiệm vụ phụ trách</label><input type="text" id="txtNhiemVuPhuTrach" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Nhà ở xa trên 5km?</label><input type="text" id="txtOXaTren5km" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Chỗ ngồi</label><input type="text" id="txtChoNgoi" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Cân nặng (kg)</label><input type="text" id="txtCanNang" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Chiều cao (cm)</label><input type="text" id="txtChieuCao" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Biết bơi? (Có/Không)</label><input type="text" id="txtBietBoi" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Bệnh về mắt</label><input type="text" id="txtBenhVeMat" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div><label class="font-bold mb-1 block">Sức khỏe học kỳ</label><input type="text" id="txtSucKhoeHocKy" class="w-full p-2 bg-white border rounded-lg"></div>
+            <div class="md:col-span-4">
+              <label class="font-bold mb-1 block text-rose-700">📝 Ghi chú chung (Cột BM)</label>
+              <textarea id="txtGhiChuBM" rows="2" class="w-full p-2 bg-white border border-rose-200 rounded-lg"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- PHẦN 6: TỆP MINH CHỨNG & HỒ SƠ ĐÍNH KÈM -->
+        <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
+          <h3 class="text-sm font-bold text-rose-800 mb-3 uppercase"><i class="fa-solid fa-file-arrow-up"></i> 6. Tệp minh chứng & Hồ sơ đính kèm</h3>
+          <div class="mb-4 p-3 border rounded-lg bg-slate-50">
+            <label class="block font-medium text-sm text-slate-700 mb-1">CCCD Mặt Trước:</label>
+            <div id="view_fileCCCDMocTruoc" class="mb-2"><span class="text-gray-400 text-sm italic">Đang tải trạng thái tệp...</span></div>
+            <input type="file" id="fileCCCDMocTruoc" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700">
+          </div>
+          <div class="mb-4 p-3 border rounded-lg bg-slate-50">
+            <label class="block font-medium text-sm text-slate-700 mb-1">CCCD Mặt Sau:</label>
+            <div id="view_fileCCCDMocSau" class="mb-2"><span class="text-gray-400 text-sm italic">Đang tải trạng thái tệp...</span></div>
+            <input type="file" id="fileCCCDMocSau" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700">
+          </div>
+          <div class="mb-4 p-3 border rounded-lg bg-slate-50">
+            <label class="block font-medium text-sm text-slate-700 mb-1">Giấy Khai Sinh:</label>
+            <div id="view_fileGiayKhaiSinh" class="mb-2"><span class="text-gray-400 text-sm italic">Đang tải trạng thái tệp...</span></div>
+            <input type="file" id="fileGiayKhaiSinh" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700">
+          </div>
+          <div class="mb-4 p-3 border rounded-lg bg-slate-50">
+            <label class="block font-medium text-sm text-slate-700 mb-1">Hồ sơ bổ sung:</label>
+            <div id="view_fileHoSoBoSung" class="mb-2"><span class="text-gray-400 text-sm italic">Đang tải trạng thái tệp...</span></div>
+            <input type="file" id="fileHoSoBoSung" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700">
+          </div>
+        </div>
+        
+        <div id="updateMsg" class="hidden p-3 rounded-lg text-xs font-semibold"></div>
+
+        <button type="submit" id="btnSave" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-emerald-600/20 transition">
+          💾 GỬI VÀ CẬP NHẬT HỒ SƠ
         </button>
       </form>
     </div>
 
-    <!-- Cửa sổ 2: Bài tập giáo viên -->
+    <!-- Cửa sổ Bài tập -->
     <div id="appHomework" class="hidden kienora-box rounded-[2rem] p-6 md:p-10">
       <div class="flex justify-between items-center border-b border-sky-200 pb-4 mb-6">
         <h3 class="text-lg font-bold text-blue-900"><i class="fa-solid fa-book-open-reader text-indigo-600 mr-2"></i> Bài Tập Được Giao Từ Giáo Viên</h3>
         <button onclick="closeApp()" class="text-xs text-blue-900 bg-sky-100 px-3 py-1.5 rounded-xl hover:bg-sky-200 font-semibold transition"><i class="fa-solid fa-arrow-left mr-1"></i> Quay lại Desktop</button>
       </div>
-      <div id="homeworkListContainer" class="space-y-3">
-        <p class="text-xs text-slate-500 italic text-center py-6">Đang tải danh sách bài tập...</p>
-      </div>
+      <div id="homeworkListContainer" class="space-y-3"><p class="text-xs text-slate-500 italic text-center py-6">Đang tải danh sách bài tập...</p></div>
     </div>
 
-    <!-- Cửa sổ 3: Thông báo nhà trường -->
+    <!-- Cửa sổ Thông báo -->
     <div id="appNotifications" class="hidden kienora-box rounded-[2rem] p-6 md:p-10">
       <div class="flex justify-between items-center border-b border-sky-200 pb-4 mb-6">
         <h3 class="text-lg font-bold text-blue-900"><i class="fa-solid fa-bullhorn text-amber-600 mr-2"></i> Thông Báo Nhà Trường & GVCN</h3>
         <button onclick="closeApp()" class="text-xs text-blue-900 bg-sky-100 px-3 py-1.5 rounded-xl hover:bg-sky-200 font-semibold transition"><i class="fa-solid fa-arrow-left mr-1"></i> Quay lại Desktop</button>
       </div>
-      <div id="notifListContainer" class="space-y-3">
-        <p class="text-xs text-slate-500 italic text-center py-6">Đang tải thông báo...</p>
-      </div>
+      <div id="notifListContainer" class="space-y-3"><p class="text-xs text-slate-500 italic text-center py-6">Đang tải thông báo...</p></div>
     </div>
 
-    <!-- Cửa sổ 4: Nề nếp & Thi đua -->
+    <!-- Cửa sổ Nề nếp -->
     <div id="appConduct" class="hidden kienora-box rounded-[2rem] p-6 md:p-10">
       <div class="flex justify-between items-center border-b border-sky-200 pb-4 mb-6">
         <h3 class="text-lg font-bold text-blue-900"><i class="fa-solid fa-award text-emerald-600 mr-2"></i> Điểm Nề Nếp & Thi Đua Cá Nhân</h3>
         <button onclick="closeApp()" class="text-xs text-blue-900 bg-sky-100 px-3 py-1.5 rounded-xl hover:bg-sky-200 font-semibold transition"><i class="fa-solid fa-arrow-left mr-1"></i> Quay lại Desktop</button>
       </div>
-      <div id="conductListContainer" class="space-y-3">
-        <p class="text-xs text-slate-500 italic text-center py-6">Chưa có dữ liệu nề nếp thi đua.</p>
-      </div>
+      <div id="conductListContainer" class="space-y-3"><p class="text-xs text-slate-500 italic text-center py-6">Chưa có dữ liệu nề nếp thi đua.</p></div>
     </div>
 
+    <!-- Cửa sổ Hộp thư trao đổi của Học sinh (Đã sửa lỗi thanh cuộn khung phải) -->
+    <div id="appMessages" class="hidden kienora-box rounded-[2rem] p-4 md:p-6">
+      <div class="flex justify-between items-center border-l-4 border-indigo-600 pl-3 mb-4">
+        <div>
+          <h3 class="text-base font-bold text-blue-900"><i class="fa-solid fa-comments text-indigo-600 mr-2"></i> Hộp Thư Trao Đổi Với Giáo Viên</h3>
+          <p class="text-[11px] text-slate-500 font-semibold">Trao đổi thông tin trực tiếp với giáo viên bộ môn và GVCN</p>
+        </div>
+        <button onclick="closeApp()" class="text-xs text-indigo-900 bg-indigo-50 border border-indigo-200 px-3 py-2 rounded-xl hover:bg-indigo-100 font-semibold transition">
+          <i class="fa-solid fa-arrow-left mr-1"></i> Quay lại Desktop
+        </button>
+      </div>
+
+      <div class="rounded-[1.5rem] grid grid-cols-1 md:grid-cols-12 overflow-hidden h-[580px] border border-sky-100 bg-white shadow-sm">
+        <!-- Cột trái: Danh sách giáo viên -->
+        <div class="md:col-span-4 border-r border-sky-100 flex flex-col bg-white/60 h-full min-h-0 overflow-hidden" id="teacherSelectionView">
+          <div class="p-3 bg-sky-50/70 border-b border-sky-100 shrink-0 space-y-2">
+            <h4 class="font-bold text-xs text-blue-950 flex items-center">
+              <i class="fa-solid fa-chalkboard-user mr-1.5 text-indigo-600"></i> Danh sách giáo viên
+            </h4>
+            <div class="relative">
+              <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+              <input type="text" id="searchTeacherInput" oninput="filterTeacherListForStudent()" placeholder="Tìm kiếm tên giáo viên..." class="kienora-input w-full pl-8 pr-3 py-1.5 rounded-lg text-xs">
+            </div>
+          </div>
+          <div id="teacherListContainer" class="flex-1 min-h-0 overflow-y-auto divide-y divide-slate-100">
+            <p class="text-xs text-slate-400 italic text-center py-10">Đang tải danh sách giáo viên...</p>
+          </div>
+        </div>
+
+        <!-- Cột phải: Khung chat chi tiết (Đã chuẩn hóa thanh cuộn và cố định ô nhập tin nhắn) -->
+        <div class="md:col-span-8 flex flex-col bg-slate-50/40 h-full min-h-0 overflow-hidden" id="chatDetailView">
+          <div id="chatPlaceholderView" class="flex-1 flex flex-col items-center justify-center p-6 text-center text-slate-400">
+            <i class="fa-regular fa-comments text-5xl mb-3 text-sky-300"></i>
+            <p class="text-xs font-semibold">Chọn một giáo viên ở cột bên trái để bắt đầu trao đổi tin nhắn</p>
+          </div>
+
+          <div id="chatActiveBox" class="hidden flex-1 flex flex-col h-full min-h-0 overflow-hidden">
+            <div class="p-3.5 bg-white border-b border-sky-100 flex justify-between items-center shadow-sm shrink-0">
+              <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xs" id="activeTeacherAvatar">GV</div>
+                <div>
+                  <h5 class="font-bold text-blue-950 text-xs" id="activeTeacherName">Đang chat với: ---</h5>
+                  <p class="text-[10px] text-slate-500">Giáo viên bộ môn / GVCN</p>
+                </div>
+              </div>
+            </div>
+            <!-- Vùng chứa danh sách tin nhắn có thanh cuộn độc lập -->
+            <div class="flex-1 p-4 min-h-0 overflow-y-auto space-y-3" id="chatMessagesContainer"></div>
+            <!-- Ô nhập tin nhắn cố định ở đáy -->
+            <form onsubmit="event.preventDefault(); sendStudentMessage();" class="p-3 bg-white border-t border-sky-100 flex gap-2 shrink-0">
+              <input type="text" id="chatInputMsg" required placeholder="Nhập nội dung trao đổi..." class="kienora-input flex-1 px-4 py-2.5 rounded-xl text-xs">
+              <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow transition">
+                <i class="fa-solid fa-paper-plane mr-1"></i> Gửi
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
+
+  <!-- ================= PHẦN 2: GIAO DIỆN OS DÀNH CHO GIÁO VIÊN ================= -->
+  <div id="teacherOSDashboard" class="hidden max-w-6xl w-full mx-auto space-y-4">
+    <div class="kienora-box p-4 rounded-2xl flex justify-between items-center border-l-4 border-indigo-600">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-blue-600 text-white rounded-xl flex items-center justify-center shadow">
+          <i class="fa-solid fa-chalkboard-user"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-blue-900 text-sm" id="osTeacherName">Giáo viên: ---</h3>
+          <p class="text-[11px] text-indigo-700 font-semibold" id="osTeacherRole">Vai trò: ---</p>
+        </div>
+      </div>
+      <button onclick="location.reload()" class="text-xs text-rose-600 bg-rose-50 border border-rose-200 px-3 py-2 rounded-xl hover:bg-rose-100 font-semibold transition">
+        <i class="fa-solid fa-power-off mr-1"></i> Đăng xuất
+      </button>
+    </div>
+
+    <div class="kienora-box rounded-[2rem] grid grid-cols-1 md:grid-cols-12 overflow-hidden h-[620px]">
+      <div class="md:col-span-4 border-r border-sky-100 flex flex-col bg-white/60 h-full min-h-0 overflow-hidden">
+        <div class="mb-4 flex space-x-2 p-3 pb-0">
+          <button onclick="openBroadcastNotificationModal()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-2 px-3 rounded-xl text-xs shadow-md transition flex items-center">
+            <i class="fa-solid fa-bullhorn mr-1.5"></i> 📢 Đăng thông báo
+          </button>
+          <button onclick="openManageNotificationsModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-3 rounded-xl text-xs border border-slate-300 transition flex items-center">
+            <i class="fa-solid fa-list-check mr-1.5"></i> ⚙️ Quản lý
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 p-2 bg-sky-50/70 border-b border-sky-100 gap-1 shrink-0">
+          <button onclick="switchTeacherSidebarTab('students')" id="sidebarTabStudents" class="py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm transition">
+            <i class="fa-solid fa-user-graduate mr-1"></i> Học sinh (<span id="studentCountBadge">0</span>)
+          </button>
+          <button onclick="switchTeacherSidebarTab('teachers')" id="sidebarTabTeachers" class="py-2 text-xs font-bold rounded-lg text-slate-600 hover:bg-slate-200 transition">
+            <i class="fa-solid fa-chalkboard-user mr-1"></i> Giáo viên (<span id="teacherCountBadge">0</span>)
+          </button>
+        </div>
+
+        <div id="filterSectionStudents" class="p-2 border-b border-sky-100 bg-slate-50/50 shrink-0">
+          <select id="filterClassSelect" onchange="filterStudentList()" class="kienora-input w-full px-3 py-1.5 rounded-lg text-xs font-semibold">
+            <option value="ALL">📌 Tất cả các lớp</option>
+          </select>
+        </div>
+
+        <div id="filterSectionTeachers" class="hidden p-2 border-b border-sky-100 bg-slate-50/50 space-y-2 shrink-0">
+          <select id="filterDepartmentSelect" onchange="filterTeacherList()" class="kienora-input w-full px-3 py-1.5 rounded-lg text-xs font-semibold">
+            <option value="ALL">🏢 Tất cả tổ chuyên môn</option>
+          </select>
+          <select id="filterPositionSelect" onchange="filterTeacherList()" class="kienora-input w-full px-3 py-1.5 rounded-lg text-xs font-semibold">
+            <option value="ALL">⭐ Tất cả chức vụ</option>
+          </select>
+          <button onclick="openBroadcastModal()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-3 rounded-lg text-xs shadow transition flex items-center justify-center">
+            <i class="fa-solid fa-bullhorn mr-1.5"></i> 💬 Nhắn tin cả nhóm đang chọn
+          </button>
+        </div>
+
+        <div id="teacherSidebarList" class="flex-1 min-h-0 overflow-y-auto divide-y divide-slate-100">
+          <p class="text-xs text-slate-400 italic text-center py-10">Đang tải dữ liệu...</p>
+        </div>
+      </div>
+
+      <!-- Khung chat bên phải của Giáo viên (Đã chuẩn hóa thanh cuộn) -->
+      <div class="md:col-span-8 flex flex-col bg-slate-50/40 h-full min-h-0 overflow-hidden" id="teacherChatArea">
+        <div id="teacherChatPlaceholder" class="flex-1 flex flex-col items-center justify-center p-6 text-center text-slate-400">
+          <i class="fa-regular fa-comments text-5xl mb-3 text-sky-300"></i>
+          <p class="text-xs font-semibold">Chọn một học sinh hoặc giáo viên bên cột trái để bắt đầu trao đổi tin nhắn</p>
+        </div>
+
+        <div id="teacherActiveChatBox" class="hidden flex-1 flex flex-col h-full min-h-0 overflow-hidden">
+          <div class="p-3.5 bg-white border-b border-sky-100 flex justify-between items-center shadow-sm shrink-0">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xs" id="activeReceiverAvatar">TV</div>
+              <div>
+                <h5 class="font-bold text-blue-950 text-xs" id="activeReceiverNameTitle">---</h5>
+                <p class="text-[10px] text-slate-500" id="activeReceiverSubTitle">---</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex-1 p-4 min-h-0 overflow-y-auto space-y-3" id="teacherChatMessagesContainer"></div>
+          <form onsubmit="event.preventDefault(); sendTeacherMessage();" class="p-3 bg-white border-t border-sky-100 flex gap-2 shrink-0">
+            <input type="text" id="teacherChatInput" required placeholder="Nhập tin nhắn trao đổi..." class="kienora-input flex-1 px-4 py-2.5 rounded-xl text-xs">
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow transition"><i class="fa-solid fa-paper-plane mr-1"></i> Gửi</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal tin nhắn nhóm -->
+  <div id="broadcastModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-sky-100">
+      <div class="flex justify-between items-center border-b border-sky-100 pb-3 mb-4">
+        <h3 class="font-bold text-blue-950 text-sm"><i class="fa-solid fa-bullhorn text-indigo-600 mr-2"></i> Gửi tin nhắn cho cả nhóm đang chọn</h3>
+        <button onclick="closeBroadcastModal()" class="text-slate-400 hover:text-slate-600 font-bold text-base">&times;</button>
+      </div>
+      <p class="text-xs text-slate-500 mb-3" id="broadcastTargetInfo">Hệ thống sẽ gửi tin nhắn đến tất cả giáo viên trong danh sách đang hiển thị.</p>
+      <textarea id="broadcastContent" rows="4" placeholder="Nhập nội dung thông báo/trao đổi chung..." class="kienora-input w-full p-3 rounded-xl text-xs mb-4"></textarea>
+      <div class="flex justify-end space-x-2">
+        <button onclick="closeBroadcastModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Hủy</button>
+        <button onclick="sendBroadcastMessage()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow transition">Gửi đi 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal đăng thông báo chung -->
+  <div id="broadcastNotifModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-sky-100">
+      <div class="flex justify-between items-center border-b border-sky-100 pb-3 mb-4">
+        <h3 class="font-bold text-blue-950 text-sm"><i class="fa-solid fa-bullhorn text-blue-600 mr-2"></i> Đăng thông báo chung cho toàn trường</h3>
+        <button onclick="closeBroadcastNotifModal()" class="text-slate-400 hover:text-slate-600 font-bold text-base">&times;</button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tiêu đề thông báo:</label>
+          <input type="text" id="notifTitleInput" placeholder="Ví dụ: Lịch nghỉ học..." class="kienora-input w-full p-2.5 rounded-xl text-xs">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nội dung chi tiết:</label>
+          <textarea id="notifContentInput" rows="5" placeholder="Nhập nội dung..." class="kienora-input w-full p-3 rounded-xl text-xs"></textarea>
+        </div>
+      </div>
+      <div class="flex justify-end space-x-2 mt-5">
+        <button onclick="closeBroadcastNotifModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Hủy</button>
+        <button onclick="submitBroadcastNotification()" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold shadow transition">Đăng thông báo 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Quản lý / Thu hồi thông báo -->
+  <div id="manageNotifModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-sky-100 max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center border-b border-sky-100 pb-3 mb-4 shrink-0">
+        <h3 class="font-bold text-blue-950 text-sm"><i class="fa-solid fa-list-check text-indigo-600 mr-2"></i> Quản lý & Thu hồi thông báo chung</h3>
+        <button onclick="closeManageNotificationsModal()" class="text-slate-400 hover:text-slate-600 font-bold text-base">&times;</button>
+      </div>
+      <div id="manageNotifListContainer" class="flex-1 overflow-y-auto space-y-3 pr-1">
+        <p class="text-xs text-slate-400 italic text-center py-6">Đang tải danh sách thông báo...</p>
+      </div>
+      <div class="flex justify-end pt-4 border-t border-sky-100 mt-4 shrink-0">
+        <button onclick="closeManageNotificationsModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPTS XỬ LÝ LOGIC ================= -->
   <script>
-    // 🔴 KẾT NỐI SUPABASE
-       const SUPABASE_URL = 'https://ywccbfpyilwdpokgllus.supabase.co';
+    const SUPABASE_URL = 'https://ywccbfpyilwdpokgllus.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_YShqjad87nsgJJTlTX5rbw_K5zO48Jr';
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    let loginRole = 'student';
     let currentStudentCCCD = "";
     let currentStudentID = null;
     let currentMaHocSinh = "";
     let currentMaLop = "";
+
+    let currentTeacherID = "";
+    let currentTeacherName = "";
+    let currentTeacherRole = "";
+
+    let allStudentsData = [];
+    let allTeachersData = [];
+    let activeSidebarTab = 'students';
+    let selectedChatTargetID = "";
+    let selectedChatTargetName = "";
+    let selectedChatType = "student";
+
+    function switchLoginRole(role) {
+      loginRole = role;
+      const lbl = document.getElementById('lblAccount');
+      const inputAcc = document.getElementById('loginAccount');
+      const btnStudent = document.getElementById('roleBtnStudent');
+      const btnTeacher = document.getElementById('roleBtnTeacher');
+
+      if (role === 'student') {
+        lbl.innerText = "Số Căn cước (CCCD) học sinh";
+        inputAcc.placeholder = "Nhập số CCCD";
+        btnStudent.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-white text-blue-900 shadow-sm transition";
+        btnTeacher.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 transition";
+      } else {
+        lbl.innerText = "Mã nhân sự giáo viên (ma_nhan_su)";
+        inputAcc.placeholder = "Nhập mã nhân sự";
+        btnTeacher.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-white text-blue-900 shadow-sm transition";
+        btnStudent.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 transition";
+      }
+    }
 
     function formatDateToDisplay(dateStr) {
       if (!dateStr) return '';
@@ -304,110 +609,146 @@
       return [day, month, year].join('/');
     }
 
-    async function loginStudent() {
-      const cccd = document.getElementById('loginCCCD').value.trim();
+    async function handleLogin() {
+      const account = document.getElementById('loginAccount').value.trim();
       const pass = document.getElementById('loginPass').value.trim();
 
-      try {
-        let { data: hsData, error: hsError } = await db
-          .from('hoc_sinh')
-          .select('*')
-          .eq('so_can_cuoc', cccd)
-          .maybeSingle();
+      if (loginRole === 'student') {
+        try {
+          let { data: hsData, error: hsError } = await db.from('hoc_sinh').select('*').eq('so_can_cuoc', account).maybeSingle();
+          if (hsError) throw hsError;
+          if (!hsData) { alert("❌ Không tìm thấy học sinh với số CCCD này!"); return; }
+          if (hsData.mat_khau !== pass) { alert("❌ Mật khẩu học sinh không chính xác!"); return; }
 
-        if (hsError) throw hsError;
-        if (!hsData) {
-          alert("❌ Không tìm thấy học sinh với số Căn cước này!");
-          return;
+          let canDoiMatKhau = hsData.doi_mat_khau === true || String(hsData.doi_mat_khau).toLowerCase() === 'true';
+          if (canDoiMatKhau) {
+            currentStudentCCCD = account;
+            document.getElementById('hsLoginBox').classList.add('hidden');
+            document.getElementById('hsChangePassBox').classList.remove('hidden');
+            return;
+          }
+
+          currentMaHocSinh = hsData.ma_hoc_sinh;
+          currentMaLop = hsData.ma_lop;
+          currentStudentID = hsData.id;
+
+          let [dd, gd, sk] = await Promise.all([
+            db.from('dinh_danh_ca_nhan').select('*').eq('ma_hoc_sinh', currentMaHocSinh).maybeSingle(),
+            db.from('quan_he_gia_dinh').select('*').eq('ma_hoc_sinh', currentMaHocSinh).maybeSingle(),
+            db.from('ho_so_su_khoe').select('*').eq('ma_hoc_sinh', currentMaHocSinh).maybeSingle()
+          ]);
+
+          hsData.dinh_danh_ca_nhan = dd.data || {};
+          hsData.quan_he_gia_dinh = gd.data || {};
+          hsData.ho_so_su_khoe = sk.data || {};
+
+          loadStudentDataToUI(hsData);
+        } catch (err) {
+          alert("❌ Lỗi đăng nhập học sinh: " + err.message);
         }
+      } else {
+        try {
+          let { data: userData, error: userError } = await db.from('users').select('*').eq('ma_nhan_su', account).maybeSingle();
+          if (userError) throw userError;
+          if (!userData) { alert("❌ Tài khoản giáo viên không tồn tại trong bảng users!"); return; }
+          if (userData.mat_khau !== pass) { alert("❌ Mật khẩu giáo viên không chính xác!"); return; }
 
-        if (hsData.mat_khau !== pass) {
-          alert("❌ Mật khẩu không chính xác!");
-          return;
-        }
+          currentTeacherID = userData.ma_nhan_su;
+          currentTeacherName = userData.ho_va_ten || "Giáo viên";
+          currentTeacherRole = userData.chuc_vu || userData.to_cm || "Giáo viên";
 
-        let canDoiMatKhau = hsData.doi_mat_khau === true || String(hsData.doi_mat_khau).toLowerCase() === 'true';
-        if (canDoiMatKhau) {
-          currentStudentCCCD = cccd;
+          document.getElementById('osTeacherName').innerText = `Giáo viên: ${currentTeacherName}`;
+          document.getElementById('osTeacherRole').innerText = `Vai trò: ${userData.chuc_vu || '---'} | Tổ: ${userData.to_cm || userData.nhom_cm || '---'}`;
+
           document.getElementById('hsLoginBox').classList.add('hidden');
-          document.getElementById('hsChangePassBox').classList.remove('hidden');
-          return;
+          document.getElementById('teacherOSDashboard').classList.remove('hidden');
+          loadTeacherDashboardData();
+        } catch (err) {
+          alert("❌ Lỗi đăng nhập giáo viên: " + err.message);
         }
-
-        currentMaHocSinh = hsData.ma_hoc_sinh;
-        currentMaLop = hsData.ma_lop;
-        currentStudentID = hsData.id;
-
-        let [dd, gd, sk] = await Promise.all([
-          db.from('dinh_danh_ca_nhan').select('*').eq('ma_hoc_sinh', currentMaHocSinh).maybeSingle(),
-          db.from('quan_he_gia_dinh').select('*').eq('ma_hoc_sinh', currentMaHocSinh).maybeSingle(),
-          db.from('ho_so_su_khoe').select('*').eq('ma_hoc_sinh', currentMaHocSinh).maybeSingle()
-        ]);
-
-        hsData.dinh_danh_ca_nhan = dd.data || {};
-        hsData.quan_he_gia_dinh = gd.data || {};
-        hsData.ho_so_su_khoe = sk.data || {};
-
-        loadStudentDataToUI(hsData);
-
-      } catch (err) {
-        console.error("Lỗi đăng nhập:", err);
-        alert("❌ Lỗi kết nối CSDL Supabase: " + err.message);
       }
     }
 
     async function changePasswordFirstTime() {
       const newPassword = document.getElementById('newPass').value.trim();
-      if (!newPassword || newPassword.length < 6) {
-        alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
-        return;
-      }
+      if (!newPassword || newPassword.length < 6) { alert("Mật khẩu mới phải có ít nhất 6 ký tự!"); return; }
       try {
         await db.from('hoc_sinh').update({ mat_khau: newPassword, doi_mat_khau: false }).eq('so_can_cuoc', currentStudentCCCD);
         alert("🔔 Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
         location.reload();
-      } catch (err) {
-        alert("❌ Lỗi đổi mật khẩu: " + err.message);
-      }
+      } catch (err) { alert("❌ Lỗi: " + err.message); }
     }
 
     function loadStudentDataToUI(hs) {
-      document.getElementById('osStudentName').innerText = `Họ tên: ${hs.ho_va_ten || ''}`;
-      document.getElementById('osStudentClass').innerText = `Lớp: ${hs.ma_lop || '---'}`;
+      const setVal = (id, val) => { let el = document.getElementById(id); if (el) el.value = val || ''; };
+      const setTxt = (id, val) => { let el = document.getElementById(id); if (el) el.innerText = val || ''; };
 
-      document.getElementById('txtHoTen').value = hs.ho_va_ten || '';
-      document.getElementById('txtNgaySinh').value = formatDateToDisplay(hs.ngay_sinh) || '';
-      document.getElementById('txtCanCuoc').value = hs.so_can_cuoc || '';
-      document.getElementById('txtMaHS').value = hs.ma_hoc_sinh || '';
-      document.getElementById('txtGioiTinh').value = hs.gioi_tinh || '';
-      document.getElementById('txtChucVu').value = hs.chuc_vu || '';
+      setTxt('osStudentName', `Họ tên: ${hs.ho_va_ten || ''}`);
+      setTxt('osStudentClass', `Lớp: ${hs.ma_lop || '---'}`);
 
-      const dd = hs.dinh_danh_ca_nhan;
-      document.getElementById('txtNoXom').value = dd.no_xom || '';
-      document.getElementById('txtNoKhuDanCu').value = dd.no_khu_dan_cu || '';
-      document.getElementById('txtNoXaPhuong').value = dd.no_xa_phuong || '';
-      document.getElementById('txtNoTinhTp').value = dd.no_tinh_tp || '';
-      document.getElementById('txtHkXom').value = dd.hk_xom || '';
-      document.getElementById('txtHkKhuDanCu').value = dd.hk_khu_dan_cu || '';
-      document.getElementById('txtHkXaPhuong').value = dd.hk_xa_phuong || '';
-      document.getElementById('txtHkTinhTp').value = dd.hk_tinh_tp || '';
+      setVal('txtHoTen', hs.ho_va_ten);
+      setVal('txtNgaySinh', formatDateToDisplay(hs.ngay_sinh));
+      setVal('txtCanCuoc', hs.so_can_cuoc);
+      setVal('txtMaHS', hs.ma_hoc_sinh);
+      setVal('txtGioiTinh', hs.gioi_tinh);
 
-      const gd = hs.quan_he_gia_dinh;
-      document.getElementById('txtTenCha').value = gd.ho_ten_cha || '';
-      document.getElementById('txtNamSinhCha').value = gd.nam_sinh_cha || '';
-      document.getElementById('txtCccdCha').value = gd.cccd_cha || '';
-      document.getElementById('txtSdtBo').value = gd.dien_thoai_cha || '';
-      document.getElementById('txtCoQuanCha').value = gd.don_vi_cong_tac_cha || '';
-      document.getElementById('txtTenMe').value = gd.ten_me || '';
-      document.getElementById('txtNgheMe').value = gd.nghe_nghiep_me || '';
-      document.getElementById('txtNamSinhMe').value = gd.nam_sinh_me || '';
-      document.getElementById('txtCccdMe').value = gd.cccd_me || '';
-      document.getElementById('txtSdtMe').value = gd.dien_thoai_me || '';
+      const dd = hs.dinh_danh_ca_nhan || {};
+      setVal('txtChoOSnXom', dd.cho_o_sn_xom);
+      setVal('txtChoOKhuDanCu', dd.cho_o_khu_dan_cu);
+      setVal('txtChoOXa', dd.cho_o_xa);
+      setVal('txtChoOTinh', dd.cho_o_tinh);
+      setVal('txtHkSnXom', dd.hk_sn_xom);
+      setVal('txtHkKhuDanCu', dd.hk_khu_dan_cu);
+      setVal('txtHkXa', dd.hk_xa);
+      setVal('txtHkTinh', dd.hk_tinh);
+      setVal('txtNsThongTin', dd.ns_thong_tin);
+      setVal('txtNsXa', dd.ns_xa);
+      setVal('txtNsTinh', dd.ns_tinh);
+      setVal('txtQqThongTin', dd.qq_thong_tin);
+      setVal('txtQqXa', dd.qq_xa);
+      setVal('txtQqTinh', dd.qq_tinh);
+      setVal('txtNksXa', dd.nks_xa);
+      setVal('txtNksTinh', dd.nks_tinh);
 
-      const sk = hs.ho_so_su_khoe;
-      document.getElementById('txtCanNang').value = sk.can_nang || '';
-      document.getElementById('txtChieuCao').value = sk.chieu_cao || '';
-      document.getElementById('txtSoBHYT').value = sk.so_bhyt || '';
+      setVal('txtNgayCapCCCD', dd.ngay_cap_cccd);
+      setVal('txtNoiCapCCCD', dd.noi_cap_cccd);
+      setVal('txtDanToc', dd.dan_toc);
+      setVal('txtTonGiao', dd.ton_giao);
+      setVal('txtChinhSach', dd.chinh_sach);
+      setVal('txtCanGheo', dd.can_gheo);
+      setVal('txtDoanVien', dd.doan_vien);
+      setVal('txtDoiVien', dd.doi_vien);
+
+      const gd = hs.quan_he_gia_dinh || {};
+      setVal('txtTenCha', gd.ho_ten_cha);
+      setVal('txtNgheCha', gd.nghe_cha);
+      setVal('txtNamSinhCha', gd.nam_sinh_cha);
+      setVal('txtCccdCha', gd.cccd_cha);
+      setVal('txtCoQuanCha', gd.don_vi_cong_tac_cha);
+      setVal('txtTenMe', gd.ten_me);
+      setVal('txtNgheMe', gd.nghe_nghiep_me);
+      setVal('txtNamSinhMe', gd.nam_sinh_me);
+      setVal('txtCccdMe', gd.cccd_me);
+      setVal('txtCoQuanMe', gd.co_quan_me);
+
+      const sk = hs.ho_so_su_khoe || {};
+      setVal('txtSdtSLL', sk.sdt_sll);
+      setVal('txtEmailSLL', sk.email_sll);
+      setVal('txtSdtBo', gd.dien_thoai_cha);
+      setVal('txtSdtMe', gd.dien_thoai_me);
+      setVal('txtSdtHS', sk.sdt_hs);
+      setVal('txtKhuyetTat', sk.khuyet_tat);
+      setVal('txtNoiTruBTru', sk.noi_tru_b_tru);
+      setVal('txtChucVu', hs.chuc_vu);
+      setVal('txtNhiemVuPhuTrach', sk.nhiem_vu_phu_trach);
+      setVal('txtOXaTren5km', sk.o_xa_tren_5km);
+      setVal('txtChoNgoi', sk.cho_ngoi);
+      setVal('txtCanNang', sk.can_nang);
+      setVal('txtChieuCao', sk.chieu_cao);
+      setVal('txtBietBoi', sk.biet_boi);
+      setVal('txtBenhVeMat', sk.benh_ve_mat);
+      setVal('txtSucKhoeHocKy', sk.suc_khoe_hoc_ky);
+      setVal('txtGhiChuBM', sk.ghi_chu_bm);
 
       document.getElementById('hsLoginBox').classList.add('hidden');
       document.getElementById('hsChangePassBox').classList.add('hidden');
@@ -420,17 +761,13 @@
       document.getElementById('appHomework').classList.add('hidden');
       document.getElementById('appNotifications').classList.add('hidden');
       document.getElementById('appConduct').classList.add('hidden');
+      document.getElementById('appMessages').classList.add('hidden');
 
       if (appName === 'profile') document.getElementById('appProfile').classList.remove('hidden');
-      if (appName === 'homework') {
-        document.getElementById('appHomework').classList.remove('hidden');
-        loadHomework();
-      }
-      if (appName === 'notifications') {
-        document.getElementById('appNotifications').classList.remove('hidden');
-        loadNotifications();
-      }
+      if (appName === 'homework') { document.getElementById('appHomework').classList.remove('hidden'); loadHomework(); }
+      if (appName === 'notifications') { document.getElementById('appNotifications').classList.remove('hidden'); loadNotifications(); }
       if (appName === 'conduct') document.getElementById('appConduct').classList.remove('hidden');
+      if (appName === 'messages') { document.getElementById('appMessages').classList.remove('hidden'); loadTeachersForStudent(); }
     }
 
     function closeApp() {
@@ -438,88 +775,667 @@
       document.getElementById('appHomework').classList.add('hidden');
       document.getElementById('appNotifications').classList.add('hidden');
       document.getElementById('appConduct').classList.add('hidden');
+      document.getElementById('appMessages').classList.add('hidden');
       document.getElementById('osHomeScreen').classList.remove('hidden');
+    }
+
+    // ================= 1. LOGIC HỘP THƯ & TÍNH NĂNG DÀNH CHO HỌC SINH =================
+    let cachedTeachersForStudent = [];
+    let cachedMessagesForStudent = [];
+
+    async function loadTeachersForStudent() {
+      const container = document.getElementById('teacherListContainer');
+      if (!container) return;
+
+      container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6 col-span-2">Đang tải danh sách giáo viên...</p>`;
+      
+      try {
+        let [resGV, resMsg] = await Promise.all([
+          db.from('users').select('*'),
+          db.from('tin_nhan').select('*').eq('ma_hoc_sinh', currentMaHocSinh)
+        ]);
+
+        cachedTeachersForStudent = resGV.data || [];
+        cachedMessagesForStudent = resMsg.data || [];
+
+        renderTeacherListForStudentUI(cachedTeachersForStudent);
+      } catch (err) { 
+        container.innerHTML = `<p class="text-xs text-rose-500 text-center py-4 col-span-2">Lỗi tải dữ liệu: ${err.message}</p>`; 
+      }
+    }
+
+    function filterTeacherListForStudent() {
+      const keyword = document.getElementById('searchTeacherInput')?.value.toLowerCase().trim() || '';
+      let filtered = cachedTeachersForStudent.filter(u => {
+        let name = (u.ho_va_ten || '').toLowerCase();
+        let pos = (u.chuc_vu || u.to_cm || '').toLowerCase();
+        return name.includes(keyword) || pos.includes(keyword);
+      });
+      renderTeacherListForStudentUI(filtered);
+    }
+
+    function renderTeacherListForStudentUI(teachers) {
+      const container = document.getElementById('teacherListContainer');
+      if (!container) return;
+
+      if (!teachers || teachers.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6 col-span-2">Không tìm thấy giáo viên phù hợp.</p>`;
+        return;
+      }
+
+      let sortedTeachers = [...teachers].sort((a, b) => {
+        let getUnread = (maGV) => cachedMessagesForStudent.filter(m => String(m.ma_giao_vien) === String(maGV) && String(m.nguoi_gui) === 'gv' && !m.da_doc).length;
+        let unreadA = getUnread(a.ma_nhan_su);
+        let unreadB = getUnread(b.ma_nhan_su);
+        if (unreadB !== unreadA) return unreadB - unreadA;
+        return 0;
+      });
+
+      let html = '';
+      sortedTeachers.forEach(u => {
+        let name = u.ho_va_ten || "Giáo viên";
+        let pos = u.chuc_vu || u.to_cm || 'Giáo viên bộ môn';
+
+        let gvMsgs = cachedMessagesForStudent.filter(m => String(m.ma_giao_vien) === String(u.ma_nhan_su));
+        let lastMsg = gvMsgs.length > 0 ? gvMsgs[gvMsgs.length - 1] : null;
+        let isMyMsg = lastMsg && String(lastMsg.nguoi_gui) === 'hs';
+        let previewText = lastMsg ? (isMyMsg ? 'Bạn: ' : name + ': ') + lastMsg.noi_dung : 'Chưa có tin nhắn trao đổi';
+
+        let unreadCount = gvMsgs.filter(m => String(m.nguoi_gui) === 'gv' && !m.da_doc).length;
+        let badgeHtml = unreadCount > 0 ? `<span class="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full ml-auto animate-pulse">${unreadCount} mới</span>` : '';
+
+        html += `
+          <div onclick="openChatWithTeacher('${u.ma_nhan_su}', '${name}')" class="p-3 hover:bg-indigo-50 cursor-pointer transition flex items-center justify-between border-b border-slate-50 group">
+            <div class="flex items-center space-x-3 overflow-hidden flex-1">
+              <div class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">
+                ${name.split(' ').pop().charAt(0).toUpperCase()}
+              </div>
+              <div class="overflow-hidden flex-1">
+                <div class="flex items-center justify-between">
+                  <h5 class="font-bold text-blue-950 text-xs truncate group-hover:text-indigo-600">${name}</h5>
+                  ${badgeHtml}
+                </div>
+                <p class="text-[10px] text-slate-500">${pos}</p>
+                <p class="text-[10px] ${unreadCount > 0 ? 'text-slate-900 font-bold' : 'text-slate-400'} truncate italic mt-0.5">${previewText}</p>
+              </div>
+            </div>
+          </div>`;
+      });
+      container.innerHTML = html;
+    }
+
+    let selectedTeacherID = "";
+    let selectedTeacherName = "";
+
+    async function openChatWithTeacher(maGV, tenGV) {
+      selectedTeacherID = maGV;
+      selectedTeacherName = tenGV;
+
+      document.getElementById('chatPlaceholderView')?.classList.add('hidden');
+      document.getElementById('chatActiveBox')?.classList.remove('hidden');
+
+      let nameEl = document.getElementById('activeTeacherName');
+      if (nameEl) nameEl.innerText = tenGV;
+
+      let avatarEl = document.getElementById('activeTeacherAvatar');
+      if (avatarEl) avatarEl.innerText = tenGV.split(' ').pop().charAt(0).toUpperCase();
+
+      try {
+        await db.from('tin_nhan')
+          .update({ da_doc: true })
+          .eq('ma_giao_vien', maGV)
+          .eq('ma_hoc_sinh', currentMaHocSinh)
+          .eq('nguoi_gui', 'gv');
+
+        let resMsg = await db.from('tin_nhan').select('*').eq('ma_hoc_sinh', currentMaHocSinh);
+        cachedMessagesForStudent = resMsg.data || [];
+
+        await loadMessagesWithTeacher();
+        filterTeacherListForStudent();
+      } catch (err) {
+        console.error("Lỗi mở chat học sinh:", err);
+      }
+    }
+
+    async function loadMessagesWithTeacher() {
+      const container = document.getElementById('chatMessagesContainer');
+      if (!container) return;
+      container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Đang tải đoạn chat...</p>`;
+      try {
+        let { data } = await db.from('tin_nhan').select('*').eq('ma_hoc_sinh', currentMaHocSinh).eq('ma_giao_vien', selectedTeacherID).order('created_at', { ascending: true });
+        if (!data || data.length === 0) { 
+          container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Chưa có tin nhắn nào.</p>`; 
+          return; 
+        }
+        let html = '';
+        data.forEach(item => {
+          let isTeacher = item.nguoi_gui === 'gv';
+          let bubbleClass = isTeacher ? 'bg-white border border-blue-200 text-slate-800 mr-auto rounded-2xl rounded-tl-none' : 'bg-indigo-600 text-white ml-auto rounded-2xl rounded-tr-none';
+          let deleteBtn = !isTeacher ? `<button onclick="deleteStudentMessage('${item.id}')" title="Thu hồi" class="text-[10px] text-rose-500 hover:text-rose-700 ml-2 font-semibold"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>` : '';
+          html += `
+            <div class="flex flex-col max-w-[85%] ${isTeacher ? 'items-start' : 'items-end ml-auto'} mb-2">
+              <div class="flex items-center mb-1 px-1"><span class="text-[10px] text-slate-400">${isTeacher ? selectedTeacherName : 'Phụ huynh/HS'}</span>${deleteBtn}</div>
+              <div class="p-3 text-xs shadow-sm ${bubbleClass}">${item.noi_dung}</div>
+            </div>`;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+      } catch (err) { 
+        container.innerHTML = `<p class="text-xs text-rose-500 text-center py-4">Lỗi tải tin nhắn.</p>`; 
+      }
+    }
+
+    async function sendStudentMessage() {
+      const input = document.getElementById('chatInputMsg');
+      if (!input) return;
+      const content = input.value.trim();
+      if (!content || !selectedTeacherID) return;
+      try {
+        await db.from('tin_nhan').insert([{ ma_hoc_sinh: currentMaHocSinh, ma_giao_vien: selectedTeacherID, nguoi_gui: 'hs', noi_dung: content, da_doc: false }]);
+        input.value = '';
+
+        let resMsg = await db.from('tin_nhan').select('*').eq('ma_hoc_sinh', currentMaHocSinh);
+        cachedMessagesForStudent = resMsg.data || [];
+
+        await loadMessagesWithTeacher();
+        filterTeacherListForStudent();
+      } catch (err) { alert("Lỗi: " + err.message); }
+    }
+
+    async function deleteStudentMessage(msgId) {
+      if (!confirm("Bạn muốn thu hồi tin nhắn này?")) return;
+      try { 
+        await db.from('tin_nhan').delete().eq('id', msgId); 
+        let resMsg = await db.from('tin_nhan').select('*').eq('ma_hoc_sinh', currentMaHocSinh);
+        cachedMessagesForStudent = resMsg.data || [];
+
+        await loadMessagesWithTeacher(); 
+        filterTeacherListForStudent();
+      } catch (err) { alert("Lỗi: " + err.message); }
     }
 
     async function loadHomework() {
       const container = document.getElementById('homeworkListContainer');
       try {
-        let { data, error } = await db.from('bai_tap').select('*').or(`ma_hoc_sinh.eq.${currentMaHocSinh},ma_lop.eq.${currentMaLop}`);
-        if (error) throw error;
-        if (!data || data.length === 0) {
-          container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">🎉 Hiện tại em chưa có bài tập nào!</p>`;
-          return;
-        }
+        let { data } = await db.from('bai_tap').select('*').or(`ma_hoc_sinh.eq.${currentMaHocSinh},ma_lop.eq.${currentMaLop}`);
+        if (!data || data.length === 0) { container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">🎉 Chưa có bài tập nào!</p>`; return; }
         let html = '';
         data.forEach(item => {
-          html += `<div class="bg-white p-4 rounded-2xl border border-sky-100 shadow-sm"><span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 font-bold rounded-lg text-[10px] uppercase">${item.mon_hoc || 'Môn học'}</span><h4 class="font-bold text-blue-900 text-sm mt-2">${item.tieu_de}</h4><p class="text-xs text-slate-700 mt-1 bg-slate-50 p-3 rounded-xl">${item.noi_dung}</p><p class="text-[11px] text-rose-600 font-semibold mt-2"><i class="fa-regular fa-clock mr-1"></i> Hạn nộp: ${item.han_nop || '---'}</p></div>`;
+          html += `<div class="bg-white p-4 rounded-2xl border border-sky-100 shadow-sm"><span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 font-bold rounded-lg text-[10px] uppercase">${item.mon_hoc || 'Môn'}</span><h4 class="font-bold text-blue-900 text-sm mt-2">${item.tieu_de}</h4><p class="text-xs text-slate-700 mt-1 bg-slate-50 p-3 rounded-xl">${item.noi_dung}</p><p class="text-[11px] text-rose-600 font-semibold mt-2"><i class="fa-regular fa-clock mr-1"></i> Hạn nộp: ${item.han_nop || '---'}</p></div>`;
         });
         container.innerHTML = html;
-      } catch (err) {
-        container.innerHTML = `<p class="text-xs text-rose-500 text-center py-4">Không thể tải bài tập.</p>`;
-      }
+      } catch (err) { container.innerHTML = `<p class="text-xs text-rose-500 text-center py-4">Lỗi tải bài tập.</p>`; }
     }
 
     async function loadNotifications() {
       const container = document.getElementById('notifListContainer');
       try {
-        let { data, error } = await db.from('thong_bao').select('*').order('id', { ascending: false });
-        if (error) throw error;
-        if (!data || data.length === 0) {
-          container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">📭 Chưa có thông báo nào từ nhà trường.</p>`;
-          return;
-        }
+        let { data } = await db.from('thong_bao').select('*').order('id', { ascending: false });
+        if (!data || data.length === 0) { container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">📭 Chưa có thông báo.</p>`; return; }
         let html = '';
         data.forEach(item => {
           html += `<div class="bg-white p-4 rounded-2xl border border-sky-100 shadow-sm"><h4 class="font-bold text-blue-900 text-sm mb-1">${item.tieu_de}</h4><p class="text-xs text-slate-700 bg-slate-50 p-3 rounded-xl">${item.noi_dung}</p><span class="text-[10px] text-slate-400 mt-2 block">Ngày đăng: ${item.ngay_dang || '---'}</span></div>`;
         });
         container.innerHTML = html;
+      } catch (err) { container.innerHTML = `<p class="text-xs text-rose-500 text-center py-4">Lỗi tải thông báo.</p>`; }
+    }
+
+    function saveStudentProfile() {}
+
+
+    // ================= 2. LOGIC DASHBOARD & TÍNH NĂNG DÀNH CHO GIÁO VIÊN =================
+    async function loadTeacherDashboardData() {
+      try {
+        let [resHs, resUser, resMsg] = await Promise.all([
+          db.from('hoc_sinh').select('*'),
+          db.from('users').select('*'),
+          db.from('tin_nhan').select('*')
+        ]);
+        allStudentsData = resHs.data || [];
+        allTeachersData = resUser.data || [];
+        window.allTeacherMessages = resMsg.data || [];
+
+        document.getElementById('studentCountBadge').innerText = allStudentsData.length;
+        document.getElementById('teacherCountBadge').innerText = allTeachersData.length;
+
+        let classes = [...new Set(allStudentsData.map(item => item.ma_lop).filter(Boolean))];
+        let classSelect = document.getElementById('filterClassSelect');
+        classSelect.innerHTML = `<option value="ALL">📌 Tất cả các lớp (${allStudentsData.length})</option>`;
+        classes.forEach(cls => {
+          classSelect.innerHTML += `<option value="${cls}">Lớp: ${cls}</option>`;
+        });
+
+        let depts = [...new Set(allTeachersData.map(item => item.to_cm || item.nhom_cm).filter(Boolean))];
+        let deptSelect = document.getElementById('filterDepartmentSelect');
+        deptSelect.innerHTML = `<option value="ALL">🏢 Tất cả tổ chuyên môn (${allTeachersData.length})</option>`;
+        depts.forEach(dept => {
+          deptSelect.innerHTML += `<option value="${dept}">Tổ/Nhóm: ${dept}</option>`;
+        });
+
+        let positions = [...new Set(allTeachersData.map(item => item.chuc_vu).filter(Boolean))];
+        let posSelect = document.getElementById('filterPositionSelect');
+        posSelect.innerHTML = `<option value="ALL">⭐ Tất cả chức vụ</option>`;
+        positions.forEach(pos => {
+          posSelect.innerHTML += `<option value="${pos}">Chức vụ: ${pos}</option>`;
+        });
+
+        if (activeSidebarTab === 'students') {
+          filterStudentList();
+        } else {
+          filterTeacherList();
+        }
       } catch (err) {
-        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Chưa cấu hình bảng thông báo trên cơ sở dữ liệu.</p>`;
+        console.error("Lỗi tải dữ liệu giáo viên:", err);
       }
     }
 
-    async function saveStudentProfile() {
-      const btn = document.getElementById('btnSave');
-      btn.innerText = "⏳ Đang lưu...";
-      btn.disabled = true;
+    function switchTeacherSidebarTab(tab) {
+      activeSidebarTab = tab;
+      const btnSt = document.getElementById('sidebarTabStudents');
+      const btnGv = document.getElementById('sidebarTabTeachers');
+      const secSt = document.getElementById('filterSectionStudents');
+      const secGv = document.getElementById('filterSectionTeachers');
+
+      if (tab === 'students') {
+        btnSt.className = "py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm transition";
+        btnGv.className = "py-2 text-xs font-bold rounded-lg text-slate-600 hover:bg-slate-200 transition";
+        secSt.classList.remove('hidden');
+        secGv.classList.add('hidden');
+        filterStudentList();
+      } else {
+        btnGv.className = "py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm transition";
+        btnSt.className = "py-2 text-xs font-bold rounded-lg text-slate-600 hover:bg-slate-200 transition";
+        secGv.classList.remove('hidden');
+        secSt.classList.add('hidden');
+        filterTeacherList();
+      }
+    }
+
+    function filterStudentList() {
+      let selectedClass = document.getElementById('filterClassSelect').value;
+      let filtered = selectedClass === 'ALL' ? allStudentsData : allStudentsData.filter(item => item.ma_lop === selectedClass);
+      renderStudentsList(filtered);
+    }
+
+    function renderStudentsList(list) {
+      const sidebarList = document.getElementById('teacherSidebarList');
+      if (!list || list.length === 0) {
+        sidebarList.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-10">Không tìm thấy học sinh nào.</p>`;
+        return;
+      }
+      let msgs = window.allTeacherMessages || [];
+
+      let sortedList = [...list].sort((a, b) => {
+        let getUnread = (maHS) => msgs.filter(m => String(m.ma_hoc_sinh) === String(maHS) && String(m.ma_giao_vien) === String(currentTeacherID) && String(m.nguoi_gui) === 'hs' && !m.da_doc).length;
+        let unreadA = getUnread(a.ma_hoc_sinh);
+        let unreadB = getUnread(b.ma_hoc_sinh);
+        if (unreadB !== unreadA) return unreadB - unreadA;
+        return 0;
+      });
+
+      let totalUnreadAll = 0;
+      let html = '';
+      sortedList.forEach(u => {
+        let name = u.ho_va_ten || "Học sinh";
+        let initials = name.split(' ').pop().charAt(0).toUpperCase();
+        let lop = u.ma_lop || '---';
+
+        let uMsgs = msgs.filter(m => String(m.ma_hoc_sinh) === String(u.ma_hoc_sinh) && String(m.ma_giao_vien) === String(currentTeacherID));
+        let lastMsg = uMsgs.length > 0 ? uMsgs[uMsgs.length - 1] : null;
+        let isMyMsg = lastMsg && String(lastMsg.nguoi_gui) === 'gv';
+        let previewText = lastMsg ? (isMyMsg ? 'Bạn: ' : name + ': ') + lastMsg.noi_dung : 'Chưa có tin nhắn';
+        
+        let unreadCount = uMsgs.filter(m => String(m.nguoi_gui) === 'hs' && !m.da_doc).length;
+        let badgeHtml = unreadCount > 0 ? `<span class="bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto animate-pulse">${unreadCount}</span>` : '';
+        totalUnreadAll += unreadCount;
+
+        html += `
+          <div onclick="selectChatTarget('${u.ma_hoc_sinh}', '${name}', 'Lớp: ${lop} (Học sinh)', 'student')" class="p-3 hover:bg-indigo-50 cursor-pointer transition flex items-center space-x-3 border-b border-slate-50 group">
+            <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-sky-600 text-white rounded-full flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">
+              ${initials}
+            </div>
+            <div class="overflow-hidden flex-1">
+              <div class="flex items-center justify-between">
+                <h5 class="font-bold text-blue-950 text-xs truncate group-hover:text-indigo-600">${name}</h5>
+                ${badgeHtml}
+              </div>
+              <p class="text-[10px] text-slate-500">Lớp: ${lop}</p>
+              <p class="text-[10px] ${unreadCount > 0 ? 'text-slate-900 font-bold' : 'text-slate-400'} truncate italic mt-0.5">${previewText}</p>
+            </div>
+          </div>`;
+      });
+      sidebarList.innerHTML = html;
+
+      const studentTabBtn = document.getElementById('sidebarTabStudents');
+      if (studentTabBtn) {
+        studentTabBtn.innerHTML = `<i class="fa-solid fa-user-graduate mr-1"></i> Học sinh (${list.length}) ${totalUnreadAll > 0 ? `<span class="bg-rose-500 text-white px-1.5 rounded-full text-[10px] ml-1">${totalUnreadAll}</span>` : ''}`;
+      }
+    }
+
+    function filterTeacherList() {
+      let selectedDept = document.getElementById('filterDepartmentSelect').value;
+      let selectedPos = document.getElementById('filterPositionSelect').value;
+
+      let filtered = allTeachersData.filter(item => {
+        let matchDept = (selectedDept === 'ALL' || (item.to_cm === selectedDept || item.nhom_cm === selectedDept));
+        let matchPos = (selectedPos === 'ALL' || item.chuc_vu === selectedPos);
+        return matchDept && matchPos;
+      });
+
+      window.currentFilteredTeachers = filtered;
+      renderTeachersList(filtered);
+    }
+
+    function renderTeachersList(list) {
+      const sidebarList = document.getElementById('teacherSidebarList');
+      if (!list || list.length === 0) {
+        sidebarList.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-10">Không tìm thấy giáo viên nào.</p>`;
+        return;
+      }
+      let msgs = window.allTeacherMessages || [];
+
+      let sortedList = [...list].sort((a, b) => {
+        if (String(a.ma_nhan_su) === String(currentTeacherID)) return 1;
+        if (String(b.ma_nhan_su) === String(currentTeacherID)) return -1;
+
+        let getUnreadCount = (maGV) => msgs.filter(m => String(m.ma_giao_vien) === String(maGV) && String(m.nguoi_nhan) === String(currentTeacherID) && !m.da_doc).length;
+        let unreadA = getUnreadCount(a.ma_nhan_su);
+        let unreadB = getUnreadCount(b.ma_nhan_su);
+        if (unreadB !== unreadA) return unreadB - unreadA;
+        return 0;
+      });
+
+      let totalUnreadAll = 0;
+      let html = '';
+      sortedList.forEach(u => {
+        if (String(u.ma_nhan_su) === String(currentTeacherID)) return;
+
+        let name = u.ho_va_ten || "Giáo viên";
+        let initials = name.split(' ').pop().charAt(0).toUpperCase();
+        let dept = u.to_cm || u.nhom_cm || 'Tổ chuyên môn';
+        let pos = u.chuc_vu || 'Giáo viên';
+
+        let tMsgs = msgs.filter(m => 
+          (String(m.ma_giao_vien) === String(currentTeacherID) && String(m.nguoi_nhan) === String(u.ma_nhan_su)) ||
+          (String(m.ma_giao_vien) === String(u.ma_nhan_su) && String(m.nguoi_nhan) === String(currentTeacherID))
+        );
+        let lastMsg = tMsgs.length > 0 ? tMsgs[tMsgs.length - 1] : null;
+        let isMyMsg = lastMsg && String(lastMsg.ma_giao_vien) === String(currentTeacherID);
+        let previewText = lastMsg ? (isMyMsg ? 'Bạn: ' : name + ': ') + lastMsg.noi_dung : 'Chưa có tin nhắn';
+        
+        let unreadCount = tMsgs.filter(m => String(m.ma_giao_vien) === String(u.ma_nhan_su) && String(m.nguoi_nhan) === String(currentTeacherID) && !m.da_doc).length;
+        totalUnreadAll += unreadCount;
+
+        let badgeHtml = unreadCount > 0 ? `<span class="bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto animate-pulse">${unreadCount}</span>` : '';
+
+        html += `
+          <div onclick="selectChatTarget('${u.ma_nhan_su}', '${name}', 'Tổ/Môn: ${dept} | Chức vụ: ${pos} (Giáo viên)', 'teacher')" class="p-3 hover:bg-indigo-50 cursor-pointer transition flex items-center space-x-3 border-b border-slate-50 group">
+            <div class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xs shrink-0 shadow-sm relative">
+              ${initials}
+            </div>
+            <div class="overflow-hidden flex-1">
+              <div class="flex items-center justify-between">
+                <h5 class="font-bold text-blue-950 text-xs truncate group-hover:text-indigo-600">${name}</h5>
+                ${badgeHtml}
+              </div>
+              <p class="text-[10px] text-slate-500">Chức vụ: ${pos}</p>
+              <p class="text-[10px] ${unreadCount > 0 ? 'text-slate-900 font-bold' : 'text-slate-400'} truncate italic mt-0.5">${previewText}</p>
+            </div>
+          </div>`;
+      });
+      sidebarList.innerHTML = html;
+
+      const teacherTabBtn = document.getElementById('sidebarTabTeachers');
+      if (teacherTabBtn) {
+        teacherTabBtn.innerHTML = `<i class="fa-solid fa-chalkboard-user mr-1"></i> Giáo viên (${list.length}) ${totalUnreadAll > 0 ? `<span class="bg-rose-500 text-white px-1.5 rounded-full text-[10px] ml-1">${totalUnreadAll}</span>` : ''}`;
+      }
+    }
+
+    async function selectChatTarget(targetID, targetName, targetSub, type) {
+      selectedChatTargetID = targetID;
+      selectedChatTargetName = targetName;
+      selectedChatType = type;
+
+      document.getElementById('teacherChatPlaceholder').classList.add('hidden');
+      document.getElementById('teacherActiveChatBox').classList.remove('hidden');
+      document.getElementById('activeReceiverNameTitle').innerText = targetName;
+      document.getElementById('activeReceiverSubTitle').innerText = targetSub;
+      document.getElementById('activeReceiverAvatar').innerText = targetName.split(' ').pop().charAt(0).toUpperCase();
+
+      await markMessagesAsRead(targetID, type);
+      loadTeacherChatMessages();
+    }
+
+    async function markMessagesAsRead(targetID, type) {
       try {
-        await db.from('dinh_danh_ca_nhan').update({
-          no_xom: document.getElementById('txtNoXom').value.trim(),
-          no_khu_dan_cu: document.getElementById('txtNoKhuDanCu').value.trim(),
-          no_xa_phuong: document.getElementById('txtNoXaPhuong').value.trim(),
-          no_tinh_tp: document.getElementById('txtNoTinhTp').value.trim(),
-          hk_xom: document.getElementById('txtHkXom').value.trim(),
-          hk_khu_dan_cu: document.getElementById('txtHkKhuDanCu').value.trim(),
-          hk_xa_phuong: document.getElementById('txtHkXaPhuong').value.trim(),
-          hk_tinh_tp: document.getElementById('txtHkTinhTp').value.trim()
-        }).eq('ma_hoc_sinh', currentMaHocSinh);
-
-        await db.from('quan_he_gia_dinh').update({
-          ho_ten_cha: document.getElementById('txtTenCha').value.trim(),
-          nam_sinh_cha: document.getElementById('txtNamSinhCha').value.trim(),
-          cccd_cha: document.getElementById('txtCccdCha').value.trim(),
-          dien_thoai_cha: document.getElementById('txtSdtBo').value.trim(),
-          don_vi_cong_tac_cha: document.getElementById('txtCoQuanCha').value.trim(),
-          ten_me: document.getElementById('txtTenMe').value.trim(),
-          nghe_nghiep_me: document.getElementById('txtNgheMe').value.trim(),
-          nam_sinh_me: document.getElementById('txtNamSinhMe').value.trim(),
-          cccd_me: document.getElementById('txtCccdMe').value.trim(),
-          dien_thoai_me: document.getElementById('txtSdtMe').value.trim()
-        }).eq('ma_hoc_sinh', currentMaHocSinh);
-
-        await db.from('ho_so_su_khoe').update({
-          can_nang: document.getElementById('txtCanNang').value.trim(),
-          chieu_cao: document.getElementById('txtChieuCao').value.trim(),
-          so_bhyt: document.getElementById('txtSoBHYT').value.trim()
-        }).eq('ma_hoc_sinh', currentMaHocSinh);
-
-        alert("✅ Cập nhật hồ sơ thành công!");
+        if (type === 'teacher') {
+          await db.from('tin_nhan')
+            .update({ da_doc: true })
+            .eq('ma_giao_vien', targetID)
+            .eq('nguoi_nhan', currentTeacherID);
+        } else {
+          await db.from('tin_nhan')
+            .update({ da_doc: true })
+            .eq('ma_hoc_sinh', targetID)
+            .eq('ma_giao_vien', currentTeacherID)
+            .eq('nguoi_gui', 'hs');
+        }
+        let resMsg = await db.from('tin_nhan').select('*');
+        window.allTeacherMessages = resMsg.data || [];
       } catch (err) {
-        alert("❌ Lỗi lưu: " + err.message);
-      } finally {
-        btn.innerText = "💾 LƯU THAY ĐỔI HỒ SƠ";
-        btn.disabled = false;
+        console.error("Lỗi cập nhật trạng thái đọc:", err);
+      }
+    }
+
+    async function loadTeacherChatMessages() {
+      const container = document.getElementById('teacherChatMessagesContainer');
+      if (!container) return;
+      container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Đang tải tin nhắn...</p>`;
+      try {
+        let query = db.from('tin_nhan').select('*').order('created_at', { ascending: true });
+        if (selectedChatType === 'student') {
+          query = query.eq('ma_hoc_sinh', selectedChatTargetID).eq('ma_giao_vien', currentTeacherID);
+        } else {
+          query = query.or(`and(ma_giao_vien.eq.${currentTeacherID},nguoi_nhan.eq.${selectedChatTargetID}),and(ma_giao_vien.eq.${selectedChatTargetID},nguoi_nhan.eq.${currentTeacherID})`);
+        }
+
+        let { data } = await query;
+        if (!data || data.length === 0) {
+          container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Chưa có tin nhắn trao đổi với ${selectedChatTargetName}. Hãy bắt đầu nhắn tin bên dưới.</p>`;
+          return;
+        }
+
+        let html = '';
+        data.forEach(item => {
+          let isMe = item.nguoi_gui === 'gv' || item.nguoi_gui === currentTeacherID;
+          let bubbleClass = isMe ? 'bg-indigo-600 text-white ml-auto rounded-2xl rounded-tr-none' : 'bg-white border border-slate-200 text-slate-800 mr-auto rounded-2xl rounded-tl-none';
+          let deleteBtn = isMe ? `<button onclick="deleteTeacherMessage('${item.id}')" title="Thu hồi" class="text-[10px] text-rose-200 hover:text-white mr-2"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>` : '';
+          html += `
+            <div class="flex flex-col max-w-[80%] ${isMe ? 'items-end ml-auto' : 'items-start'} mb-2">
+              <div class="flex items-center mb-1 px-1">${deleteBtn}<span class="text-[10px] text-slate-400">${isMe ? 'Tôi' : selectedChatTargetName}</span></div>
+              <div class="p-3 text-xs shadow-sm ${bubbleClass}">${item.noi_dung}</div>
+            </div>`;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+      } catch (err) {
+        container.innerHTML = `<p class="text-xs text-rose-500 text-center py-4">Lỗi tải tin nhắn.</p>`;
+      }
+    }
+
+    async function sendTeacherMessage() {
+      const input = document.getElementById('teacherChatInput');
+      if (!input) return;
+      const content = input.value.trim();
+      if (!content || !selectedChatTargetID) return;
+      try {
+        let payload = {
+          ma_giao_vien: currentTeacherID,
+          nguoi_gui: 'gv',
+          noi_dung: content,
+          da_doc: false
+        };
+
+        if (selectedChatType === 'student') {
+          payload.ma_hoc_sinh = selectedChatTargetID;
+          delete payload.nguoi_nhan; 
+        } else {
+          payload.nguoi_nhan = selectedChatTargetID;
+          delete payload.ma_hoc_sinh;
+        }
+
+        let { error } = await db.from('tin_nhan').insert([payload]);
+        if (error) throw error;
+        input.value = '';
+        loadTeacherChatMessages();
+      } catch (err) {
+        alert("❌ Lỗi gửi tin: " + err.message);
+      }
+    }
+
+    async function deleteTeacherMessage(msgId) {
+      if (!confirm("Bạn muốn thu hồi tin nhắn này?")) return;
+      try {
+        await db.from('tin_nhan').delete().eq('id', msgId);
+        loadTeacherChatMessages();
+      } catch (err) {
+        alert("Lỗi: " + err.message);
+      }
+    }
+
+    function openBroadcastModal() {
+      let currentFilteredTeachersForBroadcast = window.currentFilteredTeachers || allTeachersData;
+      currentFilteredTeachersForBroadcast = currentFilteredTeachersForBroadcast.filter(u => String(u.ma_nhan_su) !== String(currentTeacherID));
+
+      if (currentFilteredTeachersForBroadcast.length === 0) {
+        alert("⚠️ Không có giáo viên nào trong danh sách lọc để gửi tin nhắn!");
+        return;
+      }
+
+      document.getElementById('broadcastTargetInfo').innerText = `Sẽ gửi tin nhắn đến ${currentFilteredTeachersForBroadcast.length} giáo viên trong danh sách đang hiển thị.`;
+      document.getElementById('broadcastContent').value = '';
+      document.getElementById('broadcastModal').classList.remove('hidden');
+    }
+
+    function closeBroadcastModal() {
+      document.getElementById('broadcastModal').classList.add('hidden');
+    }
+
+    async function sendBroadcastMessage() {
+      const content = document.getElementById('broadcastContent').value.trim();
+      if (!content) { alert("Vui lòng nhập nội dung tin nhắn!"); return; }
+
+      try {
+        let currentFilteredTeachersForBroadcast = (window.currentFilteredTeachers || allTeachersData).filter(u => String(u.ma_nhan_su) !== String(currentTeacherID));
+        let payloads = currentFilteredTeachersForBroadcast.map(u => ({
+          ma_giao_vien: currentTeacherID,
+          nguoi_nhan: u.ma_nhan_su,
+          nguoi_gui: 'gv',
+          noi_dung: content,
+          da_doc: false
+        }));
+
+        let { error } = await db.from('tin_nhan').insert(payloads);
+        if (error) throw error;
+
+        alert("✅ Đã gửi tin nhắn thành công cho cả nhóm!");
+        closeBroadcastModal();
+        loadTeacherDashboardData();
+      } catch (err) {
+        alert("❌ Lỗi gửi tin nhắn nhóm: " + err.message);
+      }
+    }
+
+    function openBroadcastNotificationModal() {
+      document.getElementById('notifTitleInput').value = '';
+      document.getElementById('notifContentInput').value = '';
+      document.getElementById('broadcastNotifModal').classList.remove('hidden');
+    }
+
+    function closeBroadcastNotifModal() {
+      document.getElementById('broadcastNotifModal').classList.add('hidden');
+    }
+
+    async function submitBroadcastNotification() {
+      const title = document.getElementById('notifTitleInput').value.trim();
+      const content = document.getElementById('notifContentInput').value.trim();
+
+      if (!title || !content) { alert("⚠️ Vui lòng nhập đầy đủ tiêu đề và nội dung thông báo!"); return; }
+      if (!confirm("Bạn có chắc chắn muốn đăng thông báo này cho toàn bộ học sinh trong trường không?")) return;
+
+      try {
+        let today = new Date().toLocaleDateString('vi-VN');
+        let payload = {
+          tieu_de: title,
+          noi_dung: content,
+          ngay_dang: today,
+          nguoi_dang: currentTeacherName || currentTeacherID || 'BGH / Admin'
+        };
+
+        let { error } = await db.from('thong_bao').insert([payload]);
+        if (error) throw error;
+
+        alert("✅ Đã đăng thông báo thành công!");
+        closeBroadcastNotifModal();
+      } catch (err) {
+        alert("❌ Lỗi khi đăng thông báo: " + err.message);
+      }
+    }
+
+    async function openManageNotificationsModal() {
+      document.getElementById('manageNotifModal').classList.remove('hidden');
+      await loadManageNotificationsList();
+    }
+
+    function closeManageNotificationsModal() {
+      document.getElementById('manageNotifModal').classList.add('hidden');
+    }
+
+    async function loadManageNotificationsList() {
+      const container = document.getElementById('manageNotifListContainer');
+      if (!container) return;
+      container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Đang tải danh sách thông báo...</p>`;
+      
+      try {
+        let { data, error } = await db.from('thong_bao').select('*').order('id', { ascending: false });
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Chưa có thông báo nào được đăng.</p>`;
+          return;
+        }
+
+        let html = '';
+        data.forEach(item => {
+          html += `
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex flex-col space-y-2">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="font-bold text-blue-950 text-xs">${item.tieu_de}</h4>
+                  <span class="text-[10px] text-slate-400">📅 Ngày đăng: ${item.ngay_dang || '---'} | Người đăng: ${item.nguoi_dang || 'BGH'}</span>
+                </div>
+                <button onclick="deleteNotification('${item.id}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center shrink-0">
+                  <i class="fa-solid fa-trash-can mr-1"></i> Thu hồi
+                </button>
+              </div>
+              <p class="text-xs text-slate-600 bg-white p-2.5 rounded-lg border border-slate-100 whitespace-pre-line">${item.noi_dung}</p>
+            </div>`;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<p class="text-xs text-rose-500 text-center py-4">Lỗi tải danh sách thông báo: ${err.message}</p>`;
+      }
+    }
+
+    async function deleteNotification(id) {
+      if (!confirm("⚠️ Bạn có chắc chắn muốn thu hồi (xóa vĩnh viễn) thông báo này không?")) return;
+      try {
+        let { error } = await db.from('thong_bao').delete().eq('id', id);
+        if (error) throw error;
+        alert("✅ Đã thu hồi thông báo thành công!");
+        await loadManageNotificationsList();
+      } catch (err) {
+        alert("❌ Lỗi khi thu hồi thông báo: " + err.message);
       }
     }
   </script>
