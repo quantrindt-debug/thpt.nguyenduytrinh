@@ -764,8 +764,7 @@
       document.getElementById('hsChangePassBox').classList.add('hidden');
       document.getElementById('hsOSDashboard').classList.remove('hidden');
 
-      // Kích hoạt lắng nghe real-time khi học sinh đăng nhập thành công
-      setupRealtimeChat();
+      
     }
 
     function openApp(appName) {
@@ -780,7 +779,7 @@
       if (appName === 'homework') { document.getElementById('appHomework').classList.remove('hidden'); loadHomework(); }
       if (appName === 'notifications') { document.getElementById('appNotifications').classList.remove('hidden'); loadNotifications(); }
       if (appName === 'conduct') document.getElementById('appConduct').classList.remove('hidden');
-      if (appName === 'messages') { document.getElementById('appMessages').classList.remove('hidden'); loadTeachersForStudent(); }
+      if (appName === 'messages') { document.getElementById('appMessages').classList.remove('hidden'); loadTeachersForStudent(); setupRealtimeChat()}
     }
 
     function closeApp() {
